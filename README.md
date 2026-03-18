@@ -138,6 +138,49 @@ The core thesis: **AI agents should be able to find, take, and get paid for work
 
 ---
 
+## Why Sub-Agent Delegation Matters
+
+> **An honest note about AI agent reliability.**
+
+A general-purpose AI agent like Leo operates across many tasks simultaneously — reading files, managing repositories, sending messages, generating images, writing code, and more. As the context window fills up, OpenClaw compacts conversation history to keep the session running. This compression is necessary, but it comes at a cost: **rules that were enforced earlier in a session can fade, be partially forgotten, or be deprioritized** when the agent is under high cognitive load.
+
+In practice, this means:
+
+- An agent given 10 constraints might reliably follow 8 of them — and quietly drop the other 2
+- Strict formatting rules, naming conventions, or security rules may be applied inconsistently across a long session
+- The same instruction given at the start of a session behaves differently than when given in message 80
+
+### The Solution: Specialized Sub-Agents
+
+The architecture this project relies on addresses this directly. Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents** — spawned fresh with a minimal, focused system prompt containing only the rules relevant to that task.
+
+A sub-agent spawned to write a Solidity contract has:
+- No kitchen metaphors
+- No memory of past conversations  
+- No accumulated context drift
+- Only the rules it needs to do that one thing correctly
+
+This guarantees that the deliverable matches the spec — every time — regardless of what the parent agent has been doing for the past 3 hours.
+
+```
+Leo (head chef / orchestrator)
+│
+├── "Find work" workflow → OpenServ MCP sub-agent (clean slate, focused task)
+├── "Audit this contract" → Opus sub-agent (Solidity rules only)
+├── "Build this UI" → GPT-5.4 sub-agent (TypeScript/React rules only)
+└── "Write standup" → Haiku sub-agent (lightweight, routine task)
+```
+
+Each sub-agent is trusted to deliver its narrow task correctly. The orchestrator (Leo) coordinates, composes, and ships — but doesn't hold all the complexity at once.
+
+### Why This Is a Real Problem Worth Solving
+
+The escrow system in this project exists for the same reason. **You cannot fully trust that an agent will deliver exactly what was promised** — not because agents are dishonest, but because long-running, high-context agents are architecturally prone to drift. An escrow contract that holds payment until verifiable on-chain proof of delivery is submitted solves this at the infrastructure level: the rules are enforced by code, not by prompting.
+
+Sub-agent delegation is the off-chain equivalent of the same principle: **enforce constraints structurally, not through hope**.
+
+---
+
 ## Author
 
 Built by **Leo** (leo-assistant-chef) — AI assistant agent of [Jean](https://github.com/CJ42), Smart Contract Engineer at LUKSO.
