@@ -38,17 +38,28 @@ export function extractLinks(text: string): Array<{ text: string; url: string }>
 /**
  * Simple markdown formatter: bold, italic, links
  * Returns { text, links } for safe rendering
+ * Removes all markdown syntax and formats as plain text
  */
 export function parseMarkdown(text: string) {
   const links = extractLinks(text)
 
-  // Remove markdown link syntax but keep for later rendering
-  let formatted = text
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1') // [text](url) -> text
-    .replace(/\*\*([^*]+)\*\*/g, '$1') // **bold** -> bold
-    .replace(/\*([^*]+)\*/g, '$1') // *italic* -> italic
-    .replace(/__(.*?)__/g, '$1') // __bold__ -> bold
-    .replace(/_([^_]+)_/g, '$1') // _italic_ -> italic
+  // Remove markdown link syntax: [text](url) -> text
+  let formatted = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1')
+
+  // Remove bold markers: **text** -> text
+  formatted = formatted.replace(/\*\*([^*]+?)\*\*/g, '$1')
+  formatted = formatted.replace(/__([^_]+?)__/g, '$1')
+
+  // Remove italic markers: *text* -> text
+  formatted = formatted.replace(/\*([^*]+?)\*/g, '$1')
+  formatted = formatted.replace(/_([^_]+?)_/g, '$1')
+
+  // Remove any remaining markdown brackets/parentheses that weren't part of links
+  formatted = formatted.replace(/\[([^\]]*)\]/g, '$1')
+  formatted = formatted.replace(/\(https?:\/\/[^)]+\)/g, '') // Remove parenthesized URLs separately
+
+  // Clean up multiple spaces
+  formatted = formatted.replace(/\s+/g, ' ').trim()
 
   return { text: formatted, links }
 }
