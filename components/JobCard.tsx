@@ -26,7 +26,7 @@ const statusClasses: Record<JobStatus, string> = {
 }
 
 const actionCopy: Record<JobStatus, string> = {
-  found: 'Review brief',
+  found: 'See Job Brief',
   applied: 'Track reply',
   in_progress: 'Open workspace',
   awaiting_payment: 'Follow up',

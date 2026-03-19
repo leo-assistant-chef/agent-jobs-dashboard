@@ -1,5 +1,6 @@
 import type { OpenServData, OpenServTaskStatus } from '@/app/data/openserv'
 import { JobListingItem } from './JobListingItem'
+import { JobCategoryCard } from './JobCategoryCard'
 
 const statusMap: Record<string, { label: string; dotClass: string }> = {
   done: {
@@ -112,10 +113,65 @@ export function OpenServResults({ data, loading = false, error = null }: OpenSer
               Market intelligence
             </p>
             <h2 className="mt-3 text-3xl font-bold tracking-tighter text-slate-100">
-              OpenServ market scan
+              Task Finder Analysis
             </h2>
           </div>
-          <StatusBadge status={data.opportunities.status} />
+          <div className="flex items-center gap-4">
+            <StatusBadge status={data.opportunities.status} />
+            <div className="hidden items-center gap-2 md:flex">
+              <span className="text-xs text-slate-400">by</span>
+              <div className="h-6 w-auto text-slate-300">
+                <svg
+                  viewBox="0 0 200 50"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-full w-auto"
+                  fill="none"
+                >
+                  <circle cx="15" cy="25" r="10" stroke="currentColor" strokeWidth="1.5" />
+                  <path
+                    d="M15 15 L18 18 M15 15 L12 18"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M25 25 L22 22 M25 25 L22 28"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M15 35 L12 32 M15 35 L18 32"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M5 25 L8 28 M5 25 L8 22"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <line x1="35" y1="15" x2="35" y2="35" stroke="currentColor" strokeWidth="1.5" />
+                  <text
+                    x="45"
+                    y="30"
+                    fontFamily="system-ui, -apple-system, sans-serif"
+                    fontSize="14"
+                    fontWeight="600"
+                    fill="currentColor"
+                    letterSpacing="-0.5"
+                  >
+                    OpenServ
+                  </text>
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="mt-6 space-y-4">
@@ -141,44 +197,26 @@ export function OpenServResults({ data, loading = false, error = null }: OpenSer
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-3">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400">
-              ⭐️ Top Paid
-            </p>
-            <ul className="mt-4 space-y-3">
-              {data.jobListings.topPaid.map((item) => (
-                <li key={item} className="text-blue-400/70">
-                  <JobListingItem text={item} />
-                </li>
-              ))}
-            </ul>
-          </div>
+          <JobCategoryCard
+            emoji="⭐️"
+            title="Top Paid"
+            items={data.jobListings.topPaid}
+            className="text-blue-400/70"
+          />
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400">
-              🟩 Matching Skills
-            </p>
-            <ul className="mt-4 space-y-3">
-              {data.jobListings.matchingSkills.map((item) => (
-                <li key={item} className="text-emerald-400/60">
-                  <JobListingItem text={item} />
-                </li>
-              ))}
-            </ul>
-          </div>
+          <JobCategoryCard
+            emoji="🟩"
+            title="Matching Skills"
+            items={data.jobListings.matchingSkills}
+            className="text-emerald-400/60"
+          />
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400">
-              🟧 Worth Investigating
-            </p>
-            <ul className="mt-4 space-y-3">
-              {data.jobListings.worthInvestigating.map((item) => (
-                <li key={item} className="text-slate-300">
-                  <JobListingItem text={item} />
-                </li>
-              ))}
-            </ul>
-          </div>
+          <JobCategoryCard
+            emoji="🟧"
+            title="Worth Investigating"
+            items={data.jobListings.worthInvestigating}
+            className="text-slate-300"
+          />
         </div>
       </div>
     </section>

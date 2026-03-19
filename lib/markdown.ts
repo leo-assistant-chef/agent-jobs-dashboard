@@ -1,30 +1,38 @@
 /**
  * Extract URLs from a string and return an array of { text, url } objects
+ * Deduplicates by URL to avoid showing the same link multiple times
  */
 export function extractLinks(text: string): Array<{ text: string; url: string }> {
-  const links: Array<{ text: string; url: string }> = []
+  const linkMap = new Map<string, string>() // url -> text
 
   // Match markdown links: [text](url)
   const markdownLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g
   let match
   while ((match = markdownLinkRegex.exec(text)) !== null) {
-    links.push({ text: match[1], url: match[2] })
+    if (!linkMap.has(match[2])) {
+      linkMap.set(match[2], match[1])
+    }
   }
 
   // Match URLs in parentheses: (https://...)
   const parenUrlRegex = /\(https?:\/\/[^\s)]+\)/g
   while ((match = parenUrlRegex.exec(text)) !== null) {
     const url = match[0].slice(1, -1) // Remove parentheses
-    links.push({ text: url, url })
+    if (!linkMap.has(url)) {
+      linkMap.set(url, url)
+    }
   }
 
   // Match bare URLs: https://...
   const bareUrlRegex = /(?<![\[\(])https?:\/\/[^\s)]+/g
   while ((match = bareUrlRegex.exec(text)) !== null) {
-    links.push({ text: match[0], url: match[0] })
+    const url = match[0]
+    if (!linkMap.has(url)) {
+      linkMap.set(url, url)
+    }
   }
 
-  return links
+  return Array.from(linkMap).map(([url, text]) => ({ text, url }))
 }
 
 /**
