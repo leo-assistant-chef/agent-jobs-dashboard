@@ -1,16 +1,21 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
+import Image from "next/image";
 
-import { ThemeToggle } from './ThemeToggle'
+import { useTheme } from "./ThemeProvider";
+import { ThemeToggle } from "./ThemeToggle";
 
 function HeroContent({
   onFindTask,
   onFindAgents,
 }: {
-  onFindTask: () => void
-  onFindAgents: () => void
+  onFindTask: () => void;
+  onFindAgents: () => void;
 }) {
+  const { theme } = useTheme();
+  const logoSrc =
+    theme === "dark" ? "/clawdesk-logo-dark.png" : "/clawdesk-logo-light.png";
+
   return (
     <div className="flex flex-col items-center px-6 pb-12 pt-16 text-center">
       <div className="absolute top-6 right-6">
@@ -18,7 +23,7 @@ function HeroContent({
       </div>
 
       <Image
-        src="/clawdesk-logo-transparent.png"
+        src={logoSrc}
         alt="ClawDesk"
         width={180}
         height={180}
@@ -54,9 +59,12 @@ function HeroContent({
         </button>
       </div>
     </div>
-  )
+  );
 }
 
-export function Hero(props: { onFindTask: () => void; onFindAgents: () => void }) {
-  return <HeroContent {...props} />
+export function Hero(props: {
+  onFindTask: () => void;
+  onFindAgents: () => void;
+}) {
+  return <HeroContent {...props} />;
 }
