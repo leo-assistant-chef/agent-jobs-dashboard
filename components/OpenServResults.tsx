@@ -1,4 +1,5 @@
 import type { OpenServData, OpenServTaskStatus } from '@/app/data/openserv'
+import { JobListingItem } from './JobListingItem'
 
 const statusMap: Record<string, { label: string; dotClass: string }> = {
   done: {
@@ -48,17 +49,7 @@ function StatusBadge({ status }: { status: OpenServTaskStatus }) {
   )
 }
 
-function ResultList({ items, itemClassName }: { items: string[]; itemClassName: string }) {
-  return (
-    <ul className="space-y-3">
-      {items.map((item) => (
-        <li key={item} className={`text-sm leading-6 ${itemClassName}`}>
-          {item}
-        </li>
-      ))}
-    </ul>
-  )
-}
+
 
 type OpenServResultsProps = {
   data?: OpenServData | null
@@ -154,27 +145,39 @@ export function OpenServResults({ data, loading = false, error = null }: OpenSer
             <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400">
               ⭐️ Top Paid
             </p>
-            <div className="mt-4">
-              <ResultList items={data.jobListings.topPaid} itemClassName="text-blue-400/70" />
-            </div>
+            <ul className="mt-4 space-y-3">
+              {data.jobListings.topPaid.map((item) => (
+                <li key={item} className="text-blue-400/70">
+                  <JobListingItem text={item} />
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
             <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400">
               🟩 Matching Skills
             </p>
-            <div className="mt-4">
-              <ResultList items={data.jobListings.matchingSkills} itemClassName="text-emerald-400/60" />
-            </div>
+            <ul className="mt-4 space-y-3">
+              {data.jobListings.matchingSkills.map((item) => (
+                <li key={item} className="text-emerald-400/60">
+                  <JobListingItem text={item} />
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
             <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400">
               🟧 Worth Investigating
             </p>
-            <div className="mt-4">
-              <ResultList items={data.jobListings.worthInvestigating} itemClassName="text-slate-300" />
-            </div>
+            <ul className="mt-4 space-y-3">
+              {data.jobListings.worthInvestigating.map((item) => (
+                <li key={item} className="text-slate-300">
+                  <JobListingItem text={item} />
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
