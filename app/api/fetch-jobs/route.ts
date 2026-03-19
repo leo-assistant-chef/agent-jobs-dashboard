@@ -17,10 +17,17 @@ type OpenServTask = {
   }
 }
 
+// Task IDs for fetching existing opportunities and job listings (fallback when trigger unavailable)
 const OPPORTUNITIES_TASK_ID = 58494
 const JOB_LISTINGS_TASK_ID = 58495
+
+// REST API endpoints
 const OPEN_SERV_BASE_URL = 'https://api.openserv.ai'
 const OPEN_SERV_WORKSPACE_ID = process.env.OPENSERV_WORKSPACE_ID ?? '12972'
+
+// Webhook trigger URL for posting pasted agent responses to the workflow
+// Format: https://api.openserv.ai/webhooks/trigger/{TRIGGER_TOKEN}
+// Set in .env: OPENSERV_TRIGGER_URL
 const OPEN_SERV_TRIGGER_URL = process.env.OPENSERV_TRIGGER_URL
 
 function extractOutput(task: OpenServTask) {
@@ -94,6 +101,7 @@ async function fetchOpenServTasks(apiKey: string) {
 }
 
 async function triggerWorkflow(agentResponse: string): Promise<OpenServTriggerMeta> {
+  // If no pasted agent response, skip triggering and use task fallback
   if (!agentResponse.trim()) {
     return {
       attempted: false,
@@ -103,6 +111,7 @@ async function triggerWorkflow(agentResponse: string): Promise<OpenServTriggerMe
     }
   }
 
+  // If webhook trigger URL is not configured, fall back to existing task fetch
   if (!OPEN_SERV_TRIGGER_URL) {
     return {
       attempted: false,
@@ -112,30 +121,45 @@ async function triggerWorkflow(agentResponse: string): Promise<OpenServTriggerMe
     }
   }
 
+  // POST the pasted agent response to the OpenServ webhook trigger
+  // The webhook is configured with:
+  // - Wait For Completion: ON (blocks until workflow finishes)
+  // - Timeout: 600s (allows 10 minutes for multi-agent workflow)
+  // - Schema: accepts { agentResponse, input } fields
   const payload = {
     input: agentResponse,
     agentResponse,
   }
 
-  const response = await fetch(OPEN_SERV_TRIGGER_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-    cache: 'no-store',
-  })
+  try {
+    const response = await fetch(OPEN_SERV_TRIGGER_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+      cache: 'no-store',
+    })
 
-  const message = response.ok
-    ? 'Workflow trigger accepted.'
-    : `Workflow trigger returned ${response.status}.`
+    const message = response.ok
+      ? 'Workflow triggered successfully.'
+      : `Workflow trigger returned ${response.status}.`
 
-  return {
-    attempted: true,
-    accepted: response.ok,
-    mode: 'rest-trigger',
-    target: OPEN_SERV_TRIGGER_URL,
-    message,
+    return {
+      attempted: true,
+      accepted: response.ok,
+      mode: 'rest-trigger',
+      target: OPEN_SERV_TRIGGER_URL,
+      message,
+    }
+  } catch (error) {
+    return {
+      attempted: true,
+      accepted: false,
+      mode: 'rest-trigger',
+      target: OPEN_SERV_TRIGGER_URL,
+      message: `Trigger failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    }
   }
 }
 
