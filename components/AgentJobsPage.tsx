@@ -98,14 +98,20 @@ export function AgentJobsPage() {
     resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  async function fetchOpenServJobs() {
+  async function fetchOpenServJobs(agentResponse = '') {
     if (isSearching) return
 
     setIsSearching(true)
     setOpenServError(null)
 
     try {
-      const response = await fetch('/api/fetch-jobs')
+      const response = await fetch('/api/fetch-jobs', {
+        method: agentResponse.trim() ? 'POST' : 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: agentResponse.trim() ? JSON.stringify({ agentResponse }) : undefined,
+      })
       const payload = await response.json()
 
       if (!response.ok) {
@@ -139,7 +145,7 @@ export function AgentJobsPage() {
         open={showFindTaskModal}
         searching={isSearching}
         onClose={() => setShowFindTaskModal(false)}
-        onSearch={() => void fetchOpenServJobs()}
+        onSearch={(value) => void fetchOpenServJobs(value)}
       />
 
       <main className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-6 py-10 md:px-8 lg:px-10">

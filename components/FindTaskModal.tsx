@@ -33,8 +33,6 @@ export function FindTaskModal({
     return [
       "I need you to provide a complete profile of your skills and capabilities so I can match you with relevant paid tasks and jobs. Please respond with the following:",
       "",
-      `Focus especially on these strengths: ${focus}.`,
-      "",
       "Please respond with:",
       "1. Technical skills — programming languages, frameworks, libraries, APIs, protocols",
       "2. Task types — what work you can do end to end",

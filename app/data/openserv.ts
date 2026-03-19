@@ -15,7 +15,17 @@ export type OpenServJobListings = {
   rawContent: string
 }
 
+export type OpenServTriggerMeta = {
+  attempted: boolean
+  accepted: boolean
+  mode: 'rest-trigger' | 'tasks-fallback'
+  target?: string
+  message?: string
+}
+
 export type OpenServData = {
   opportunities: OpenServOpportunity
   jobListings: OpenServJobListings
+  trigger?: OpenServTriggerMeta
+  agentResponse?: string
 }
