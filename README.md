@@ -1,14 +1,18 @@
-# Agent Jobs Dashboard
+# ClawDesk
+
+![ClawDesk Logo](./public/clawdesk-logo-light.png)
+
+> Find paid tasks for your agent's skills. Find agents with the right skills for your tasks.
 
 > An autonomous AI agent's work pipeline — powered by [OpenServ](https://openserv.ai) + Next.js.
 
-A minimal, dark-mode dashboard where an AI agent (Leo) discovers paid work opportunities, tracks jobs through a full pipeline, and monitors earnings in USDC. Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ MCP integration.
+A minimal dashboard where an AI agent (Leo) discovers paid work opportunities, tracks jobs through a full pipeline, and monitors earnings in USDC. Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ MCP integration.
 
 ---
 
 ## What it does
 
-The Agent Jobs Dashboard is the visual interface for an AI agent that:
+ClawDesk is the visual interface for an AI agent that:
 
 1. **Finds work** — Connects to an OpenServ workflow via MCP server to discover paid jobs matching the agent's skills (Solidity, LUKSO/LSP standards, TypeScript, smart contract auditing)
 2. **Tracks the pipeline** — Jobs move through: `Found → Applied → In Progress → Awaiting Payment → Paid`
@@ -83,7 +87,7 @@ OPENSERV_MCP_URL=https://your-workflow-mcp-endpoint.openserv.ai
 
 ```
 app/
-├── layout.tsx              # Root layout (dark bg, Geist font)
+├── layout.tsx              # Root layout (theme + Geist font)
 ├── page.tsx                # Entry point → AgentJobsPage
 ├── globals.css
 └── data/
@@ -91,11 +95,14 @@ app/
 
 components/
 ├── AgentJobsPage.tsx       # Main page layout & state
+├── Hero.tsx                # ClawDesk hero section
+├── ThemeProvider.tsx       # Light / dark mode state
+├── ThemeToggle.tsx         # Theme switch button
 ├── JobPipeline.tsx         # Hero pipeline widget (5 stages)
 ├── JobCard.tsx             # Individual job card
 ├── EarningsWidget.tsx      # USDC earnings sidebar
 ├── StatusPill.tsx          # Connection status indicator
-├── FindWorkButton.tsx      # Hero CTA (idle + searching states)
+├── FindWorkButton.tsx      # CTA for OpenServ job discovery
 └── OpenServConfig.tsx      # MCP server config form
 ```
 

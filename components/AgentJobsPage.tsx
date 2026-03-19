@@ -1,11 +1,12 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 
 import { mockJobs, type Job, type JobStatus } from '@/app/data/mock-jobs'
 import type { OpenServData } from '@/app/data/openserv'
 import { EarningsWidget } from '@/components/EarningsWidget'
 import { FindWorkButton } from '@/components/FindWorkButton'
+import { Hero } from '@/components/Hero'
 import { JobCard } from '@/components/JobCard'
 import { JobPipeline } from '@/components/JobPipeline'
 import { OpenServConfig } from '@/components/OpenServConfig'
@@ -82,6 +83,7 @@ export function AgentJobsPage() {
   const [isSearching, setIsSearching] = useState(false)
   const [openServResults, setOpenServResults] = useState<OpenServData | null>(null)
   const [openServError, setOpenServError] = useState<string | null>(null)
+  const resultsRef = useRef<HTMLElement | null>(null)
 
   const jobs = useMemo(
     () => (openServResults ? mapOpenServJobs(openServResults) : mockJobs),
@@ -90,53 +92,55 @@ export function AgentJobsPage() {
   const pipelineCounts = useMemo(() => calculatePipelineCounts(jobs), [jobs])
   const { totalPaid, pendingAmount, availableAmount } = useMemo(() => calculateAmounts(jobs), [jobs])
 
+  function scrollToResults() {
+    resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function handleFindTask() {
+    scrollToResults()
+    const button = document.getElementById('find-work-button') as HTMLButtonElement | null
+    button?.click()
+  }
+
+  function handleFindAgents() {
+    scrollToResults()
+  }
+
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-6 py-10 md:px-8 lg:px-10">
-      <section className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-        <div className="max-w-3xl">
-          <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400">
-            Agent work
-          </p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tighter text-slate-100">
-            Agent Jobs
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400 md:text-base">
-            Discover aligned work, track the execution pipeline, and keep OpenServ-connected payouts visible from one operator dashboard.
-          </p>
+    <main className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-6 py-10 md:px-8 lg:px-10">
+      <Hero onFindTask={handleFindTask} onFindAgents={handleFindAgents} />
+
+      <section
+        ref={resultsRef}
+        className="flex flex-col gap-4 border-y border-slate-200/80 py-6 dark:border-white/10 lg:flex-row lg:items-center lg:justify-between"
+      >
+        <div className="flex flex-wrap items-center gap-3">
+          <StatusPill label="OpenServ connected" connected />
+          <StatusPill label="MCP workflow live" connected />
         </div>
 
-        <div className="flex flex-col items-start gap-4 lg:items-end">
-          <div className="flex flex-wrap items-center gap-3">
-            <StatusPill label="OpenServ connected" connected />
-            <StatusPill label="MCP workflow live" connected />
-          </div>
-          <FindWorkButton
-            searching={isSearching}
-            onSearchingChange={setIsSearching}
-            onResults={setOpenServResults}
-            onError={setOpenServError}
-          />
-        </div>
+        <FindWorkButton
+          searching={isSearching}
+          onSearchingChange={setIsSearching}
+          onResults={setOpenServResults}
+          onError={setOpenServError}
+        />
       </section>
 
       <JobPipeline counts={pipelineCounts} />
 
-      {(isSearching || openServResults || openServError) ? (
-        <OpenServResults
-          data={openServResults}
-          loading={isSearching}
-          error={openServError}
-        />
+      {isSearching || openServResults || openServError ? (
+        <OpenServResults data={openServResults} loading={isSearching} error={openServError} />
       ) : null}
 
       <section className="grid grid-cols-1 gap-8 md:grid-cols-12">
         <div className="space-y-5 md:col-span-8">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
                 Active opportunities
               </p>
-              <h2 className="mt-2 text-3xl font-bold tracking-tighter text-slate-100">
+              <h2 className="mt-2 text-3xl font-bold tracking-tighter text-slate-900 dark:text-slate-100">
                 {openServResults ? 'OpenServ live job feed' : 'Matching contracts and bounties'}
               </h2>
             </div>

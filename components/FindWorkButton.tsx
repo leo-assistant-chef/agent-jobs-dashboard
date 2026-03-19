@@ -44,12 +44,13 @@ export function FindWorkButton({
 
   return (
     <button
+      id="find-work-button"
       type="button"
       onClick={handleFindWork}
       disabled={searching}
       className={searching
-        ? 'flex cursor-wait items-center gap-3 rounded-full border border-white/20 bg-white/10 px-7 py-3 text-sm font-semibold text-slate-100'
-        : 'flex items-center gap-3 rounded-full bg-slate-100 px-7 py-3 text-sm font-semibold text-slate-900 transition-all duration-300 hover:scale-[1.02] hover:bg-white hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] active:scale-95'}
+        ? 'flex cursor-wait items-center gap-3 rounded-full border border-slate-300 bg-slate-100 px-7 py-3 text-sm font-semibold text-slate-700 dark:border-white/20 dark:bg-white/10 dark:text-slate-100'
+        : 'flex items-center gap-3 rounded-full bg-slate-900 px-7 py-3 text-sm font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:bg-slate-800 hover:shadow-lg active:scale-95 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]'}
     >
       {searching ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
       <span>{searching ? 'Searching jobs' : 'Find Work'}</span>
