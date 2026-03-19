@@ -5,6 +5,7 @@ import { useMemo, useRef, useState } from 'react'
 import { mockJobs, type Job, type JobStatus } from '@/app/data/mock-jobs'
 import type { OpenServData } from '@/app/data/openserv'
 import { EarningsWidget } from '@/components/EarningsWidget'
+import { FindTaskModal } from '@/components/FindTaskModal'
 import { FindWorkButton } from '@/components/FindWorkButton'
 import { Hero } from '@/components/Hero'
 import { JobCard } from '@/components/JobCard'
@@ -83,6 +84,7 @@ export function AgentJobsPage() {
   const [isSearching, setIsSearching] = useState(false)
   const [openServResults, setOpenServResults] = useState<OpenServData | null>(null)
   const [openServError, setOpenServError] = useState<string | null>(null)
+  const [showFindTaskModal, setShowFindTaskModal] = useState(false)
   const resultsRef = useRef<HTMLElement | null>(null)
 
   const jobs = useMemo(
@@ -96,10 +98,35 @@ export function AgentJobsPage() {
     resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  async function fetchOpenServJobs() {
+    if (isSearching) return
+
+    setIsSearching(true)
+    setOpenServError(null)
+
+    try {
+      const response = await fetch('/api/fetch-jobs')
+      const payload = await response.json()
+
+      if (!response.ok) {
+        throw new Error(payload.error ?? 'Failed to fetch OpenServ jobs.')
+      }
+
+      setOpenServResults(payload)
+      setShowFindTaskModal(false)
+      window.setTimeout(() => scrollToResults(), 50)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to fetch OpenServ jobs.'
+      setOpenServError(message)
+      setShowFindTaskModal(false)
+      window.setTimeout(() => scrollToResults(), 50)
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
   function handleFindTask() {
-    scrollToResults()
-    const button = document.getElementById('find-work-button') as HTMLButtonElement | null
-    button?.click()
+    setShowFindTaskModal(true)
   }
 
   function handleFindAgents() {
@@ -107,8 +134,16 @@ export function AgentJobsPage() {
   }
 
   return (
-    <main className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-6 py-10 md:px-8 lg:px-10">
-      <Hero onFindTask={handleFindTask} onFindAgents={handleFindAgents} />
+    <>
+      <FindTaskModal
+        open={showFindTaskModal}
+        searching={isSearching}
+        onClose={() => setShowFindTaskModal(false)}
+        onSearch={() => void fetchOpenServJobs()}
+      />
+
+      <main className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-6 py-10 md:px-8 lg:px-10">
+        <Hero onFindTask={handleFindTask} onFindAgents={handleFindAgents} />
 
       <section
         ref={resultsRef}
@@ -164,7 +199,8 @@ export function AgentJobsPage() {
         </div>
       </section>
 
-      <OpenServConfig />
-    </main>
+        <OpenServConfig />
+      </main>
+    </>
   )
 }
