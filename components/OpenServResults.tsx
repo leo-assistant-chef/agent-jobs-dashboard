@@ -1,64 +1,68 @@
-import type { OpenServData, OpenServTaskStatus } from '@/app/data/openserv'
-import { JobListingItem } from './JobListingItem'
-import { JobCategoryCard } from './JobCategoryCard'
+import type { OpenServData, OpenServTaskStatus } from "@/app/data/openserv";
+import { JobListingItem } from "./JobListingItem";
+import { JobCategoryCard } from "./JobCategoryCard";
 
 const statusMap: Record<string, { label: string; dotClass: string }> = {
   done: {
-    label: 'Done',
-    dotClass: 'bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.45)]',
+    label: "Done",
+    dotClass: "bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.45)]",
   },
   running: {
-    label: 'Running',
-    dotClass: 'bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.45)]',
+    label: "Running",
+    dotClass: "bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.45)]",
   },
   queued: {
-    label: 'Queued',
-    dotClass: 'bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.45)]',
+    label: "Queued",
+    dotClass: "bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.45)]",
   },
   failed: {
-    label: 'Failed',
-    dotClass: 'bg-rose-400 shadow-[0_0_12px_rgba(251,113,133,0.45)]',
+    label: "Failed",
+    dotClass: "bg-rose-400 shadow-[0_0_12px_rgba(251,113,133,0.45)]",
   },
-}
+};
 
 function formatMarkdown(markdown: string) {
   return markdown
-    .replace(/^###\s+/gm, '')
-    .replace(/^####\s+/gm, '')
-    .replace(/\*\*/g, '')
+    .replace(/^###\s+/gm, "")
+    .replace(/^####\s+/gm, "")
+    .replace(/\*\*/g, "")
     .trim()
-    .split('\n\n')
+    .split("\n\n")
     .map((block) => block.trim())
-    .filter(Boolean)
+    .filter(Boolean);
 }
 
 function getStatusConfig(status: OpenServTaskStatus) {
-  return statusMap[status] ?? {
-    label: status,
-    dotClass: 'bg-slate-400 shadow-[0_0_12px_rgba(148,163,184,0.35)]',
-  }
+  return (
+    statusMap[status] ?? {
+      label: status,
+      dotClass: "bg-slate-400 shadow-[0_0_12px_rgba(148,163,184,0.35)]",
+    }
+  );
 }
 
 function StatusBadge({ status }: { status: OpenServTaskStatus }) {
-  const config = getStatusConfig(status)
+  const config = getStatusConfig(status);
 
   return (
     <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-200">
       <span className={`h-2 w-2 rounded-full ${config.dotClass}`} />
       <span>{config.label}</span>
     </div>
-  )
+  );
 }
-
-
 
 type OpenServResultsProps = {
-  data?: OpenServData | null
-  loading?: boolean
-  error?: string | null
-}
+  data?: OpenServData | null;
+  loading?: boolean;
+  error?: string | null;
+};
 
-export function OpenServResults({ data, loading = false, error = null }: OpenServResultsProps) {
+export function OpenServResults({
+  data,
+  loading = false,
+  error = null,
+}: OpenServResultsProps) {
   if (loading) {
     return (
       <section className="grid gap-6">
@@ -74,7 +78,10 @@ export function OpenServResults({ data, loading = false, error = null }: OpenSer
 
         <div className="grid gap-4 md:grid-cols-3">
           {[0, 1, 2].map((card) => (
-            <div key={card} className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div
+              key={card}
+              className="rounded-2xl border border-white/10 bg-white/5 p-6"
+            >
               <div className="h-3 w-24 animate-pulse rounded-full bg-white/10" />
               <div className="mt-5 space-y-3">
                 <div className="h-4 animate-pulse rounded-full bg-white/10" />
@@ -84,7 +91,7 @@ export function OpenServResults({ data, loading = false, error = null }: OpenSer
           ))}
         </div>
       </section>
-    )
+    );
   }
 
   if (error) {
@@ -95,14 +102,14 @@ export function OpenServResults({ data, loading = false, error = null }: OpenSer
         </p>
         <p className="mt-3 text-sm leading-6 text-rose-100/90">{error}</p>
       </section>
-    )
+    );
   }
 
   if (!data) {
-    return null
+    return null;
   }
 
-  const marketBlocks = formatMarkdown(data.opportunities.content)
+  const marketBlocks = formatMarkdown(data.opportunities.content);
 
   return (
     <section className="grid gap-6">
@@ -113,7 +120,7 @@ export function OpenServResults({ data, loading = false, error = null }: OpenSer
               Market intelligence
             </p>
             <h2 className="mt-3 text-3xl font-bold tracking-tighter text-slate-100">
-              Task Finder Analysis
+              Job Finder Analysis - Summary
             </h2>
           </div>
           <div className="flex items-center gap-4">
@@ -127,7 +134,13 @@ export function OpenServResults({ data, loading = false, error = null }: OpenSer
                   className="h-full w-auto"
                   fill="none"
                 >
-                  <circle cx="15" cy="25" r="10" stroke="currentColor" strokeWidth="1.5" />
+                  <circle
+                    cx="15"
+                    cy="25"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  />
                   <path
                     d="M15 15 L18 18 M15 15 L12 18"
                     stroke="currentColor"
@@ -156,7 +169,14 @@ export function OpenServResults({ data, loading = false, error = null }: OpenSer
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
-                  <line x1="35" y1="15" x2="35" y2="35" stroke="currentColor" strokeWidth="1.5" />
+                  <line
+                    x1="35"
+                    y1="15"
+                    x2="35"
+                    y2="35"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  />
                   <text
                     x="45"
                     y="30"
@@ -187,10 +207,10 @@ export function OpenServResults({ data, loading = false, error = null }: OpenSer
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
             <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400">
-              Job listings
+              Job Market
             </p>
             <h2 className="mt-3 text-3xl font-bold tracking-tighter text-slate-100">
-              OpenServ live opportunities
+              Job Listings Found
             </h2>
           </div>
           <StatusBadge status={data.jobListings.status} />
@@ -220,5 +240,5 @@ export function OpenServResults({ data, loading = false, error = null }: OpenSer
         </div>
       </div>
     </section>
-  )
+  );
 }

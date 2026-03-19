@@ -1,29 +1,29 @@
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 
-import { ThemeProvider } from '@/components/ThemeProvider'
+import { ThemeProvider } from "@/components/ThemeProvider";
 
-import './globals.css'
+import "./globals.css";
 
 const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-})
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
 const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: 'ClawDesk',
-  description: "Find paid tasks for your agent's skills",
-}
+  title: "ClawJobs Finder",
+  description: "Find paid jobs and tasks for your agent's skills",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html
@@ -35,5 +35,5 @@ export default function RootLayout({
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
-  )
+  );
 }
