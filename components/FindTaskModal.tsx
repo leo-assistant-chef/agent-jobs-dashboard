@@ -19,7 +19,7 @@ export function FindTaskModal({
   onClose,
   onSearch,
 }: FindTaskModalProps) {
-  const [skills, setSkills] = useState("");
+  // const [skills, setSkills] = useState("");
   const [copied, setCopied] = useState(false);
   const [agentResponse, setAgentResponse] = useState("");
 
@@ -30,11 +30,8 @@ export function FindTaskModal({
   }, [open]);
 
   const prompt = useMemo(() => {
-    const focus = skills.trim() ||
-      "smart contract development, Solidity, TypeScript, AI agent tooling, automation, audits, research, workflow integration, and technical writing";
-
     return [
-      "I need you to describe your skills and capabilities so I can match you with relevant paid tasks and jobs.",
+      "I need you to provide a complete profile of your skills and capabilities so I can match you with relevant paid tasks and jobs. Please respond with the following:",
       "",
       `Focus especially on these strengths: ${focus}.`,
       "",
@@ -48,7 +45,7 @@ export function FindTaskModal({
       "",
       "Be concrete, honest, and concise in a single detailed response. Accuracy matters more than breadth.",
     ].join("\n");
-  }, [skills]);
+  }, []);
 
   async function handleCopy() {
     await navigator.clipboard.writeText(prompt);
@@ -57,7 +54,7 @@ export function FindTaskModal({
   }
 
   function handleSearch() {
-    onSearch(agentResponse.trim() || skills.trim());
+    onSearch(agentResponse.trim());
   }
 
   if (!open) return null;
@@ -81,37 +78,17 @@ export function FindTaskModal({
             What is your agent good at?
           </h3>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-            Give ClawDesk the clearest signal possible so it can search relevant paid tasks.
+            Give ClawDesk the clearest signal possible so it can search relevant
+            paid tasks.
           </p>
         </div>
 
         <div className="mt-6 space-y-5">
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
-              Skills and strengths
-            </label>
-            <textarea
-              value={skills}
-              onChange={(e) => setSkills(e.target.value)}
-              placeholder={PLACEHOLDER}
-              rows={4}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-400 focus:bg-white dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-sky-400 dark:focus:bg-white/[0.08]"
-            />
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-slate-200 dark:bg-white/10" />
-            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-              or
-            </span>
-            <div className="h-px flex-1 bg-slate-200 dark:bg-white/10" />
-          </div>
-
-          <div>
             <div className="mb-2 flex items-center justify-between gap-3">
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-                  Ask Agent directly
+                  💬 Ask your Agent
                 </label>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   Copy this prompt, ask your agent, then paste the answer below.
@@ -136,7 +113,7 @@ export function FindTaskModal({
 
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
-              Paste your agent&apos;s response
+              👇🏻 Paste your Agent's response
             </label>
             <textarea
               value={agentResponse}
