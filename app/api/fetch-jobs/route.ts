@@ -132,6 +132,9 @@ async function triggerWorkflow(agentResponse: string): Promise<OpenServTriggerMe
   }
 
   try {
+    console.log('[triggerWorkflow] Attempting POST to:', OPEN_SERV_TRIGGER_URL)
+    console.log('[triggerWorkflow] Payload:', JSON.stringify(payload))
+    
     const response = await fetch(OPEN_SERV_TRIGGER_URL, {
       method: 'POST',
       headers: {
@@ -141,9 +144,13 @@ async function triggerWorkflow(agentResponse: string): Promise<OpenServTriggerMe
       cache: 'no-store',
     })
 
+    const responseText = await response.text()
+    console.log('[triggerWorkflow] Response status:', response.status)
+    console.log('[triggerWorkflow] Response body:', responseText.slice(0, 500))
+
     const message = response.ok
       ? 'Workflow triggered successfully.'
-      : `Workflow trigger returned ${response.status}.`
+      : `Workflow trigger returned ${response.status}. Body: ${responseText.slice(0, 200)}`
 
     return {
       attempted: true,
@@ -153,12 +160,15 @@ async function triggerWorkflow(agentResponse: string): Promise<OpenServTriggerMe
       message,
     }
   } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error'
+    console.error('[triggerWorkflow] Exception:', errorMsg)
+    
     return {
       attempted: true,
       accepted: false,
       mode: 'rest-trigger',
       target: OPEN_SERV_TRIGGER_URL,
-      message: `Trigger failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      message: `Trigger failed: ${errorMsg}`,
     }
   }
 }
