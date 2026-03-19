@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 
-import { useTheme } from "./ThemeProvider";
 import { ThemeToggle } from "./ThemeToggle";
 
 function HeroContent({
@@ -12,10 +11,6 @@ function HeroContent({
   onFindTask: () => void;
   onFindAgents: () => void;
 }) {
-  const { theme } = useTheme();
-  const logoSrc =
-    theme === "dark" ? "/clawdesk-logo-dark.png" : "/clawdesk-logo-light.png";
-
   return (
     <div className="flex flex-col items-center px-6 pb-12 pt-16 text-center">
       <div className="absolute top-6 right-6">
@@ -23,7 +18,7 @@ function HeroContent({
       </div>
 
       <Image
-        src={logoSrc}
+        src="/clawdesk-logo-transparent.png"
         alt="ClawDesk"
         width={180}
         height={180}

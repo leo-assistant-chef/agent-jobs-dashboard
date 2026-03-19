@@ -11,7 +11,7 @@ type FindTaskModalProps = {
 };
 
 const PLACEHOLDER =
-  "Write down what AI Agent is good at so that we can find specific paid task and jobs matching its skills";
+  "write down what AI Agent is good at so that we can find specific paid task and jobs matching its skills";
 
 export function FindTaskModal({
   open,
@@ -19,9 +19,9 @@ export function FindTaskModal({
   onClose,
   onSearch,
 }: FindTaskModalProps) {
-  // const [skills, setSkills] = useState("");
+  const [skills, setSkills] = useState("");
   const [copied, setCopied] = useState(false);
-  const [promptResponse, setPromptResponse] = useState("");
+  const [agentResponse, setAgentResponse] = useState("");
 
   useEffect(() => {
     if (!open) {
@@ -30,25 +30,25 @@ export function FindTaskModal({
   }, [open]);
 
   const prompt = useMemo(() => {
-    // const focus =
-    //   skills.trim() ||
-    //   "smart contract development, Solidity, TypeScript, AI agent tooling, automation, audits, and research";
+    const focus = skills.trim() ||
+      "smart contract development, Solidity, TypeScript, AI agent tooling, automation, audits, research, workflow integration, and technical writing";
 
     return [
-      "I need you to provide a complete profile of your skills and capabilities so I can match you with relevant paid tasks and jobs. Please respond with the following:",
-      // "",
-      // `Agent strengths: ${focus}.`,
+      "I need you to describe your skills and capabilities so I can match you with relevant paid tasks and jobs.",
       "",
-      "**Technical skills:** List all programming languages, frameworks, libraries, APIs, and protocols you can work with.",
-      "Task types: What kinds of work can you do? (e.g., smart contract development, code review, auditing, data analysis, research, writing, automation, testing, deployment)",
-      "**Domain expertise:** Which industries or domains do you have deep knowledge in? (e.g., DeFi, NFTs, security, DevOps, legal, finance, healthcare)",
-      "**Strongest use cases:** Describe 3–5 tasks where you deliver the most value.",
-      "**Tools and integrations:** Which external tools, platforms, or services can you connect to or interact with?",
-      "**Limitations:** What tasks are outside your capabilities or where you'd underperform?",
+      `Focus especially on these strengths: ${focus}.`,
       "",
-      "Be concrete and honest, and concise in a single detailed message response — this profile will be used to match you with real work, so accuracy matters more than breadth.",
+      "Please respond with:",
+      "1. Technical skills — programming languages, frameworks, libraries, APIs, protocols",
+      "2. Task types — what work you can do end to end",
+      "3. Domain expertise — industries and systems you understand well",
+      "4. Strongest use cases — 3 to 5 tasks where you create the most value",
+      "5. Tools and integrations — what platforms and external tools you can connect to or operate through",
+      "6. Limitations — where you are weak or should not be trusted as the final authority",
+      "",
+      "Be concrete, honest, and concise in a single detailed response. Accuracy matters more than breadth.",
     ].join("\n");
-  }, []);
+  }, [skills]);
 
   async function handleCopy() {
     await navigator.clipboard.writeText(prompt);
@@ -57,7 +57,7 @@ export function FindTaskModal({
   }
 
   function handleSearch() {
-    onSearch(promptResponse);
+    onSearch(agentResponse.trim() || skills.trim());
   }
 
   if (!open) return null;
@@ -81,13 +81,12 @@ export function FindTaskModal({
             What is your agent good at?
           </h3>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-            Tell ClawDesk what your agent does best and what it is expert at. We
-            will use that as context when searching relevant paid work.
+            Give ClawDesk the clearest signal possible so it can search relevant paid tasks.
           </p>
         </div>
 
         <div className="mt-6 space-y-5">
-          {/* <div>
+          <div>
             <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
               Skills and strengths
             </label>
@@ -106,16 +105,16 @@ export function FindTaskModal({
               or
             </span>
             <div className="h-px flex-1 bg-slate-200 dark:bg-white/10" />
-          </div> */}
+          </div>
 
           <div>
             <div className="mb-2 flex items-center justify-between gap-3">
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-                  💬 Ask your Agent
+                  Ask Agent directly
                 </label>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Copy this prompt to ask your Agent directly.
+                  Copy this prompt, ask your agent, then paste the answer below.
                 </p>
               </div>
               <button
@@ -130,24 +129,20 @@ export function FindTaskModal({
             <textarea
               value={prompt}
               readOnly
-              rows={8}
+              rows={7}
               className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-relaxed text-slate-700 outline-none dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
             />
           </div>
 
           <div>
-            <div className="mb-2 flex items-center justify-between gap-3">
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-                  👇🏻 Paste your Agent's response
-                </label>
-              </div>
-            </div>
+            <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
+              Paste your agent&apos;s response
+            </label>
             <textarea
-              value={promptResponse}
-              rows={8}
+              value={agentResponse}
+              rows={6}
               className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-relaxed text-slate-700 outline-none dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
-              onChange={(e) => setPromptResponse(e.target.value)}
+              onChange={(e) => setAgentResponse(e.target.value)}
             />
           </div>
 
