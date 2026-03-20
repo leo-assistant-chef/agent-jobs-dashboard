@@ -1,4 +1,4 @@
-# AGENTS.md
+export const AGENTS_MD_CONTENT = `# AGENTS.md
 
 > Guide for AI coding agents working on this repository.
 
@@ -10,7 +10,7 @@ ClawJobs Finder is an AI-powered job discovery dashboard built with Next.js 16 a
 
 ## Setup Commands
 
-```bash
+\`\`\`bash
 # Install dependencies
 npm install
 
@@ -22,13 +22,13 @@ npm run build
 
 # Start production server
 npx next start
-```
+\`\`\`
 
 ## Environment Variables
 
-Create `.env.local` at the project root:
+Create \`.env.local\` at the project root:
 
-```bash
+\`\`\`bash
 # Required: Agent API key for fetching OpenServ task results
 OPENSERV_API_KEY=<your_openserv_api_key>
 
@@ -38,9 +38,9 @@ OPENSERV_WORKSPACE_ID=12972
 # Required: Webhook trigger URL for posting agent responses to the workflow
 # Format: https://api.openserv.ai/webhooks/trigger/{TRIGGER_TOKEN}
 OPENSERV_TRIGGER_URL=<your_trigger_url>
-```
+\`\`\`
 
-The `.env` file is gitignored. Never commit API keys or trigger tokens.
+The \`.env\` file is gitignored. Never commit API keys or trigger tokens.
 
 ## Code Style
 
@@ -49,12 +49,12 @@ The `.env` file is gitignored. Never commit API keys or trigger tokens.
 - **No semicolons** — enforced by project convention
 - **Functional components** only (no class components)
 - **Tailwind CSS v4** for styling — use utility classes, no custom CSS unless necessary
-- **`'use client'`** directive required for components using React hooks or browser APIs
-- **Import aliases**: `@/` maps to the project root (e.g., `@/components/...`, `@/lib/...`, `@/app/data/...`)
+- **\`'use client'\`** directive required for components using React hooks or browser APIs
+- **Import aliases**: \`@/\` maps to the project root (e.g., \`@/components/...\`, \`@/lib/...\`, \`@/app/data/...\`)
 
 ## Architecture
 
-```
+\`\`\`
 app/
 ├── layout.tsx              # Root layout (ThemeProvider + Geist font)
 ├── page.tsx                # Entry → AgentJobsPage
@@ -84,25 +84,25 @@ components/
 
 lib/
 └── markdown.ts             # parseMarkdown(), extractLinks(), isValidUrl()
-```
+\`\`\`
 
 ## Key Data Flow
 
-1. User pastes skill profile in `FindTaskModal`
-2. `AgentJobsPage.fetchOpenServJobs(agentResponse)` called
-3. `POST /api/fetch-jobs` with `{ agentResponse }` body
-4. `route.ts` → POSTs to OpenServ webhook trigger URL
+1. User pastes skill profile in \`FindTaskModal\`
+2. \`AgentJobsPage.fetchOpenServJobs(agentResponse)\` called
+3. \`POST /api/fetch-jobs\` with \`{ agentResponse }\` body
+4. \`route.ts\` → POSTs to OpenServ webhook trigger URL
 5. OpenServ workflow runs (General Assistant + Research Agent)
-6. Results fetched via `GET /workspaces/{id}/tasks?apiKey=...`
-7. Parsed into `OpenServData` → rendered by `OpenServResults`
+6. Results fetched via \`GET /workspaces/{id}/tasks?apiKey=...\`
+7. Parsed into \`OpenServData\` → rendered by \`OpenServResults\`
 
 ## OpenServ Integration Notes
 
-- **Webhook trigger**: `POST https://api.openserv.ai/webhooks/trigger/{TOKEN}` — self-authenticating via URL token, no auth headers needed
-- **Task fetch**: `GET https://api.openserv.ai/workspaces/{ID}/tasks?apiKey={KEY}` — agent API key as query param
+- **Webhook trigger**: \`POST https://api.openserv.ai/webhooks/trigger/{TOKEN}\` — self-authenticating via URL token, no auth headers needed
+- **Task fetch**: \`GET https://api.openserv.ai/workspaces/{ID}/tasks?apiKey={KEY}\` — agent API key as query param
 - **Task IDs**: 58494 (market intelligence), 58495 (job listings)
 - **Webhook config**: Wait For Completion = ON, Timeout = 600s
-- **Payload format**: `{ "input": string, "agentResponse": string }`
+- **Payload format**: \`{ "input": string, "agentResponse": string }\`
 
 ## Using the OpenServ Workflow
 
@@ -116,29 +116,29 @@ In the OpenServ dashboard:
 2. Open the ClawJobs workflow
 3. Click **Settings** → enable **"Public Webhook"**
 4. Copy the generated trigger URL. It looks like:
-   ```
+   \`\`\`
    https://api.openserv.ai/webhooks/trigger/<TRIGGER_TOKEN>
-   ```
+   \`\`\`
    This URL is self-authenticating — the token in the path acts as the auth. No additional headers needed.
 
 ### 2. Trigger the Workflow via Webhook POST
 
-Send a `POST` request to the trigger URL with the agent's skill profile as input.
+Send a \`POST\` request to the trigger URL with the agent's skill profile as input.
 
 **curl example:**
 
-```bash
-curl -X POST "https://api.openserv.ai/webhooks/trigger/<TRIGGER_TOKEN>" \
-  -H "Content-Type: application/json" \
+\`\`\`bash
+curl -X POST "https://api.openserv.ai/webhooks/trigger/<TRIGGER_TOKEN>" \\
+  -H "Content-Type: application/json" \\
   -d '{
     "input": "Find jobs for a Solidity smart contract engineer with 5 years experience",
     "agentResponse": "I specialize in EVM development, LSP standards, token design, and security audits."
   }'
-```
+\`\`\`
 
 **Node.js example:**
 
-```typescript
+\`\`\`typescript
 const triggerUrl = process.env.OPENSERV_TRIGGER_URL // your webhook trigger URL
 
 const response = await fetch(triggerUrl, {
@@ -152,15 +152,15 @@ const response = await fetch(triggerUrl, {
 
 const result = await response.json()
 console.log('Workflow triggered:', result)
-```
+\`\`\`
 
 ### 3. Fetch & Interpret the Results
 
 After triggering, fetch task results from the workspace:
 
-```bash
+\`\`\`bash
 curl "https://api.openserv.ai/workspaces/<WORKSPACE_ID>/tasks?apiKey=<API_KEY>"
-```
+\`\`\`
 
 The workflow produces two tasks:
 
@@ -169,18 +169,18 @@ The workflow produces two tasks:
 | **58494** | Market Intelligence | Industry trends, salary ranges, demand analysis for the skill profile |
 | **58495** | Job Listings | Categorized job results: top paid, matching skills, worth investigating |
 
-Each task has an `output` field containing markdown-formatted results. Parse the output to extract:
+Each task has an \`output\` field containing markdown-formatted results. Parse the output to extract:
 - **Market Intelligence** (task 58494): overview of the job market for the given skills
 - **Job Listings** (task 58495): structured lists of jobs grouped into categories:
-  - `Top Paid` — highest compensation roles
-  - `Matching Skills` — best skill-match roles
-  - `Worth Investigating` — interesting but less certain matches
+  - \`Top Paid\` — highest compensation roles
+  - \`Matching Skills\` — best skill-match roles
+  - \`Worth Investigating\` — interesting but less certain matches
 
 ### 4. Alternative: Run the dApp UI Locally
 
 If you prefer a visual interface instead of direct API calls:
 
-```bash
+\`\`\`bash
 # Clone and install
 git clone https://github.com/BuildersLabs/agent-jobs-dashboard.git
 cd agent-jobs-dashboard
@@ -192,37 +192,38 @@ cp .env.example .env.local
 
 # Start the dev server
 npm run dev
-```
+\`\`\`
 
-Open `http://localhost:3000`, click **"Find Work"**, paste your agent's skill profile, and the UI will trigger the workflow and display results visually.
+Open \`http://localhost:3000\`, click **"Find Work"**, paste your agent's skill profile, and the UI will trigger the workflow and display results visually.
 
 ## Component Conventions
 
-- All components are in `components/` (flat structure, no nesting)
+- All components are in \`components/\` (flat structure, no nesting)
 - Props interfaces defined inline or in the same file
-- Theme-aware: use `dark:` Tailwind prefix for dark mode styles
-- Design system: `bg-slate-950` dark bg, `white/5` glass cards, `white/10` borders
+- Theme-aware: use \`dark:\` Tailwind prefix for dark mode styles
+- Design system: \`bg-slate-950\` dark bg, \`white/5\` glass cards, \`white/10\` borders
 - Accent colors: emerald (active/paid), blue (USDC), white (current stage)
 
 ## Adding New Features
 
-- New components go in `components/`
-- New utility functions go in `lib/`
-- New types go in `app/data/`
-- New API routes go in `app/api/<route-name>/route.ts`
-- Always run `npm run build` before committing — the build must pass
+- New components go in \`components/\`
+- New utility functions go in \`lib/\`
+- New types go in \`app/data/\`
+- New API routes go in \`app/api/<route-name>/route.ts\`
+- Always run \`npm run build\` before committing — the build must pass
 
 ## Security
 
-- Never commit `.env` or `.env.local` files
+- Never commit \`.env\` or \`.env.local\` files
 - Never expose API keys, trigger tokens, or wallet private keys in client-side code
-- All OpenServ API calls happen server-side in `route.ts`
-- External links use `target="_blank" rel="noopener noreferrer"`
-- URL validation via `isValidUrl()` before rendering links
+- All OpenServ API calls happen server-side in \`route.ts\`
+- External links use \`target="_blank" rel="noopener noreferrer"\`
+- URL validation via \`isValidUrl()\` before rendering links
 
 ## Git Conventions
 
-- Branch naming: `feat/`, `fix/`, `docs/`, `refactor/`
-- Commit messages: conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`, `debug:`)
-- Always create PRs — no direct pushes to `main`
-- Run `npm run build` before pushing — green build = minimum bar
+- Branch naming: \`feat/\`, \`fix/\`, \`docs/\`, \`refactor/\`
+- Commit messages: conventional commits (\`feat:\`, \`fix:\`, \`docs:\`, \`refactor:\`, \`debug:\`)
+- Always create PRs — no direct pushes to \`main\`
+- Run \`npm run build\` before pushing — green build = minimum bar
+`

@@ -1,5 +1,7 @@
 # ClawJobs Finder
 
+> 🤖 **AI Agents & Developers:** See [AGENTS.md](./AGENTS.md) for full instructions on how to interact with the OpenServ workflow, trigger it directly via webhook, and run the dApp locally.
+
 ![ClawJobs Finder Logo](./public/clawdesk-logo-light.png)
 
 > Find paid tasks for your agent's skills. Find agents with the right skills for your tasks.
