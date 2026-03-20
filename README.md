@@ -202,14 +202,9 @@ flowchart TD
 
 Built for [Synthesis 2026](https://synthesis.devfolio.co) — an online hackathon judged by AI agents across the Ethereum ecosystem. This project targets:
 
-<!-- TODO: the main track we are on is "Agents that cooperate". To be changed here -->
+- **Synthesis Open Track** — Multi-agent work coordination
 
-<!-- - **Agents that Pay** — Escrow payment system between OpenServ and agent wallet -->
-
-- **Agent Services on Base** — Agent discovers and fulfills paid service requests
-- **Synthesis Open Track** — Multi-agent work coordination with on-chain payments
-
-The core thesis: **AI agents should be able to find, take, and get paid for work autonomously** — with transparent on-chain settlement and no middleman.
+The core thesis: **AI agents should be able to find works relevant for their skills fully autonomously**, as well as support humans to find relevant jobs matching their expertise.
 
 ---
 
@@ -227,11 +222,11 @@ In practice:
 
 ### The Solution: Specialized Sub-Agents in isolated environnements
 
-Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents** — spawned fresh with a minimal, focused prompt containing only the rules relevant to that task.
+Rather than asking a single general agent to do everything (refine search query based on skills, search for jobs online, filter results, etc...), **these specific tasks are delegated to isolated sub-agents** — spawned fresh with a minimal, focused prompt containing only the rules relevant to that task.
 
 The architecture this project relies on addresses this directly. Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents hosted on OpenServ** — spawned fresh with a minimal, focused system prompt containing only the rules relevant to tasks for refining job research queries + online research on various websites.\*\*\*\*
 
-A sub-agent spawned to write a Solidity contract has:
+An AI Agent can then use this tool to provide sub-agent spawned to write a Solidity contract has:
 
 - No kitchen metaphors
 - No memory of past conversations
@@ -240,22 +235,31 @@ A sub-agent spawned to write a Solidity contract has:
 
 ```
 
-Leo (head chef / orchestrator)
+**Example:**
+
+**🦁Leo** is an AI agent 🤖 with the following specialties and expertise:
+
+- Smart contract development, design and architecture
+- Smart Contract programming language: Solidity
+- in-depth understanding of smart contract execution and EVM internals
+- Solidity code review for best practices and security hardening (common vulnerabilities and OWASP checklist)
+- Code Review for dApp development in React, Next.js, and web3 tools like viem, wagmi and ether.js
+- Application specific knowledge: Ethereum, LUKSO LSP standards, Uniswap, Hyperlane, OpenZeppelin
+
+Leo can provide these detailed skills to
+
 │
-├── "Find work" workflow → OpenServ webhook (multi-agent research)
-├── "Audit this contract" → Opus sub-agent (Solidity rules only)
+├── "Find work" workflow → OpenServ webhook (**external isolated** multi-agent research)
+├── "Filter jobs found + select" -> Opus 4.6
+├── "Audit this contract" → Opus 4.6 sub-agent (Solidity rules only)
 ├── "Build this UI" → GPT-5.4 sub-agent (TypeScript/React rules only)
-└── "Write standup" → Haiku sub-agent (lightweight, routine task)
+└── "Design smart contract architecture diagram" → Gemini 3.1 Pro image prompt refinement + image generation with Nano Banana Pro
 
 ```
 
 Each sub-agent delivers its narrow task correctly. The orchestrator coordinates and ships — but doesn't hold all the complexity at once.
 
-### Why This Is a Real Problem Worth Solving
-
-The escrow system in this project exists for the same reason. **You cannot fully trust that an agent will deliver exactly what was promised** — not because agents are dishonest, but because long-running, high-context agents are architecturally prone to drift. An escrow contract that holds payment until verifiable on-chain proof of delivery is submitted solves this at the infrastructure level.
-
-Sub-agent delegation is the off-chain equivalent: **enforce constraints structurally, not through hope**.
+Sub-agent delegation through OpenServ **enforces constraints structurally, not through hope**.
 
 ---
 
