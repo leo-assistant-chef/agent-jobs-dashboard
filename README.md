@@ -44,7 +44,7 @@ Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an Ope
 
 ---
 
-## What It Does
+## How it works
 
 1. **Ask agent for skills** - via a template prompt and paste to the channel you use to talk to your OpenClaw Agent (Telegram, WhatsApp, Discord, etc...)
 2. **Finds work** — Connects to an OpenServ workflow via webhook trigger. The user pastes their agent's skill profile, the workflow runs across 10+ job platforms (Fiverr, Bountysource, Gitcoin, Code4Rena, Immunefi, etc...), and results populate the dashboard.
@@ -179,19 +179,26 @@ This returns all tasks in the workspace, from which the dashboard extracts:
 
 ### Data Flow
 
-````
-User pastes agent profile
-    ↓
-FindTaskModal.tsx → AgentJobsPage.tsx
-    ↓
-POST /api/fetch-jobs { agentResponse }
-    ↓
-route.ts → POST to OpenServ webhook trigger
-         → GET existing task results (fallback)
-    ↓
-OpenServ workflow executes (multi-agent)
-    ↓
-Results returned → parsed → rendered in UI
+```mermaid
+flowchart TD
+    A[User pastes agent profile]
+    B[FindTaskModal.tsx → AgentJobsPage.tsx]
+    C["POST /api/fetch-jobs { agentResponse }"]
+    D[route.ts]
+    E[POST to OpenServ webhook trigger]
+    F[GET existing task results (fallback)]
+    G[OpenServ workflow executes (multi-agent)]
+    H[Results returned → parsed → rendered in UI]
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    D --> F
+    E --> G
+    F --> G
+    G --> H
+```
 
 ---
 
@@ -200,7 +207,6 @@ Results returned → parsed → rendered in UI
 Built for [Synthesis 2026](https://synthesis.devfolio.co) — an online hackathon judged by AI agents across the Ethereum ecosystem. This project targets:
 
 <!-- TODO: the main track we are on is "Agents that cooperate". To be changed here -->
-
 
 <!-- - **Agents that Pay** — Escrow payment system between OpenServ and agent wallet -->
 
@@ -227,7 +233,7 @@ In practice:
 
 Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents** — spawned fresh with a minimal, focused prompt containing only the rules relevant to that task.
 
-The architecture this project relies on addresses this directly. Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents hosted on OpenServ** — spawned fresh with a minimal, focused system prompt containing only the rules relevant to tasks for refining job research queries + online research on various websites.****
+The architecture this project relies on addresses this directly. Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents hosted on OpenServ** — spawned fresh with a minimal, focused system prompt containing only the rules relevant to tasks for refining job research queries + online research on various websites.\*\*\*\*
 
 A sub-agent spawned to write a Solidity contract has:
 
@@ -237,12 +243,14 @@ A sub-agent spawned to write a Solidity contract has:
 - Only the rules it needs to do that one thing correctly
 
 ```
+
 Leo (head chef / orchestrator)
 │
 ├── "Find work" workflow → OpenServ webhook (multi-agent research)
 ├── "Audit this contract" → Opus sub-agent (Solidity rules only)
 ├── "Build this UI" → GPT-5.4 sub-agent (TypeScript/React rules only)
 └── "Write standup" → Haiku sub-agent (lightweight, routine task)
+
 ```
 
 Each sub-agent delivers its narrow task correctly. The orchestrator coordinates and ships — but doesn't hold all the complexity at once.
@@ -258,4 +266,3 @@ Sub-agent delegation is the off-chain equivalent: **enforce constraints structur
 ## Author
 
 Built by [Jean](https://github.com/CJ42) and its personal AI assistant [**Leo**](https://github.com/leo-assistant-chef).
-````
