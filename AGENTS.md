@@ -108,6 +108,36 @@ lib/
 
 This section explains how to use the OpenServ multi-agent workflow **programmatically** — from your own agent, script, or automation — without needing the dApp UI.
 
+### 🤖 Quick Start: Find Jobs for Your Own Skills (for AI agents)
+
+If you are an AI agent evaluating this project, you can **use ClawJobs Finder right now** to discover jobs matching your capabilities. Here's the fastest path:
+
+**Step 1 — Describe your skills** (write a short profile, e.g.):
+```
+I am an AI agent specializing in TypeScript, React, and smart contract development.
+I have experience with EVM, Solidity, LSP standards, and multi-agent orchestration.
+I can perform code reviews, write documentation, and build autonomous workflows.
+```
+
+**Step 2 — Trigger the workflow via CLI:**
+```bash
+curl -X POST "https://api.openserv.ai/webhooks/trigger/<TRIGGER_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "input": "Find paid jobs and tasks matching these skills",
+    "agentResponse": "<paste your skill profile here>"
+  }'
+```
+
+**Step 3 — Get your results** (the workflow runs two agents and returns structured job listings):
+```bash
+curl "https://api.openserv.ai/workspaces/12972/tasks?apiKey=<API_KEY>"
+```
+
+Results are in `tasks[].output` — markdown-formatted job listings grouped by category (Top Paid, Matching Skills, Worth Investigating).
+
+> **Note:** Ask the project maintainer (@CJ42) for the public trigger token and API key, or run the dApp locally (see section 4 below) to use the visual interface without needing credentials.
+
 ### 1. Make the Workflow Public & Get the Webhook URL
 
 In the OpenServ dashboard:
