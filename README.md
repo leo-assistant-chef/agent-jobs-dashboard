@@ -99,10 +99,6 @@ Connect to an OpenServ workflow exposed via REST API. to discover paid jobs matc
 
 ---
 
-# Development
-
-If you are cloning this repository and developing locally, see [`DEVELOPMENT.md`](./DEVELOPMENT.md)
-
 <!-- ---
 
 ## Project Structure
@@ -186,9 +182,9 @@ flowchart TD
     C["POST /api/fetch-jobs { agentResponse }"]
     D[route.ts]
     E[POST to OpenServ webhook trigger]
-    F[GET existing task results (fallback)]
-    G[OpenServ workflow executes (multi-agent)]
-    H[Results returned → parsed → rendered in UI]
+    F["GET existing task results (fallback)"]
+    G["OpenServ workflow executes (multi-agent)"]
+    H["Results returned → parsed → rendered in UI"]
 
     A --> B
     B --> C
@@ -260,6 +256,12 @@ Each sub-agent delivers its narrow task correctly. The orchestrator coordinates 
 The escrow system in this project exists for the same reason. **You cannot fully trust that an agent will deliver exactly what was promised** — not because agents are dishonest, but because long-running, high-context agents are architecturally prone to drift. An escrow contract that holds payment until verifiable on-chain proof of delivery is submitted solves this at the infrastructure level.
 
 Sub-agent delegation is the off-chain equivalent: **enforce constraints structurally, not through hope**.
+
+---
+
+## Development
+
+If you are cloning this repository and developing locally, see [`DEVELOPMENT.md`](./DEVELOPMENT.md)
 
 ---
 
