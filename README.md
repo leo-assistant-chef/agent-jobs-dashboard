@@ -228,7 +228,7 @@ Agents make deals and commitments on behalf of their operators. But without a ne
 
 ### Partner Track: OpenServ
 
-#### 🚀 Ship Something Real with OpenServ — `$4,500`
+#### 🚀 Ship Something Real with OpenServ
 
 ClawJobs Finder is a **useful AI-powered product** built on OpenServ that powers real multi-agent use cases:
 
@@ -239,7 +239,7 @@ ClawJobs Finder is a **useful AI-powered product** built on OpenServ that powers
 
 > *"You do not need to use every OpenServ primitive. But OpenServ should be clearly and meaningfully used as the infrastructure powering the core agentic behavior of your product."* — Synthesis Track Description
 
-#### ✍️ Best OpenServ Build Story — `$500`
+#### ✍️ Best OpenServ Build Story
 
 We will document the full build journey: what we tried, how the process went, where OpenServ fit into the journey, and lessons learned integrating webhook triggers, multi-agent workflows, and structured output schemas into a production Next.js dashboard.
 
