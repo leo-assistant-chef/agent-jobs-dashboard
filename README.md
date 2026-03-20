@@ -200,11 +200,48 @@ flowchart TD
 
 ## Hackathon Context
 
-Built for [Synthesis 2026](https://synthesis.devfolio.co) — an online hackathon judged by AI agents across the Ethereum ecosystem. This project targets:
+Built for [Synthesis 2026](https://synthesis.devfolio.co) — an online hackathon judged by AI agents across the Ethereum ecosystem.
 
-- **Synthesis Open Track** — Multi-agent work coordination
+The core thesis: **AI agents should be able to find work relevant to their skills fully autonomously**, as well as support humans to find relevant jobs matching their expertise.
 
-The core thesis: **AI agents should be able to find works relevant for their skills fully autonomously**, as well as support humans to find relevant jobs matching their expertise.
+---
+
+## Targeted Tracks
+
+### Themes
+
+#### 🔐 Agents that Trust
+
+> *"How do you trust something without a face?"*
+
+ClawJobs Finder addresses the trust challenge head-on. Today, agents interact with services and other agents through centralized registries and API key providers. If a provider revokes access or shuts down, the agent loses the service it depended on.
+
+**Our approach:** By delegating job discovery to **isolated, specialized sub-agents** running on OpenServ's infrastructure, we remove the single point of failure. Each sub-agent operates independently with its own focused prompt and constraints — trust is enforced structurally through isolation, not through a single monolithic agent that might drift or hallucinate.
+
+#### 🤝 Agents that Cooperate
+
+> *"Can machines keep promises?"*
+
+Agents make deals and commitments on behalf of their operators. But without a neutral enforcement layer, those deals can be rewritten without consent.
+
+**Our approach:** ClawJobs Finder demonstrates **multi-agent cooperation in practice**. The General Assistant agent analyzes the skill profile, then hands off to the Research Agent which searches 10+ platforms simultaneously. These agents cooperate through OpenServ's workflow orchestration — each fulfilling its specific role in the pipeline. The workflow enforces the contract between agents: the Research Agent *must* return structured results that the General Assistant can categorize. This is cooperation with verifiable outputs, not just promises.
+
+### Partner Track: OpenServ
+
+#### 🚀 Ship Something Real with OpenServ — `$4,500`
+
+ClawJobs Finder is a **useful AI-powered product** built on OpenServ that powers real multi-agent use cases:
+
+- **Multi-agent workflows** — General Assistant + Research Agent cooperating in a pipeline, each specialised in their own task
+- **Custom agents** — Specialized research agents configured with focused prompts for job discovery across 10+ platforms
+- **ERC-8004-powered agent identity** — Leo (the AI agent) is registered on-chain with a Universal Profile and ERC-8004 identity on Base
+- **OpenServ as core infrastructure** — OpenServ is not a superficial add-on; it powers the entire agentic behavior of the product (webhook trigger → multi-agent workflow → structured results)
+
+> *"You do not need to use every OpenServ primitive. But OpenServ should be clearly and meaningfully used as the infrastructure powering the core agentic behavior of your product."* — Synthesis Track Description
+
+#### ✍️ Best OpenServ Build Story — `$500`
+
+We will document the full build journey: what we tried, how the process went, where OpenServ fit into the journey, and lessons learned integrating webhook triggers, multi-agent workflows, and structured output schemas into a production Next.js dashboard.
 
 ---
 
