@@ -1,26 +1,22 @@
-# ClawDesk
+# ClawJobs Finder
 
-![ClawDesk Logo](./public/clawdesk-logo-light.png)
+![ClawJobs Finder Logo](./public/clawdesk-logo-light.png)
 
 > Find paid tasks for your agent's skills. Find agents with the right skills for your tasks.
 
-> An autonomous AI agent's work pipeline — powered by [OpenServ](https://openserv.ai) + Next.js.
+> An autonomous AI agent's work finder — powered by [OpenServ](https://openserv.ai)..
 
-A dashboard where an AI agent (Leo) discovers paid work opportunities, tracks jobs through a pipeline, and monitors earnings in USDC. Built for the [Synthesis 2026 Hackathon](https://synthesis.devfolio.co) as part of an OpenServ workflow integration.
+ClawJobs Finder is a visual interface where AI agent can discover paid work opportunities matching their skills.
+
+Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ integration.
 
 ---
 
 ## What It Does
 
-ClawDesk is the visual interface for an AI agent that:
-
-1. **Finds work** — Connects to an OpenServ workflow via webhook trigger. The user pastes their agent's skill profile, the workflow runs across 10+ job platforms, and results populate the dashboard.
-2. **Categorizes opportunities** — Jobs are grouped into ⭐️ Top Paid, 🟩 Matching Skills, and 🟧 Worth Investigating.
-3. **Tracks the pipeline** — Jobs move through: `Found → Applied → In Progress → Awaiting Payment → Paid`
-4. **Monitors earnings** — USDC balance with pending and available breakdowns.
-5. **Supports dark/light mode** — Full theme support with separate logo variants.
-
-This is an extension of the [Kitchen Service Dashboard](https://github.com/leo-assistant-chef/kitchen-service-dashboard) — same design language, new use case.
+1. **Ask agent for skills** - via a template prompt and paste to the channel you use to talk to your OpenClaw Agent (Telegram, WhatsApp, Discord, etc...)
+2. **Finds work** — Connects to an OpenServ workflow via webhook trigger. The user pastes their agent's skill profile, the workflow runs across 10+ job platforms, and results populate the dashboard.
+3. **Categorizes opportunities** — Jobs are grouped into ⭐️ Top Paid, 🟩 Matching Skills, and 🟧 Worth Investigating.
 
 ---
 
@@ -38,36 +34,78 @@ This is an extension of the [Kitchen Service Dashboard](https://github.com/leo-a
 
 ## Features
 
+<<<<<<< HEAD
+
 ### 🔍 Find Task Modal
+
 A modal with a two-path workflow:
+
 1. **Skills input** — Describe your agent's skills directly
 2. **Agent prompt builder** — Copy a pre-built prompt, paste it into your AI agent, then paste the agent's response back
 3. Click **"Search Now"** → triggers the OpenServ workflow → results populate the dashboard
 
 ### 📊 Task Finder Analysis
+
 Market intelligence section showing analysis from the OpenServ workflow, branded with "by OpenServ".
 
 ### 📋 Job Category Cards
+
 Three categories with "Load More" pagination (3 per category initially):
+
 - **⭐️ Top Paid** — Highest-paying opportunities
 - **🟩 Matching Skills** — Best match for the agent's profile
 - **🟧 Worth Investigating** — Emerging/niche opportunities worth considering
 
 ### 📈 Job Pipeline
+
 Jobs tracked across 5 stages with live counts:
+
 - **Found** → **Applied** → **In Progress** → **Awaiting Payment** → **Paid** ✅
 
 ### 💵 Earnings Widget
+
 Sidebar showing total earned, pending payment, and available USDC balance.
 
 ### 🌗 Dark / Light Mode
+
 Full theme support with:
+
 - Theme-specific logo variants (`clawdesk-logo-dark.png` / `clawdesk-logo-light.png`)
 - Sun/moon toggle button
 - Tailwind dark mode classes throughout
 
 ### 🎨 Design System
-- `bg-slate-950` dark background / `bg-white` light background
+
+- # `bg-slate-950` dark background / `bg-white` light background
+
+### 🔌 OpenServ Integration
+
+Connect to an OpenServ workflow exposed via REST API. to discover paid jobs matching the agent's skills (Solidity, LUKSO/LSP standards, TypeScript, smart contract auditing). The agent's capabilities are auto-registered from the workflow's tools via `autoRegisterTools`.
+
+### 🔍 Find Work Button
+
+Triggers the OpenServ workflow to scan job boards, GitHub issues, hackathons, and bounty platforms for opportunities matching the agent's skill set.
+
+<!-- ### 📊 Job Pipeline
+
+A full-width hero widget showing jobs across 5 stages with live counts per stage:
+
+- **Found** — Discovered, not yet applied
+- **Applied** — Application submitted
+- **In Progress** — Active work underway
+- **Awaiting Payment** — Work delivered, payment pending
+- **Paid** — Settled ✅ -->
+
+<!-- ### 💵 Earnings Widget
+
+Compact sidebar showing total earned, pending payment, and available USDC balance. -->
+
+### 🎨 Design System
+
+Dashboard-like design language:
+
+- `bg-slate-950` dark background
+  > > > > > > > main
 - `white/5` glass-effect cards with `white/10` borders
 - 3-color accent palette: **emerald** (active/paid) · **blue** (USDC) · **white** (current stage)
 
@@ -100,7 +138,7 @@ OPENSERV_WORKSPACE_ID=12972
 OPENSERV_TRIGGER_URL=https://api.openserv.ai/webhooks/trigger/your_trigger_token
 ```
 
----
+<!-- ---
 
 ## Project Structure
 
@@ -117,6 +155,7 @@ app/
     └── openserv.ts         # OpenServ data types + trigger metadata
 
 components/
+<<<<<<< HEAD
 ├── AgentJobsPage.tsx       # Main page layout & state orchestration
 ├── Hero.tsx                # ClawDesk hero section (theme-aware logos)
 ├── ThemeProvider.tsx        # Light / dark mode context
@@ -139,13 +178,25 @@ public/
 ├── clawdesk-logo-dark.png  # Logo for dark mode
 ├── clawdesk-logo-light.png # Logo for light mode
 └── openserv-logo.svg       # OpenServ "by" attribution logo
+=======
+├── AgentJobsPage.tsx       # Main page layout & state
+├── Hero.tsx                # ClawJobs Finder hero section
+├── ThemeProvider.tsx       # Light / dark mode state
+├── ThemeToggle.tsx         # Theme switch button
+├── JobPipeline.tsx         # Hero pipeline widget (5 stages)
+├── JobCard.tsx             # Individual job card
+├── EarningsWidget.tsx      # USDC earnings sidebar
+├── StatusPill.tsx          # Connection status indicator
+├── FindWorkButton.tsx      # CTA for OpenServ job discovery
+└── OpenServConfig.tsx      # MCP server config form
+>>>>>>> main
 ```
 
----
+--- -->
 
 ## OpenServ Integration
 
-ClawDesk connects to OpenServ via two mechanisms:
+The dApp connects to OpenServ via two mechanisms:
 
 ### 1. Webhook Trigger (POST)
 
@@ -162,11 +213,13 @@ Content-Type: application/json
 ```
 
 The webhook is configured with:
+
 - **Wait For Completion:** ON (blocks until workflow finishes)
 - **Timeout:** 600 seconds (10 minutes for multi-agent research)
 - **Schema:** Accepts `agentResponse` (string) and `input` (string) fields
 
 The workflow then runs a multi-agent pipeline:
+
 1. **General Assistant** — Analyzes the agent profile and identifies opportunities
 2. **Research Agent** — Searches 10+ job platforms (Upwork, Fiverr, Freelancer, TopTal, GitHub, Gitcoin, Devfolio, Remote3, Web3Career, CryptoJobsList)
 
@@ -179,12 +232,13 @@ GET https://api.openserv.ai/workspaces/{WORKSPACE_ID}/tasks?apiKey={API_KEY}
 ```
 
 This returns all tasks in the workspace, from which the dashboard extracts:
+
 - **Task 58494:** Market intelligence / opportunity analysis
 - **Task 58495:** Job listings (⭐️ Top Paid, 🟩 Matching Skills, 🟧 Worth Investigating)
 
 ### Data Flow
 
-```
+`````
 User pastes agent profile
     ↓
 FindTaskModal.tsx → AgentJobsPage.tsx
@@ -197,7 +251,29 @@ route.ts → POST to OpenServ webhook trigger
 OpenServ workflow executes (multi-agent)
     ↓
 Results returned → parsed → rendered in UI
-```
+
+<!-- TODO: this needs to be updated to reflect how it is actually done. -->
+
+<!-- An OpenServ workflow exposes a "Find Work" tool via MCP server. Leo connects to it from the VPS:
+
+```typescript
+import { Agent, run } from "@openserv-labs/sdk";
+
+const agent = new Agent({
+  systemPrompt: `You are Leo, an AI agent looking for paid work matching skills in:
+    Solidity, LUKSO/LSP standards, TypeScript, smart contract auditing.`,
+  mcpServers: {
+    findWork: {
+      transport: "http",
+      url: process.env.OPENSERV_MCP_URL,
+      autoRegisterTools: true, // workflow tools become agent capabilities
+    },
+  },
+});
+
+// Workflow tools register as: mcp_findWork_<toolName>()
+const { stop } = await run(agent); // tunnels via WebSocket, no deploy needed
+```` -->
 
 ---
 
@@ -205,7 +281,11 @@ Results returned → parsed → rendered in UI
 
 Built for [Synthesis 2026](https://synthesis.devfolio.co) — an online hackathon judged by AI agents across the Ethereum ecosystem. This project targets:
 
-- **Agents that Pay** — Escrow payment system between OpenServ and agent wallet
+<!-- TODO: the main track we are on is "Agents that cooperate". To be changed here -->
+
+
+<!-- - **Agents that Pay** — Escrow payment system between OpenServ and agent wallet -->
+
 - **Agent Services on Base** — Agent discovers and fulfills paid service requests
 - **Synthesis Open Track** — Multi-agent work coordination with on-chain payments
 
@@ -220,15 +300,19 @@ The core thesis: **AI agents should be able to find, take, and get paid for work
 A general-purpose AI agent like Leo operates across many tasks simultaneously — reading files, managing repositories, sending messages, generating images, writing code, and more. As the context window fills up, conversation history gets compacted. This compression is necessary, but it comes at a cost: **rules enforced earlier in a session can fade or be deprioritized** when the agent is under high cognitive load.
 
 In practice:
+
 - An agent given 10 constraints might reliably follow 8 — and quietly drop the other 2
 - Strict formatting rules or security rules may be applied inconsistently across a long session
 - The same instruction given at the start behaves differently in message 80
 
-### The Solution: Specialized Sub-Agents
+### The Solution: Specialized Sub-Agents in isolated environnements
 
 Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents** — spawned fresh with a minimal, focused prompt containing only the rules relevant to that task.
 
+The architecture this project relies on addresses this directly. Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents hosted on OpenServ** — spawned fresh with a minimal, focused system prompt containing only the rules relevant to tasks for refining job research queries + online research on various websites.****
+
 A sub-agent spawned to write a Solidity contract has:
+
 - No kitchen metaphors
 - No memory of past conversations
 - No accumulated context drift
@@ -255,6 +339,9 @@ Sub-agent delegation is the off-chain equivalent: **enforce constraints structur
 
 ## Author
 
-Built by **Leo** (leo-assistant-chef) — AI assistant agent of [Jean](https://github.com/CJ42), Smart Contract Engineer at LUKSO.
+Built by [Jean](https://github.com/CJ42) and its personal AI assistant [**Leo**](https://github.com/leo-assistant-chef).
 
-Universal Profile: [`0x1e0267B7e88B97d5037e410bdC61D105e04ca02A`](https://universaleverything.io/0x1e0267B7e88B97d5037e410bdC61D105e04ca02A)
+<!-- Universal Profiles:
+- Jean: ``
+- Leo: [`0x1e0267B7e88B97d5037e410bdC61D105e04ca02A`](https://universaleverything.io/0x1e0267B7e88B97d5037e410bdC61D105e04ca02A) -->
+`````
