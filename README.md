@@ -1,25 +1,22 @@
-# ClawDesk
+# ClawJobs Finder
 
-![ClawDesk Logo](./public/clawdesk-logo-light.png)
+![ClawJobs Finder Logo](./public/clawdesk-logo-light.png)
 
 > Find paid tasks for your agent's skills. Find agents with the right skills for your tasks.
 
-> An autonomous AI agent's work pipeline — powered by [OpenServ](https://openserv.ai) + Next.js.
+> An autonomous AI agent's work finder — powered by [OpenServ](https://openserv.ai)..
 
-A minimal dashboard where an AI agent (Leo) discovers paid work opportunities, tracks jobs through a full pipeline, and monitors earnings in USDC. Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ MCP integration.
+ClawJobs Finder is a visual interface where AI agent can discover paid work opportunities matching their skills.
+
+Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ integration.
 
 ---
 
 ## What it does
 
-ClawDesk is the visual interface for an AI agent that:
+for an AI agent that:
 
-1. **Finds work** — Connects to an OpenServ workflow via MCP server to discover paid jobs matching the agent's skills (Solidity, LUKSO/LSP standards, TypeScript, smart contract auditing)
-2. **Tracks the pipeline** — Jobs move through: `Found → Applied → In Progress → Awaiting Payment → Paid`
-3. **Monitors earnings** — Real-time USDC balance with pending and available breakdowns
-4. **Manages the connection** — Configure the OpenServ MCP server URL and API key directly from the UI
-
-This is an extension of the [Kitchen Service Dashboard](https://github.com/leo-assistant-chef/kitchen-service-dashboard) — same design language, new use case.
+1. **Finds work** — Connects to an OpenServ workflow via MCP server
 
 ---
 
@@ -37,24 +34,31 @@ This is an extension of the [Kitchen Service Dashboard](https://github.com/leo-a
 ## Features
 
 ### 🔌 OpenServ Integration
-Connect to any OpenServ workflow exposed as an MCP server. The agent's capabilities are auto-registered from the workflow's tools via `autoRegisterTools`.
+
+Connect to an OpenServ workflow exposed via REST API. to discover paid jobs matching the agent's skills (Solidity, LUKSO/LSP standards, TypeScript, smart contract auditing). The agent's capabilities are auto-registered from the workflow's tools via `autoRegisterTools`.
 
 ### 🔍 Find Work Button
+
 Triggers the OpenServ workflow to scan job boards, GitHub issues, hackathons, and bounty platforms for opportunities matching the agent's skill set.
 
-### 📊 Job Pipeline
+<!-- ### 📊 Job Pipeline
+
 A full-width hero widget showing jobs across 5 stages with live counts per stage:
+
 - **Found** — Discovered, not yet applied
 - **Applied** — Application submitted
 - **In Progress** — Active work underway
 - **Awaiting Payment** — Work delivered, payment pending
-- **Paid** — Settled ✅
+- **Paid** — Settled ✅ -->
 
-### 💵 Earnings Widget
-Compact sidebar showing total earned, pending payment, and available USDC balance.
+<!-- ### 💵 Earnings Widget
+
+Compact sidebar showing total earned, pending payment, and available USDC balance. -->
 
 ### 🎨 Design System
-Extends the Kitchen Service Dashboard design language:
+
+Dashboard-like design language:
+
 - `bg-slate-950` dark background
 - `white/5` glass-effect cards with `white/10` borders
 - 3-color accent palette: **emerald** (active/paid) · **blue** (USDC) · **white** (current stage)
@@ -95,7 +99,7 @@ app/
 
 components/
 ├── AgentJobsPage.tsx       # Main page layout & state
-├── Hero.tsx                # ClawDesk hero section
+├── Hero.tsx                # ClawJobs Finder hero section
 ├── ThemeProvider.tsx       # Light / dark mode state
 ├── ThemeToggle.tsx         # Theme switch button
 ├── JobPipeline.tsx         # Hero pipeline widget (5 stages)
@@ -108,36 +112,41 @@ components/
 
 ---
 
-## OpenServ MCP Integration
+## OpenServ Integration
 
-Jean's OpenServ workflow exposes a "Find Work" tool via MCP server. Leo connects to it from the VPS:
+<!-- TODO: this needs to be updated to reflect how it is actually done. -->
+
+An OpenServ workflow exposes a "Find Work" tool via MCP server. Leo connects to it from the VPS:
 
 ```typescript
-import { Agent, run } from '@openserv-labs/sdk'
+import { Agent, run } from "@openserv-labs/sdk";
 
 const agent = new Agent({
   systemPrompt: `You are Leo, an AI agent looking for paid work matching skills in:
     Solidity, LUKSO/LSP standards, TypeScript, smart contract auditing.`,
   mcpServers: {
     findWork: {
-      transport: 'http',
+      transport: "http",
       url: process.env.OPENSERV_MCP_URL,
-      autoRegisterTools: true // workflow tools become agent capabilities
-    }
-  }
-})
+      autoRegisterTools: true, // workflow tools become agent capabilities
+    },
+  },
+});
 
 // Workflow tools register as: mcp_findWork_<toolName>()
-const { stop } = await run(agent) // tunnels via WebSocket, no deploy needed
+const { stop } = await run(agent); // tunnels via WebSocket, no deploy needed
 ```
 
 ---
 
 ## Hackathon Context
 
+<!-- TODO: the main track we are on is "Agents that cooperate". To be changed here -->
+
 Built for [The Synthesis 2026](https://synthesis.md) — an online hackathon judged by AI agents across the Ethereum ecosystem. This project targets:
 
-- **Agents that Pay** — Escrow payment system between OpenServ and agent wallet
+<!-- - **Agents that Pay** — Escrow payment system between OpenServ and agent wallet -->
+
 - **Agent Services on Base** — Agent discovers and fulfills paid service requests
 - **Synthesis Open Track** — Multi-agent work coordination with on-chain payments
 
@@ -157,13 +166,14 @@ In practice, this means:
 - Strict formatting rules, naming conventions, or security rules may be applied inconsistently across a long session
 - The same instruction given at the start of a session behaves differently than when given in message 80
 
-### The Solution: Specialized Sub-Agents
+### The Solution: Specialized Sub-Agents in isolated environnements
 
-The architecture this project relies on addresses this directly. Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents** — spawned fresh with a minimal, focused system prompt containing only the rules relevant to that task.
+The architecture this project relies on addresses this directly. Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents hosted on OpenServ** — spawned fresh with a minimal, focused system prompt containing only the rules relevant to tasks for refining job research queries + online research on various websites.
 
 A sub-agent spawned to write a Solidity contract has:
+
 - No kitchen metaphors
-- No memory of past conversations  
+- No memory of past conversations
 - No accumulated context drift
 - Only the rules it needs to do that one thing correctly
 
