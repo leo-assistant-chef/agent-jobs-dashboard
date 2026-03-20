@@ -2,51 +2,88 @@
 
 ![ClawJobs Finder Logo](./public/clawdesk-logo-light.png)
 
-> Find paid tasks for your agent's skills. Find agents with the right skills for your tasks.
+<!-- > Find agents with the right skills for your tasks. -->
 
-> An autonomous AI agent's work finder — powered by [OpenServ](https://openserv.ai)..
+> An autonomous AI agent's work finder — powered by [OpenServ](https://openserv.ai) specialised search agents. Find paid jobs matching your skills or your agent's skills for your agent's skills
 
 ClawJobs Finder is a visual interface where AI agent can discover paid work opportunities matching their skills.
 
 Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ integration.
+
+<details>
+  <summary>See website being used as source</summary>
+
+**General job websites**
+
+- [Upwork](https://www.upwork.com/freelance-jobs/) (filter for automation, smart contracts, web3)
+- [Fiverr](https://www.fiverr.com) (gig-based, lots of small automatable tasks)
+- [Freelancer](https://www.freelancer.com/jobs/) (broad range, good for scraping bounties)
+- [Toptal](https://www.toptal.com/freelance-jobs)
+
+**Web3 jobs**
+
+- [Cryptonomads](https://cryptonomads.org/jobs)
+- [Web3 Career](https://web3.career/)
+- [MyWeb3Jobs](https://myweb3jobs.com/)
+
+**Web3/crypto-specific bounties:**
+
+- [Gitcoin](https://gitcoin.co)
+- [Layer3](https://layer3.xyz)
+- [Dework](https://dework.xyz)
+- [Immunefi](https://immunefi.com)
+- [Code4rena](https://code4rena.com)
+- [Bountysource](https://www.bountysource.com)
+- [GitHub](https://github.com)
+
+**Agent specific marketplaces**
+
+- [AgentFolio](https://agentfolio.bot/marketplace)
+- [AIAgentStore](https://aiagentstore.ai/claw-earn/ai-agent-tasks/available)
+</details>
 
 ---
 
 ## What It Does
 
 1. **Ask agent for skills** - via a template prompt and paste to the channel you use to talk to your OpenClaw Agent (Telegram, WhatsApp, Discord, etc...)
-2. **Finds work** — Connects to an OpenServ workflow via webhook trigger. The user pastes their agent's skill profile, the workflow runs across 10+ job platforms, and results populate the dashboard.
-3. **Categorizes opportunities** — Jobs are grouped into ⭐️ Top Paid, 🟩 Matching Skills, and 🟧 Worth Investigating.
+2. **Finds work** — Connects to an OpenServ workflow via webhook trigger. The user pastes their agent's skill profile, the workflow runs across 10+ job platforms (Fiverr, Bountysource, Gitcoin, Code4Rena, Immunefi, etc...), and results populate the dashboard.
+3. **Categorizes opportunities** — Jobs are grouped into categories:
+
+- **⭐️ Top Paid**
+- **🟩 Matching Skills**
+- **🟧 Worth Investigating**
 
 ---
 
-## Stack
+## Tech Stack
 
+- **Agent Platform:** [OpenServ](https://openserv.ai) (webhook trigger + REST API)
 - **Framework:** Next.js 16 (App Router, Turbopack)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS v4
 - **Icons:** Lucide React
 - **Markdown:** react-markdown + remark-gfm
-- **Agent Platform:** [OpenServ](https://openserv.ai) (webhook trigger + REST API)
 - **Validation:** Zod
 
 ---
 
 ## Features
 
-<<<<<<< HEAD
-
 ### 🔍 Find Task Modal
 
 A modal with a two-path workflow:
 
-1. **Skills input** — Describe your agent's skills directly
-2. **Agent prompt builder** — Copy a pre-built prompt, paste it into your AI agent, then paste the agent's response back
-3. Click **"Search Now"** → triggers the OpenServ workflow → results populate the dashboard
+1. **Skills description input** — Describe your skills or your agent directly
+2. (optional) **Agent prompt template** — If you are looking for jobs or paid bounties for your agent, copy a pre-built prompt to give to your agent directly, paste it into your AI agent, then paste the agent's response back
+3. **Paste agent response** - Paste your agent
+4. Click **"Search Now"** → triggers the OpenServ workflow → specialised OpenServ sub-agents look on the internet for jobs matching your / your agent skills → results get populated
+
+This triggers the OpenServ workflow to scan job boards, GitHub issues, hackathons, and bounty platforms for opportunities matching the agent's skill set.
 
 ### 📊 Task Finder Analysis
 
-Market intelligence section showing analysis from the OpenServ workflow, branded with "by OpenServ".
+Market intelligence section showing analysis from the OpenServ workflow. Give you a summary analysis, the current trend of what companies / projects are looking for and how it matches your / your agent skills.
 
 ### 📋 Job Category Cards
 
@@ -56,87 +93,15 @@ Three categories with "Load More" pagination (3 per category initially):
 - **🟩 Matching Skills** — Best match for the agent's profile
 - **🟧 Worth Investigating** — Emerging/niche opportunities worth considering
 
-### 📈 Job Pipeline
-
-Jobs tracked across 5 stages with live counts:
-
-- **Found** → **Applied** → **In Progress** → **Awaiting Payment** → **Paid** ✅
-
-### 💵 Earnings Widget
-
-Sidebar showing total earned, pending payment, and available USDC balance.
-
-### 🌗 Dark / Light Mode
-
-Full theme support with:
-
-- Theme-specific logo variants (`clawdesk-logo-dark.png` / `clawdesk-logo-light.png`)
-- Sun/moon toggle button
-- Tailwind dark mode classes throughout
-
-### 🎨 Design System
-
-- # `bg-slate-950` dark background / `bg-white` light background
-
 ### 🔌 OpenServ Integration
 
 Connect to an OpenServ workflow exposed via REST API. to discover paid jobs matching the agent's skills (Solidity, LUKSO/LSP standards, TypeScript, smart contract auditing). The agent's capabilities are auto-registered from the workflow's tools via `autoRegisterTools`.
 
-### 🔍 Find Work Button
-
-Triggers the OpenServ workflow to scan job boards, GitHub issues, hackathons, and bounty platforms for opportunities matching the agent's skill set.
-
-<!-- ### 📊 Job Pipeline
-
-A full-width hero widget showing jobs across 5 stages with live counts per stage:
-
-- **Found** — Discovered, not yet applied
-- **Applied** — Application submitted
-- **In Progress** — Active work underway
-- **Awaiting Payment** — Work delivered, payment pending
-- **Paid** — Settled ✅ -->
-
-<!-- ### 💵 Earnings Widget
-
-Compact sidebar showing total earned, pending payment, and available USDC balance. -->
-
-### 🎨 Design System
-
-Dashboard-like design language:
-
-- `bg-slate-950` dark background
-  > > > > > > > main
-- `white/5` glass-effect cards with `white/10` borders
-- 3-color accent palette: **emerald** (active/paid) · **blue** (USDC) · **white** (current stage)
-
 ---
 
-## Getting Started
+# Development
 
-```bash
-git clone https://github.com/leo-assistant-chef/agent-jobs-dashboard
-cd agent-jobs-dashboard
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
-### Environment Variables
-
-Create a `.env.local` file:
-
-```bash
-# Required: Agent API key for fetching OpenServ task results
-OPENSERV_API_KEY=your_openserv_api_key
-
-# Required: OpenServ workspace ID
-OPENSERV_WORKSPACE_ID=12972
-
-# Required: Webhook trigger URL for posting agent responses to the workflow
-# Format: https://api.openserv.ai/webhooks/trigger/{TRIGGER_TOKEN}
-OPENSERV_TRIGGER_URL=https://api.openserv.ai/webhooks/trigger/your_trigger_token
-```
+If you are cloning this repository and developing locally, see [`DEVELOPMENT.md`](./DEVELOPMENT.md)
 
 <!-- ---
 
@@ -153,32 +118,7 @@ app/
 └── data/
     ├── mock-jobs.ts        # Mock job data for development
     └── openserv.ts         # OpenServ data types + trigger metadata
-
 components/
-<<<<<<< HEAD
-├── AgentJobsPage.tsx       # Main page layout & state orchestration
-├── Hero.tsx                # ClawDesk hero section (theme-aware logos)
-├── ThemeProvider.tsx        # Light / dark mode context
-├── ThemeToggle.tsx          # Theme switch button (sun/moon)
-├── FindWorkButton.tsx       # CTA button for opening FindTaskModal
-├── FindTaskModal.tsx        # Agent prompt builder + paste response + search
-├── OpenServResults.tsx      # Market intelligence + job category rendering
-├── JobCategoryCard.tsx      # Category card with "Load More" pagination
-├── JobListingItem.tsx       # Individual job item with markdown + link extraction
-├── JobPipeline.tsx          # Pipeline widget (5 stages)
-├── JobCard.tsx              # Individual job card (with "See Job Brief" link)
-├── EarningsWidget.tsx       # USDC earnings sidebar
-├── StatusPill.tsx           # Connection status indicator
-└── OpenServConfig.tsx       # OpenServ config form
-
-lib/
-└── markdown.ts             # Markdown parsing, link extraction, URL validation
-
-public/
-├── clawdesk-logo-dark.png  # Logo for dark mode
-├── clawdesk-logo-light.png # Logo for light mode
-└── openserv-logo.svg       # OpenServ "by" attribution logo
-=======
 ├── AgentJobsPage.tsx       # Main page layout & state
 ├── Hero.tsx                # ClawJobs Finder hero section
 ├── ThemeProvider.tsx       # Light / dark mode state
@@ -189,12 +129,13 @@ public/
 ├── StatusPill.tsx          # Connection status indicator
 ├── FindWorkButton.tsx      # CTA for OpenServ job discovery
 └── OpenServConfig.tsx      # MCP server config form
->>>>>>> main
 ```
 
 --- -->
 
 ## OpenServ Integration
+
+![OpenServ workflow details](./openserv-workflow.png)
 
 The dApp connects to OpenServ via two mechanisms:
 
@@ -238,7 +179,7 @@ This returns all tasks in the workspace, from which the dashboard extracts:
 
 ### Data Flow
 
-`````
+````
 User pastes agent profile
     ↓
 FindTaskModal.tsx → AgentJobsPage.tsx
@@ -251,29 +192,6 @@ route.ts → POST to OpenServ webhook trigger
 OpenServ workflow executes (multi-agent)
     ↓
 Results returned → parsed → rendered in UI
-
-<!-- TODO: this needs to be updated to reflect how it is actually done. -->
-
-<!-- An OpenServ workflow exposes a "Find Work" tool via MCP server. Leo connects to it from the VPS:
-
-```typescript
-import { Agent, run } from "@openserv-labs/sdk";
-
-const agent = new Agent({
-  systemPrompt: `You are Leo, an AI agent looking for paid work matching skills in:
-    Solidity, LUKSO/LSP standards, TypeScript, smart contract auditing.`,
-  mcpServers: {
-    findWork: {
-      transport: "http",
-      url: process.env.OPENSERV_MCP_URL,
-      autoRegisterTools: true, // workflow tools become agent capabilities
-    },
-  },
-});
-
-// Workflow tools register as: mcp_findWork_<toolName>()
-const { stop } = await run(agent); // tunnels via WebSocket, no deploy needed
-```` -->
 
 ---
 
@@ -340,8 +258,4 @@ Sub-agent delegation is the off-chain equivalent: **enforce constraints structur
 ## Author
 
 Built by [Jean](https://github.com/CJ42) and its personal AI assistant [**Leo**](https://github.com/leo-assistant-chef).
-
-<!-- Universal Profiles:
-- Jean: ``
-- Leo: [`0x1e0267B7e88B97d5037e410bdC61D105e04ca02A`](https://universaleverything.io/0x1e0267B7e88B97d5037e410bdC61D105e04ca02A) -->
-`````
+````
