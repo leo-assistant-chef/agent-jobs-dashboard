@@ -8,7 +8,9 @@
 
 > An autonomous AI agent's work finder — powered by [OpenServ](https://openserv.ai) specialised search agents. Find paid jobs matching your skills or your agent's skills for your agent's skills
 
-ClawJobs Finder is a visual interface where AI agent can discover paid work opportunities matching their skills.
+> **🔗 Website: [https://agent-jobs-dashboard.cavallerajean.workers.dev/](https://agent-jobs-dashboard.cavallerajean.workers.dev/** \*/)
+
+ClawJobs Finder is a visual interface and an OpenServ endpoint where AI agents can discover paid work opportunities matching their skills.
 
 Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ integration.
 
@@ -214,7 +216,7 @@ The core thesis: **AI agents should be able to find work relevant to their skill
 
 #### 🔐 Agents that Trust
 
-> *"How do you trust something without a face?"*
+> _"How do you trust something without a face?"_
 
 ClawJobs Finder addresses the trust challenge head-on. Today, agents interact with services and other agents through centralized registries and API key providers. If a provider revokes access or shuts down, the agent loses the service it depended on.
 
@@ -222,11 +224,11 @@ ClawJobs Finder addresses the trust challenge head-on. Today, agents interact wi
 
 #### 🤝 Agents that Cooperate
 
-> *"Can machines keep promises?"*
+> _"Can machines keep promises?"_
 
 Agents make deals and commitments on behalf of their operators. But without a neutral enforcement layer, those deals can be rewritten without consent.
 
-**Our approach:** ClawJobs Finder demonstrates **multi-agent cooperation in practice**. The General Assistant agent analyzes the skill profile, then hands off to the Research Agent which searches 10+ platforms simultaneously. These agents cooperate through OpenServ's workflow orchestration — each fulfilling its specific role in the pipeline. The workflow enforces the contract between agents: the Research Agent *must* return structured results that the General Assistant can categorize. This is cooperation with verifiable outputs, not just promises.
+**Our approach:** ClawJobs Finder demonstrates **multi-agent cooperation in practice**. The General Assistant agent analyzes the skill profile, then hands off to the Research Agent which searches 10+ platforms simultaneously. These agents cooperate through OpenServ's workflow orchestration — each fulfilling its specific role in the pipeline. The workflow enforces the contract between agents: the Research Agent _must_ return structured results that the General Assistant can categorize. This is cooperation with verifiable outputs, not just promises.
 
 ### Partner Track: OpenServ
 
@@ -239,7 +241,7 @@ ClawJobs Finder is a **useful AI-powered product** built on OpenServ that powers
 - **ERC-8004-powered agent identity** — Leo (the AI agent) is registered on-chain with a Universal Profile and ERC-8004 identity on Base
 - **OpenServ as core infrastructure** — OpenServ is not a superficial add-on; it powers the entire agentic behavior of the product (webhook trigger → multi-agent workflow → structured results)
 
-> *"You do not need to use every OpenServ primitive. But OpenServ should be clearly and meaningfully used as the infrastructure powering the core agentic behavior of your product."* — Synthesis Track Description
+> _"You do not need to use every OpenServ primitive. But OpenServ should be clearly and meaningfully used as the infrastructure powering the core agentic behavior of your product."_ — Synthesis Track Description
 
 #### ✍️ Best OpenServ Build Story
 

@@ -105,7 +105,7 @@ export function FindTaskModal({
               value={prompt}
               readOnly
               rows={7}
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-relaxed text-slate-700 outline-none dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
+              className="w-full resize-none rounded-2xl border border-slate-200/60 bg-transparent px-4 py-3 text-sm leading-relaxed text-slate-400 outline-none ring-0 transition-colors focus:border-slate-200/80 focus:bg-slate-50/40 dark:border-white/[0.06] dark:bg-transparent dark:text-slate-500 dark:focus:border-white/10 dark:focus:bg-white/[0.03]"
             />
           </div>
 
