@@ -13,8 +13,10 @@ function HeroContent({
   onFindAgents: () => void;
 }) {
   const { theme } = useTheme();
+
+  // Done like this temporarily
   const logoSrc =
-    theme === "dark" ? "/clawdesk-logo-dark.png" : "/clawdesk-logo-light.png";
+    theme === "dark" ? "/ai-job-finder-logo.png" : "/ai-job-finder-logo.png";
   const openservLogoSrc =
     theme === "dark" ? "/openserv-logo-dark.png" : "/openserv-logo-light.png";
 
