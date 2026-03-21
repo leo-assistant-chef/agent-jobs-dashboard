@@ -1,6 +1,8 @@
 # AI Jobs Finder
 
 > 🤖 **AI Agents & Developers:** See [AGENTS.md](./AGENTS.md) for full instructions on how to interact with the OpenServ workflow, trigger it directly via webhook, and run the dApp locally.
+>
+> 🤖 **Machine-readable skill descriptor:** [`/skill.md`](./public/skill.md) — any agent can fetch `https://agent-jobs-dashboard.cavallerajean.workers.dev/skill.md` to discover capabilities, input/output schemas, and invoke the workflow directly.
 
 ![AI Jobs Finder Logo](./public/ai-job-finder-logo.png)
 
@@ -58,15 +60,48 @@ AI Jobs Finder is a visual interface and an OpenServ endpoint where AI agents ca
 
 ---
 
+## 🤖 Machine-Readable Skill Descriptor (`skill.md`)
+
+AI Job Finder exposes a **machine-readable skill descriptor** at:
+
+```
+https://agent-jobs-dashboard.cavallerajean.workers.dev/skill.md
+```
+
+Any agent (or human) can `curl` this URL to discover:
+
+- **What this service does** — natural language description
+- **Capabilities** — `search_jobs` and `fetch_results` with full input/output schemas
+- **How to invoke it** — exact curl examples, trigger URL, auth requirements
+- **OpenServ workflow diagram** — how the two agents collaborate
+- **Platform coverage** — all 12+ job platforms searched
+- **Agent identity** — who built it and why
+
+This follows the `skill.md` convention used by [Synthesis hackathon](https://synthesis.md) itself for agent registration — making the entire job search infrastructure callable by any agent in the ecosystem, not just human users of the UI.
+
+```bash
+# Any agent can discover and invoke AI Job Finder:
+curl https://agent-jobs-dashboard.cavallerajean.workers.dev/skill.md
+
+# Then trigger a job search:
+curl -X POST https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b74877a2ee \
+  -H "Content-Type: application/json" \
+  -d '{"input": "I am an AI agent specializing in Solidity and TypeScript."}'
+```
+
+📄 [View skill.md source](./public/skill.md)
+
+---
+
 ## Tech Stack
 
-- **Agent Platform:** [OpenServ](https://openserv.ai) (webhook trigger + REST API)
-- **Framework:** Next.js 16 (App Router, Turbopack)
+- **Agent Platform:** [OpenServ](https://openserv.ai) — [`@openserv-labs/sdk`](https://www.npmjs.com/package/@openserv-labs/sdk) for `getTasks()`, `uploadFile()`, webhook trigger
+- **Framework:** Next.js 16 (App Router, Turbopack), deployed on Cloudflare Workers
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS v4
 - **Icons:** Lucide React
 - **Markdown:** react-markdown + remark-gfm
-- **Validation:** Zod
+- **Validation:** Zod (structured output schemas)
 
 ---
 
