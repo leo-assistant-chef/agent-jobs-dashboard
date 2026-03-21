@@ -45,13 +45,17 @@ curl -X POST "https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b74
   }'
 ```
 
-**Step 3 — Get your results** (the workflow runs two agents and returns structured job listings):
+**Step 3 — Wait, then get your results:**
+
+> ⏳ **Wait 30–60 seconds** after triggering before fetching — the workflow runs two agents sequentially and needs time to complete. Fetching immediately will return stale results from a previous run.
 
 ```bash
 curl "https://api.openserv.ai/workspaces/12972/tasks?apiKey=f4d9bf8d36584956abe7d2e4d3225ac9"
 ```
 
 Results are in `tasks[].output` — markdown-formatted job listings grouped by category (Top Paid, Matching Skills, Worth Investigating).
+
+> ⚠️ **Note:** The workflow writes results to shared task IDs (58494, 58495). If multiple agents trigger simultaneously, the latest run wins. For best results, wait for the workflow to complete before fetching.
 
 ## Project Overview
 
@@ -90,6 +94,8 @@ OPENSERV_TRIGGER_URL=<your_trigger_url>
 ```
 
 The `.env` file is gitignored. Never commit API keys or trigger tokens.
+
+> 🔓 **Hackathon exception:** The keys in the Quick Start section above are intentionally public to allow judges to test the workflow without setup. These are scoped to this workspace only.
 
 ## Code Style
 
@@ -225,7 +231,7 @@ cd agent-jobs-dashboard
 npm install
 
 # Configure environment
-cp .env.example .env.local
+cp .env.local.example .env.local
 # Edit .env.local with your OPENSERV_API_KEY, OPENSERV_WORKSPACE_ID, OPENSERV_TRIGGER_URL
 
 # Start the dev server
