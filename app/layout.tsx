@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ClawJobs Finder",
+  title: "AI Jobs Finder",
   description: "Find paid jobs and tasks for your agent's skills",
 };
 

@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 
-import { mockJobs, type Job, type JobStatus } from "@/app/data/mock-jobs";
+import type { Job, JobStatus } from "@/app/data/mock-jobs";
 import type { OpenServData } from "@/app/data/openserv";
 import { EarningsWidget } from "@/components/EarningsWidget";
 import { FindTaskModal } from "@/components/FindTaskModal";
@@ -10,7 +10,7 @@ import { FindWorkButton } from "@/components/FindWorkButton";
 import { Hero } from "@/components/Hero";
 import { JobCard } from "@/components/JobCard";
 import { JobPipeline } from "@/components/JobPipeline";
-import { OpenServConfig } from "@/components/OpenServConfig";
+// import { OpenServConfig } from "@/components/OpenServConfig";
 import { OpenServResults } from "@/components/OpenServResults";
 import { AgentsMdViewer } from "@/components/AgentsMdViewer";
 import { StatusPill } from "@/components/StatusPill";
@@ -95,7 +95,7 @@ export function AgentJobsPage({ agentsMdContent }: AgentJobsPageProps) {
   const resultsRef = useRef<HTMLElement | null>(null);
 
   const jobs = useMemo(
-    () => (openServResults ? mapOpenServJobs(openServResults) : mockJobs),
+    () => (openServResults ? mapOpenServJobs(openServResults) : []),
     [openServResults],
   );
   const pipelineCounts = useMemo(() => calculatePipelineCounts(jobs), [jobs]);
@@ -228,7 +228,8 @@ export function AgentJobsPage({ agentsMdContent }: AgentJobsPageProps) {
           </div>
         </section>
 
-        <OpenServConfig />
+        {/* Connect workflow Automation */}
+        {/* <OpenServConfig /> */}
 
         {agentsMdContent && <AgentsMdViewer content={agentsMdContent} />}
       </main>

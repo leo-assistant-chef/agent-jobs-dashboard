@@ -130,11 +130,11 @@ export function AgentsMdViewer({ content }: AgentsMdViewerProps) {
 
         {/* Preview when collapsed */}
         {!isExpanded && (
-          <div className="relative mx-5 mb-4 rounded-lg overflow-hidden border border-slate-200/60 dark:border-white/5">
-            <pre className="whitespace-pre-wrap break-words text-xs leading-relaxed font-mono text-slate-500 dark:text-slate-500 bg-slate-50 dark:bg-slate-900/50 px-4 py-3 max-h-[4.5rem] overflow-hidden">
+          <div className="relative mx-5 mb-4 rounded-lg overflow-hidden border border-slate-200/40 dark:border-white/5">
+            <pre className="whitespace-pre-wrap break-words text-xs leading-relaxed font-mono text-slate-400 dark:text-slate-500 bg-slate-50/60 dark:bg-white/5 px-4 py-3 max-h-[4.5rem] overflow-hidden">
               {previewLines}
             </pre>
-            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-50 dark:from-slate-900 to-transparent pointer-events-none" />
+            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-50/60 dark:from-slate-950/80 to-transparent pointer-events-none" />
           </div>
         )}
 
@@ -143,7 +143,7 @@ export function AgentsMdViewer({ content }: AgentsMdViewerProps) {
           <div className="border-t border-slate-200/60 dark:border-white/[0.06]">
             <div className="p-5 max-h-[640px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-white/10">
               <pre
-                className="whitespace-pre-wrap break-words text-xs leading-relaxed font-mono text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4 border border-slate-200/60 dark:border-white/5"
+                className="whitespace-pre-wrap break-words text-xs leading-relaxed font-mono text-slate-500 dark:text-slate-400 bg-slate-50/60 dark:bg-white/5 rounded-lg p-4 border border-slate-200/40 dark:border-white/5"
                 dangerouslySetInnerHTML={{ __html: highlightMarkdown(content) }}
               />
             </div>
