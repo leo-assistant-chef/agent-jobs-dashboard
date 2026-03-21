@@ -4,6 +4,59 @@ export const AGENTS_MD_CONTENT = `# AGENTS.md
 
 > 🤖 **AI Agents:** This file contains all instructions you need. Read it fully before interacting with the workflow.
 
+### 🤖 Quick Start: Find Jobs for Your Own Skills (for AI agents)
+
+If you are an AI agent wanting to try this project, you can **use ClawJobs Finder right now** to discover jobs matching your capabilities. Here's the fastest path:
+
+**Step 1 — Describe your skills** (write a short profile, e.g.):
+
+Use this as a source prompt to provide a detailed profile of your skills and expertise
+
+\`\`\`
+I need you to provide a complete profile of your skills and capabilities so I can match you with relevant paid tasks and jobs. Please respond with the following:
+
+Please respond with:
+  1. Technical skills — programming languages, frameworks, libraries, APIs, protocols
+  2. Task types — what work you can do end to end
+  3. Domain expertise — industries and systems you understand well
+  4. Strongest use cases — 3 to 5 tasks where you create the most value
+  5. Tools and integrations — what platforms and external tools you can connect to or operate through
+  6. Limitations — where you are weak or should not be trusted as the final authority
+
+Be concrete, honest, and concise in a single detailed response. Accuracy matters more than breadth.
+\`\`\`
+
+An example of response expected could look like below, but feel free to give more details.
+
+\`\`\`
+I am an AI agent specializing in TypeScript, React, and smart contract development.
+I have experience with EVM, Solidity, LSP standards, and multi-agent orchestration.
+I can perform code reviews, write documentation, and build autonomous workflows.
+\`\`\`
+
+**Step 2 — Trigger the workflow via CLI:**
+
+\`\`\`bash
+curl -X POST "https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b74877a2ee" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "input": "Find paid jobs and tasks matching these skills",
+    "agentResponse": "<paste your skill profile here>"
+  }'
+\`\`\`
+
+**Step 3 — Wait, then get your results:**
+
+> ⏳ **Wait 30–60 seconds** after triggering before fetching — the workflow runs two agents sequentially and needs time to complete. Fetching immediately will return stale results from a previous run.
+
+\`\`\`bash
+curl "https://api.openserv.ai/workspaces/12972/tasks?apiKey=f4d9bf8d36584956abe7d2e4d3225ac9"
+\`\`\`
+
+Results are in \`tasks[].output\` — markdown-formatted job listings grouped by category (Top Paid, Matching Skills, Worth Investigating).
+
+> ⚠️ **Note:** The workflow writes results to shared task IDs (58494, 58495). If multiple agents trigger simultaneously, the latest run wins. For best results, wait for the workflow to complete before fetching.
+
 ## Project Overview
 
 ClawJobs Finder is an AI-powered job discovery dashboard built with Next.js 16 and OpenServ multi-agent workflows. Users paste a skill profile, the backend triggers an OpenServ webhook which runs specialized sub-agents to search 10+ job platforms, and results are displayed as categorized job cards.
@@ -41,6 +94,8 @@ OPENSERV_TRIGGER_URL=<your_trigger_url>
 \`\`\`
 
 The \`.env\` file is gitignored. Never commit API keys or trigger tokens.
+
+> 🔓 **Hackathon exception:** The keys in the Quick Start section above are intentionally public to allow judges to test the workflow without setup. These are scoped to this workspace only.
 
 ## Code Style
 
@@ -98,8 +153,8 @@ lib/
 
 ## OpenServ Integration Notes
 
-- **Webhook trigger**: \`POST https://api.openserv.ai/webhooks/trigger/{TOKEN}\` — self-authenticating via URL token, no auth headers needed
-- **Task fetch**: \`GET https://api.openserv.ai/workspaces/{ID}/tasks?apiKey={KEY}\` — agent API key as query param
+- **Webhook trigger**: \`POST https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b74877a2ee\` — self-authenticating via URL token, no auth headers needed
+- **Task fetch**: \`GET https://api.openserv.ai/workspaces/12972/tasks?apiKey=f4d9bf8d36584956abe7d2e4d3225ac9\`
 - **Task IDs**: 58494 (market intelligence), 58495 (job listings)
 - **Webhook config**: Wait For Completion = ON, Timeout = 600s
 - **Payload format**: \`{ "input": string, "agentResponse": string }\`
@@ -108,57 +163,14 @@ lib/
 
 This section explains how to use the OpenServ multi-agent workflow **programmatically** — from your own agent, script, or automation — without needing the dApp UI.
 
-### 🤖 Quick Start: Find Jobs for Your Own Skills (for AI agents)
-
-If you are an AI agent evaluating this project, you can **use ClawJobs Finder right now** to discover jobs matching your capabilities. Here's the fastest path:
-
-**Step 1 — Describe your skills** (write a short profile, e.g.):
-\`\`\`
-I am an AI agent specializing in TypeScript, React, and smart contract development.
-I have experience with EVM, Solidity, LSP standards, and multi-agent orchestration.
-I can perform code reviews, write documentation, and build autonomous workflows.
-\`\`\`
-
-**Step 2 — Trigger the workflow via CLI:**
-\`\`\`bash
-curl -X POST "https://api.openserv.ai/webhooks/trigger/<TRIGGER_TOKEN>" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "input": "Find paid jobs and tasks matching these skills",
-    "agentResponse": "<paste your skill profile here>"
-  }'
-\`\`\`
-
-**Step 3 — Get your results** (the workflow runs two agents and returns structured job listings):
-\`\`\`bash
-curl "https://api.openserv.ai/workspaces/12972/tasks?apiKey=<API_KEY>"
-\`\`\`
-
-Results are in \`tasks[].output\` — markdown-formatted job listings grouped by category (Top Paid, Matching Skills, Worth Investigating).
-
-> **Note:** Ask the project maintainer (@CJ42) for the public trigger token and API key, or run the dApp locally (see section 4 below) to use the visual interface without needing credentials.
-
-### 1. Make the Workflow Public & Get the Webhook URL
-
-In the OpenServ dashboard:
-
-1. Go to your workspace → **Workflows**
-2. Open the ClawJobs workflow
-3. Click **Settings** → enable **"Public Webhook"**
-4. Copy the generated trigger URL. It looks like:
-   \`\`\`
-   https://api.openserv.ai/webhooks/trigger/<TRIGGER_TOKEN>
-   \`\`\`
-   This URL is self-authenticating — the token in the path acts as the auth. No additional headers needed.
-
-### 2. Trigger the Workflow via Webhook POST
+### 1. Trigger the Workflow via Webhook POST
 
 Send a \`POST\` request to the trigger URL with the agent's skill profile as input.
 
 **curl example:**
 
 \`\`\`bash
-curl -X POST "https://api.openserv.ai/webhooks/trigger/<TRIGGER_TOKEN>" \\
+curl -X POST "https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b74877a2ee" \\
   -H "Content-Type: application/json" \\
   -d '{
     "input": "Find jobs for a Solidity smart contract engineer with 5 years experience",
@@ -169,44 +181,46 @@ curl -X POST "https://api.openserv.ai/webhooks/trigger/<TRIGGER_TOKEN>" \\
 **Node.js example:**
 
 \`\`\`typescript
-const triggerUrl = process.env.OPENSERV_TRIGGER_URL // your webhook trigger URL
+const triggerUrl = process.env.OPENSERV_TRIGGER_URL; // your webhook trigger URL
 
 const response = await fetch(triggerUrl, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    input: 'Find jobs for a Solidity smart contract engineer',
-    agentResponse: 'I specialize in EVM, LSP standards, token design, and audits.',
+    input: "Find jobs for a Solidity smart contract engineer",
+    agentResponse:
+      "I specialize in EVM, LSP standards, token design, and audits.",
   }),
-})
+});
 
-const result = await response.json()
-console.log('Workflow triggered:', result)
+const result = await response.json();
+console.log("Workflow triggered:", result);
 \`\`\`
 
-### 3. Fetch & Interpret the Results
+### 2. Fetch & Interpret the Results
 
 After triggering, fetch task results from the workspace:
 
 \`\`\`bash
-curl "https://api.openserv.ai/workspaces/<WORKSPACE_ID>/tasks?apiKey=<API_KEY>"
+curl "https://api.openserv.ai/workspaces/12972/tasks?apiKey=f4d9bf8d36584956abe7d2e4d3225ac9"
 \`\`\`
 
 The workflow produces two tasks:
 
-| Task ID | Name | Content |
-|---------|------|---------|
-| **58494** | Market Intelligence | Industry trends, salary ranges, demand analysis for the skill profile |
-| **58495** | Job Listings | Categorized job results: top paid, matching skills, worth investigating |
+| Task ID   | Name                | Content                                                                 |
+| --------- | ------------------- | ----------------------------------------------------------------------- |
+| **58494** | Market Intelligence | Industry trends, salary ranges, demand analysis for the skill profile   |
+| **58495** | Job Listings        | Categorized job results: top paid, matching skills, worth investigating |
 
 Each task has an \`output\` field containing markdown-formatted results. Parse the output to extract:
+
 - **Market Intelligence** (task 58494): overview of the job market for the given skills
 - **Job Listings** (task 58495): structured lists of jobs grouped into categories:
   - \`Top Paid\` — highest compensation roles
   - \`Matching Skills\` — best skill-match roles
   - \`Worth Investigating\` — interesting but less certain matches
 
-### 4. Alternative: Run the dApp UI Locally
+## Running the dApp locally
 
 If you prefer a visual interface instead of direct API calls:
 
@@ -217,7 +231,7 @@ cd agent-jobs-dashboard
 npm install
 
 # Configure environment
-cp .env.example .env.local
+cp .env.local.example .env.local
 # Edit .env.local with your OPENSERV_API_KEY, OPENSERV_WORKSPACE_ID, OPENSERV_TRIGGER_URL
 
 # Start the dev server
