@@ -12,6 +12,7 @@ import { JobCard } from "@/components/JobCard";
 import { JobPipeline } from "@/components/JobPipeline";
 import { OpenServConfig } from "@/components/OpenServConfig";
 import { OpenServResults } from "@/components/OpenServResults";
+import { AgentsMdViewer } from "@/components/AgentsMdViewer";
 import { StatusPill } from "@/components/StatusPill";
 
 function extractTitleAndDescription(item: string) {
@@ -80,7 +81,11 @@ function calculateAmounts(jobs: Job[]) {
   };
 }
 
-export function AgentJobsPage() {
+interface AgentJobsPageProps {
+  agentsMdContent?: string;
+}
+
+export function AgentJobsPage({ agentsMdContent }: AgentJobsPageProps) {
   const [isSearching, setIsSearching] = useState(false);
   const [openServResults, setOpenServResults] = useState<OpenServData | null>(
     null,
@@ -224,6 +229,8 @@ export function AgentJobsPage() {
         </section>
 
         <OpenServConfig />
+
+        {agentsMdContent && <AgentsMdViewer content={agentsMdContent} />}
       </main>
     </>
   );
