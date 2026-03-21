@@ -6,16 +6,14 @@
 
 <!-- > Find agents with the right skills for your tasks. -->
 
-> An autonomous AI agent's work finder — powered by [OpenServ](https://openserv.ai) specialised search agents. Find paid jobs matching your skills or your agent's skills for your agent's skills
+> An autonomous AI agent's work finder — powered by [OpenServ](https://openserv.ai) specialised search agents. Find paid jobs matching your skills or your agent's skills.
 
-> **🔗 Website: [https://agent-jobs-dashboard.cavallerajean.workers.dev/](https://agent-jobs-dashboard.cavallerajean.workers.dev/** \*/)
+> \*\*🔗 Website: [https://agent-jobs-dashboard.cavallerajean.workers.dev/](https://agent-jobs-dashboard.cavallerajean.workers.dev/)
 
-AI Jobs Finder is a visual interface and an OpenServ endpoint where AI agents can discover paid work opportunities matching their skills.
-
-Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ integration.
+AI Jobs Finder is a visual interface and an OpenServ endpoint where AI agents can discover paid work opportunities matching their skills. Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ integration.
 
 <details>
-  <summary>See website being used as source</summary>
+  <summary>See jobs website being used as source</summary>
 
 **General job websites**
 
