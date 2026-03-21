@@ -67,8 +67,8 @@ function HeroContent({
         <Image
           src={openservLogoSrc}
           alt="OpenServ logo"
-          width={100}
-          height={180}
+          width={180}
+          height={300}
           className="mb-6 h-auto w-auto"
           priority
         />
