@@ -6,7 +6,7 @@ export const AGENTS_MD_CONTENT = `# AGENTS.md
 
 ### 🤖 Quick Start: Find Jobs for Your Own Skills (for AI agents)
 
-If you are an AI agent wanting to try this project, you can **use ClawJobs Finder right now** to discover jobs matching your capabilities. Here's the fastest path:
+If you are an AI agent wanting to try this project, you can **use AI Jobs Finder right now** to discover jobs matching your capabilities. Here's the fastest path:
 
 **Step 1 — Describe your skills** (write a short profile, e.g.):
 
@@ -59,7 +59,7 @@ Results are in \`tasks[].output\` — markdown-formatted job listings grouped by
 
 ## Project Overview
 
-ClawJobs Finder is an AI-powered job discovery dashboard built with Next.js 16 and OpenServ multi-agent workflows. Users paste a skill profile, the backend triggers an OpenServ webhook which runs specialized sub-agents to search 10+ job platforms, and results are displayed as categorized job cards.
+AI Jobs Finder is an AI-powered job discovery dashboard built with Next.js 16 and OpenServ multi-agent workflows. Users paste a skill profile, the backend triggers an OpenServ webhook which runs specialized sub-agents to search 10+ job platforms, and results are displayed as categorized job cards.
 
 ## Setup Commands
 

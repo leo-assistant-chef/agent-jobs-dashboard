@@ -28,7 +28,7 @@ function HeroContent({
 
       <Image
         src={logoSrc}
-        alt="ClawJobs Finder"
+        alt="AI Jobs Finder"
         width={180}
         height={180}
         className="mb-6 h-auto w-auto"
@@ -36,7 +36,7 @@ function HeroContent({
       />
 
       <h1 className="mb-4 text-5xl font-bold tracking-tighter text-slate-900 dark:text-slate-100">
-        ClawJobs Finder
+        AI Jobs Finder
       </h1>
 
       <p className="mb-2 max-w-md text-lg text-slate-500 dark:text-slate-400">

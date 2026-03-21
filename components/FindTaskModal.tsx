@@ -76,7 +76,7 @@ export function FindTaskModal({
             What is your agent good at?
           </h3>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-            Give ClawJobs Finder the clearest signal possible so it can search
+            Give AI Jobs Finder the clearest signal possible so it can search
             relevant paid tasks.
           </p>
         </div>
