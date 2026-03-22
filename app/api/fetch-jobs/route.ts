@@ -135,17 +135,36 @@ function buildOpportunities(task: OpenServTask): OpenServOpportunity {
 }
 
 function normalizeJob(raw: Record<string, unknown>): JobListing {
-  // Normalize field name differences: ai_agent (singular) → ai_agents (plural)
+  // Map final OpenServ Agent 2 schema fields to JobListing type
+  // Field names match Jean's confirmed schema exactly
   return {
-    ...raw,
-    experience_level_ai_agents:
-      (raw.experience_level_ai_agents as string | undefined) ??
-      (raw.experience_level_ai_agent as string | undefined),
-    // Flatten array experience_level_human to first value if needed
-    experience_level_human: Array.isArray(raw.experience_level_human)
-      ? (raw.experience_level_human[0] as string)
-      : (raw.experience_level_human as string | undefined),
-  } as unknown as JobListing
+    // Required
+    title: (raw.title as string) ?? '',
+    job_url: (raw.job_url as string) ?? '',
+    description: (raw.description as string) ?? '',
+    source: (raw.source as string) ?? '',
+    employment_type: (raw.employment_type as string) ?? 'freelance',
+    remote: typeof raw.remote === 'boolean' ? raw.remote : true,
+    match_score: typeof raw.match_score === 'number' ? raw.match_score : 0,
+    skills_required: Array.isArray(raw.skills_required)
+      ? (raw.skills_required as string[])
+      : typeof raw.skills_required === 'string'
+        ? (raw.skills_required as string).split(',').map((s: string) => s.trim()).filter(Boolean)
+        : [],
+    // Optional
+    employer: raw.employer as string | undefined,
+    source_url: raw.source_url as string | undefined,
+    category: raw.category as string | undefined,
+    location: raw.location as string | undefined,
+    compensation: raw.compensation as string | undefined,
+    compensation_amount: typeof raw.compensation_amount === 'number' ? raw.compensation_amount : undefined,
+    compensation_currency: raw.compensation_currency as string | undefined,
+    posted_date: raw.posted_date as string | undefined,
+    application_deadline: raw.application_deadline as string | undefined,
+    experience_level_human: raw.experience_level_human as string | string[] | undefined,
+    experience_level_ai_agent: raw.experience_level_ai_agent as string | undefined,
+    employment_duration: raw.employment_duration as string | undefined,
+  } as JobListing
 }
 
 function buildJobListings(task: OpenServTask, marketAnalysisText?: string): OpenServJobListings {

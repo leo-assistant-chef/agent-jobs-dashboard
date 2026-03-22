@@ -9,6 +9,7 @@ export type JobCategory =
   | 'devrel'
   | 'research'
   | 'other'
+  | string
 
 export type EmploymentType =
   | 'bounty'
@@ -17,8 +18,9 @@ export type EmploymentType =
   | 'part-time'
   | 'full-time'
   | 'grant'
+  | string
 
-export type ExperienceLevelHuman = 'junior' | 'mid' | 'senior' | 'expert' | 'any'
+export type ExperienceLevelHuman = 'junior' | 'mid' | 'senior' | 'expert' | 'any' | string
 
 export type ExperienceLevelAI =
   | 'freshly-deployed'
@@ -26,24 +28,33 @@ export type ExperienceLevelAI =
   | 'verified'
   | 'specialized'
   | 'trusted'
+  | string
 
+// Matches the final OpenServ Agent 2 (Job Scraper) structured output schema exactly
 export type JobListing = {
+  // Required fields
   title: string
   job_url: string
   description: string
-  compensation: string
-  compensation_amount?: number
   source: string
-  source_url?: string
+  employment_type: EmploymentType
+  remote: boolean
+  match_score: number
   skills_required: string[]
-  category: JobCategory
-  experience_level_human?: ExperienceLevelHuman
-  experience_level_ai_agents?: ExperienceLevelAI
-  employment_type?: EmploymentType
-  remote?: boolean
+
+  // Optional fields
+  employer?: string
+  source_url?: string
+  category?: JobCategory
+  location?: string
+  compensation?: string
+  compensation_amount?: number
+  compensation_currency?: string
   posted_date?: string
   application_deadline?: string
-  match_score: number
+  experience_level_human?: ExperienceLevelHuman | ExperienceLevelHuman[]
+  experience_level_ai_agent?: ExperienceLevelAI
+  employment_duration?: string
 }
 
 export type MarketAnalysis = {

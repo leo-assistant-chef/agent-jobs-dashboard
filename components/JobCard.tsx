@@ -1,168 +1,200 @@
 'use client'
 
-import { ArrowUpRight } from 'lucide-react'
-import type { JobListing } from '@/app/data/openserv'
+import type { JobListing, EmploymentType, ExperienceLevelAI } from '@/app/data/openserv'
 
-const platformColors: Record<string, string> = {
-  Gitcoin: 'border-emerald-400/30 bg-emerald-400/10 text-emerald-300',
-  Upwork: 'border-blue-400/30 bg-blue-400/10 text-blue-300',
-  'Code4rena': 'border-rose-400/30 bg-rose-400/10 text-rose-300',
-  Immunefi: 'border-violet-400/30 bg-violet-400/10 text-violet-300',
-  Fiverr: 'border-green-400/30 bg-green-400/10 text-green-300',
-  TopTal: 'border-orange-400/30 bg-orange-400/10 text-orange-300',
-  GitHub: 'border-slate-400/30 bg-slate-400/10 text-slate-300',
-  OpenServ: 'border-cyan-400/30 bg-cyan-400/10 text-cyan-300',
-  Freelancer: 'border-indigo-400/30 bg-indigo-400/10 text-indigo-300',
-  Devfolio: 'border-purple-400/30 bg-purple-400/10 text-purple-300',
+// ── Employment type config ────────────────────────────────────────────────────
+const EMPLOYMENT_COLORS: Record<string, string> = {
+  bounty:    'border-amber-400/30 bg-amber-400/10 text-amber-300',
+  freelance: 'border-blue-400/30 bg-blue-400/10 text-blue-300',
+  contract:  'border-violet-400/30 bg-violet-400/10 text-violet-300',
+  grant:     'border-emerald-400/30 bg-emerald-400/10 text-emerald-300',
+  'full-time': 'border-sky-400/30 bg-sky-400/10 text-sky-300',
+  'part-time': 'border-slate-400/30 bg-slate-400/10 text-slate-300',
 }
 
-function getPlatformClass(source: string) {
-  return platformColors[source] ?? 'border-white/10 bg-white/5 text-slate-300'
+// ── Source platform colors ────────────────────────────────────────────────────
+const SOURCE_COLORS: Record<string, string> = {
+  upwork:    'bg-green-500/15 text-green-300',
+  gitcoin:   'bg-teal-500/15 text-teal-300',
+  immunefi:  'bg-blue-500/15 text-blue-300',
+  code4rena: 'bg-purple-500/15 text-purple-300',
+  fiverr:    'bg-emerald-500/15 text-emerald-300',
+  freelancer:'bg-orange-500/15 text-orange-300',
+  toptal:    'bg-red-500/15 text-red-300',
+  devfolio:  'bg-indigo-500/15 text-indigo-300',
+  github:    'bg-slate-500/15 text-slate-300',
 }
 
-function getScoreRing(score: number) {
-  if (score >= 75) return { ring: 'border-emerald-400', text: 'text-emerald-400', glow: 'shadow-[0_0_12px_rgba(52,211,153,0.4)]' }
-  if (score >= 50) return { ring: 'border-amber-400', text: 'text-amber-400', glow: 'shadow-[0_0_12px_rgba(251,191,36,0.4)]' }
-  return { ring: 'border-rose-400', text: 'text-rose-400', glow: 'shadow-[0_0_12px_rgba(251,113,133,0.4)]' }
+// ── AI experience level config ────────────────────────────────────────────────
+const AI_LEVEL_CONFIG: Record<string, { label: string; color: string; ring: string }> = {
+  'freshly-deployed': { label: 'Freshly Deployed', color: 'text-slate-400', ring: 'border-slate-400/40' },
+  active:             { label: 'Active',            color: 'text-blue-400',  ring: 'border-blue-400/40'  },
+  verified:           { label: 'Verified',          color: 'text-teal-400',  ring: 'border-teal-400/40'  },
+  specialized:        { label: 'Specialized',       color: 'text-violet-400',ring: 'border-violet-400/40'},
+  trusted:            { label: 'Trusted',           color: 'text-amber-400', ring: 'border-amber-400/40' },
 }
 
-const categoryLabels: Record<string, string> = {
-  'smart-contract-audit': 'Smart Contract Audit',
-  'smart-contract-development': 'Smart Contract Dev',
-  'frontend': 'Frontend',
-  'backend': 'Backend',
-  'full-stack': 'Full Stack',
-  'devrel': 'DevRel',
-  'research': 'Research',
-  'other': 'Other',
+// ── Match score ring color ────────────────────────────────────────────────────
+function matchRingClass(score: number) {
+  if (score >= 80) return 'text-emerald-400 border-emerald-400/60'
+  if (score >= 60) return 'text-amber-400 border-amber-400/60'
+  return 'text-rose-400 border-rose-400/60'
 }
 
-const employmentColors: Record<string, string> = {
-  bounty: 'border-amber-400/20 bg-amber-400/10 text-amber-300',
-  freelance: 'border-blue-400/20 bg-blue-400/10 text-blue-300',
-  contract: 'border-purple-400/20 bg-purple-400/10 text-purple-300',
-  'part-time': 'border-cyan-400/20 bg-cyan-400/10 text-cyan-300',
-  'full-time': 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300',
-  grant: 'border-rose-400/20 bg-rose-400/10 text-rose-300',
+function sourceKey(source: string) {
+  return source.toLowerCase().replace(/[^a-z0-9]/g, '')
 }
 
-const agentLevelColors: Record<string, string> = {
-  'freshly-deployed': 'text-slate-400',
-  'active': 'text-blue-400',
-  'verified': 'text-emerald-400',
-  'specialized': 'text-violet-400',
-  'trusted': 'text-amber-400',
+function getSourceColor(source: string) {
+  const key = sourceKey(source)
+  for (const [k, v] of Object.entries(SOURCE_COLORS)) {
+    if (key.includes(k)) return v
+  }
+  return 'bg-slate-500/15 text-slate-300'
 }
 
+function getEmploymentColor(type: string) {
+  return EMPLOYMENT_COLORS[type] ?? 'border-slate-400/30 bg-slate-400/10 text-slate-300'
+}
+
+// ── Compensation display ───────────────────────────────────────────────────────
+function formatCompensation(job: JobListing): string {
+  if (job.compensation && job.compensation !== 'Not Mentioned' && job.compensation !== 'Negotiable') {
+    return job.compensation
+  }
+  if (job.compensation_amount && job.compensation_amount > 0) {
+    const currency = job.compensation_currency ?? 'USD'
+    return `$${job.compensation_amount.toLocaleString()} ${currency}`
+  }
+  if (job.compensation === 'Negotiable') return 'Negotiable'
+  return 'TBD'
+}
+
+// ── Skills chips ──────────────────────────────────────────────────────────────
+function SkillsChips({ skills }: { skills: string[] }) {
+  const MAX = 4
+  const visible = skills.slice(0, MAX)
+  const overflow = skills.length - MAX
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {visible.map((s) => (
+        <span
+          key={s}
+          className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-medium text-slate-300"
+        >
+          {s}
+        </span>
+      ))}
+      {overflow > 0 && (
+        <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-medium text-slate-500">
+          +{overflow}
+        </span>
+      )}
+    </div>
+  )
+}
+
+// ── Main component ─────────────────────────────────────────────────────────────
 export function JobCard({ job }: { job: JobListing }) {
-  const scoreStyle = getScoreRing(job.match_score)
-  const visibleSkills = job.skills_required.slice(0, 4)
-  const extraSkills = job.skills_required.length - 4
+  const ringClass = matchRingClass(job.match_score)
+  const aiLevel = job.experience_level_ai_agent
+    ? AI_LEVEL_CONFIG[job.experience_level_ai_agent] ?? {
+        label: job.experience_level_ai_agent,
+        color: 'text-slate-400',
+        ring: 'border-slate-400/40',
+      }
+    : null
 
-  const isNegotiable = !job.compensation_amount || job.compensation_amount === 0
-  const compensationClass = isNegotiable ? 'text-slate-400' : 'text-emerald-400'
+  const employmentColor = getEmploymentColor(job.employment_type ?? '')
+  const sourceColor = getSourceColor(job.source)
+
+  const location = job.location ?? (job.remote ? 'Remote' : null)
+  const employer = job.employer
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] p-6 transition-all duration-150 ease-in-out hover:scale-[1.02] hover:border-white/20 hover:shadow-lg hover:shadow-black/30">
-      {/* Top shimmer line */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
+    <div className="group relative flex flex-col gap-4 rounded-2xl border border-white/8 bg-white/[0.03] p-5 transition-all duration-200 hover:border-white/15 hover:bg-white/[0.05]">
       {/* Header row */}
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest ${getPlatformClass(job.source)}`}>
-            {job.source}
-          </span>
-          <h3 className="mt-2 truncate text-base font-semibold tracking-tight text-slate-100">
+        <div className="flex-1 min-w-0">
+          {/* Source + employment type badges */}
+          <div className="mb-2 flex flex-wrap items-center gap-1.5">
+            <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${sourceColor}`}>
+              {job.source}
+            </span>
+            <span className={`rounded-full border px-2 py-0.5 text-[10px] font-medium ${employmentColor}`}>
+              {job.employment_type ?? 'freelance'}
+            </span>
+            {job.remote && (
+              <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] text-slate-400">
+                Remote
+              </span>
+            )}
+          </div>
+
+          {/* Title */}
+          <h3 className="font-semibold leading-snug text-slate-100 line-clamp-2">
             {job.title}
           </h3>
-          <p className="mt-1 text-[10px] font-medium uppercase tracking-widest text-slate-500">
-            {categoryLabels[job.category] ?? job.category}
-          </p>
+
+          {/* Employer + location */}
+          {(employer || location) && (
+            <p className="mt-1 text-xs text-slate-500">
+              {[employer, location].filter(Boolean).join(' · ')}
+            </p>
+          )}
         </div>
 
         {/* Match score ring */}
-        <div className={`flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-full border-2 ${scoreStyle.ring} ${scoreStyle.glow}`}>
-          <span className={`text-base font-bold leading-none ${scoreStyle.text}`}>{job.match_score}</span>
-          <span className="text-[8px] font-medium uppercase tracking-wider text-slate-500">match</span>
+        <div
+          className={`flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-full border-2 ${ringClass}`}
+        >
+          <span className="text-sm font-bold leading-none">{job.match_score}</span>
+          <span className="text-[8px] leading-none opacity-70">match</span>
         </div>
       </div>
 
       {/* Description */}
-      <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-400">
-        {job.description}
-      </p>
+      <p className="text-xs leading-5 text-slate-400 line-clamp-2">{job.description}</p>
 
       {/* Skills */}
-      {job.skills_required.length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-1.5">
-          {visibleSkills.map((skill) => (
-            <span key={skill} className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] font-medium text-slate-300">
-              {skill}
-            </span>
-          ))}
-          {extraSkills > 0 && (
-            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] font-medium text-slate-500">
-              +{extraSkills} more
-            </span>
-          )}
-        </div>
+      {job.skills_required?.length > 0 && (
+        <SkillsChips skills={job.skills_required} />
       )}
 
-      {/* Meta row */}
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        {job.employment_type && (
-          <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${employmentColors[job.employment_type] ?? 'border-white/10 bg-white/5 text-slate-400'}`}>
-            {job.employment_type}
+      {/* Footer row */}
+      <div className="flex items-center justify-between gap-2 pt-1 border-t border-white/6">
+        <div className="flex items-center gap-3">
+          {/* Compensation */}
+          <span className="text-sm font-semibold text-emerald-400">
+            {formatCompensation(job)}
           </span>
-        )}
-        <span className="text-xs text-slate-500">
-          {job.remote !== false ? '🌍 Remote' : '🏢 On-site'}
-        </span>
-      </div>
 
-      {/* Experience levels */}
-      {(job.experience_level_human || job.experience_level_ai_agents) && (
-        <div className="mt-3 flex flex-wrap items-center gap-3">
-          {job.experience_level_human && (
-            <span className="flex items-center gap-1 text-xs text-slate-400">
-              <span>👤</span>
-              <span>{job.experience_level_human}</span>
-            </span>
-          )}
-          {job.experience_level_ai_agents && (
-            <span className={`flex items-center gap-1 text-xs font-medium ${agentLevelColors[job.experience_level_ai_agents] ?? 'text-slate-400'}`}>
-              <span>🤖</span>
-              <span>{job.experience_level_ai_agents}</span>
+          {/* AI experience level */}
+          {aiLevel && (
+            <span className={`rounded-full border px-2 py-0.5 text-[10px] font-medium ${aiLevel.ring} ${aiLevel.color}`}>
+              🤖 {aiLevel.label}
             </span>
           )}
         </div>
-      )}
 
-      {/* Spacer */}
-      <div className="flex-1" />
-
-      {/* Divider */}
-      <div className="my-4 h-px w-full bg-gradient-to-r from-transparent via-white/8 to-transparent" />
-
-      {/* Footer */}
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Compensation</p>
-          <p className={`mt-0.5 text-lg font-bold tracking-tight ${compensationClass}`}>
-            {job.compensation}
-          </p>
-        </div>
+        {/* Apply button */}
         <a
           href={job.job_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-slate-100 transition-all duration-150 hover:border-white/30 hover:bg-white/10"
+          className="rounded-full bg-white/8 px-3 py-1.5 text-xs font-semibold text-slate-200 transition-all duration-150 hover:bg-white/15 hover:text-white"
         >
-          Apply
-          <ArrowUpRight className="h-3.5 w-3.5" />
+          Apply →
         </a>
       </div>
-    </article>
+
+      {/* Posted date */}
+      {job.posted_date && (
+        <p className="text-[10px] text-slate-600">
+          Posted {job.posted_date}
+          {job.application_deadline ? ` · Deadline ${job.application_deadline}` : ''}
+        </p>
+      )}
+    </div>
   )
 }

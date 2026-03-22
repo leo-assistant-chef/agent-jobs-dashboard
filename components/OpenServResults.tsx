@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import type { OpenServData, OpenServTaskStatus, JobListing, EmploymentType } from '@/app/data/openserv'
+import type { OpenServData, OpenServTaskStatus, JobListing } from '@/app/data/openserv'
 import { JobCard } from './JobCard'
 import { MarketSummaryCard } from './MarketSummaryCard'
 
@@ -55,7 +55,7 @@ function formatMarkdown(markdown: string) {
 }
 
 type SortKey = 'match_score' | 'compensation_amount' | 'posted_date'
-type FilterType = 'all' | EmploymentType
+type FilterType = 'all' | string
 
 const FILTER_LABELS: { key: FilterType; label: string }[] = [
   { key: 'all', label: 'All' },
@@ -86,10 +86,10 @@ export function OpenServResults({
   const filteredJobs = useMemo(() => {
     let result = [...jobs]
     if (filter !== 'all') {
-      result = result.filter((j) => j.employment_type === filter)
+      result = result.filter((j) => (j.employment_type ?? '') === filter)
     }
     result.sort((a, b) => {
-      if (sortKey === 'match_score') return b.match_score - a.match_score
+      if (sortKey === 'match_score') return (b.match_score ?? 0) - (a.match_score ?? 0)
       if (sortKey === 'compensation_amount')
         return (b.compensation_amount ?? 0) - (a.compensation_amount ?? 0)
       if (sortKey === 'posted_date')
@@ -227,7 +227,7 @@ export function OpenServResults({
         {filteredJobs.length > 0 ? (
           <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {filteredJobs.map((job, i) => (
-              <JobCard key={`${job.job_url}-${i}`} job={job} />
+              <JobCard key={`${job.title}-${job.source}-${i}`} job={job} />
             ))}
           </div>
         ) : (
