@@ -149,10 +149,10 @@ export function OpenServResults({
   return (
     <section className="grid gap-8">
       {/* Market intelligence summary */}
-      <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.03] p-6">
+      <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.03] p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-500 dark:text-slate-400">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
               Market intelligence
             </p>
             <h2 className="mt-3 text-3xl font-bold tracking-tighter text-slate-900 dark:text-slate-100">
@@ -194,7 +194,7 @@ export function OpenServResults({
                   className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-150 ${
                     sortKey === key
                       ? 'bg-slate-100 dark:bg-white/10 text-white'
-                      : 'text-slate-500 dark:text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200'
                   }`}
                 >
                   {key === 'match_score' ? 'Match' : key === 'compensation_amount' ? 'Compensation' : 'Date'}
@@ -214,7 +214,7 @@ export function OpenServResults({
                 className={`rounded-full border px-3 py-1 text-xs font-medium transition-all duration-150 ${
                   filter === key
                     ? 'border-slate-300 dark:border-white/20 bg-slate-100 dark:bg-white/10 text-white'
-                    : 'border-slate-200 dark:border-white/10 bg-transparent text-slate-500 dark:text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:border-white/20 hover:text-slate-700 dark:text-slate-200'
+                    : 'border-slate-200 dark:border-white/10 bg-transparent text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:border-white/20 hover:text-slate-700 dark:text-slate-200'
                 }`}
               >
                 {label}
@@ -253,13 +253,13 @@ export function OpenServResults({
         <div className="rounded-2xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.02]">
           <button
             onClick={() => setRawExpanded((p) => !p)}
-            className="flex w-full items-center justify-between px-6 py-4 text-sm font-medium text-slate-500 dark:text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200"
+            className="flex w-full items-center justify-between px-6 py-4 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200"
           >
             <span>Raw Output</span>
             <span className="text-xs">{rawExpanded ? '▲ collapse' : '▼ expand'}</span>
           </button>
           {rawExpanded && (
-            <pre className="overflow-x-auto border-t border-slate-200 dark:border-white/8 px-6 py-4 text-xs leading-6 text-slate-500 dark:text-slate-500 dark:text-slate-400">
+            <pre className="overflow-x-auto border-t border-slate-200 dark:border-white/8 px-6 py-4 text-xs leading-6 text-slate-500 dark:text-slate-400">
               {data.jobListings.rawContent}
             </pre>
           )}

@@ -233,7 +233,7 @@ export function AgentJobsPage({ agentsMdContent }: AgentJobsPageProps) {
                 <div key={job.id} className="rounded-xl border border-white/8 bg-white/[0.03] p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="font-semibold text-slate-100">{job.title}</p>
+                      <p className="font-semibold text-slate-900 dark:text-slate-100">{job.title}</p>
                       <p className="mt-1 text-sm text-slate-400 line-clamp-2">{job.description}</p>
                     </div>
                     <span className="shrink-0 text-sm font-semibold text-emerald-400">{job.reward > 0 ? `$${job.reward.toLocaleString()}` : 'TBD'}</span>
