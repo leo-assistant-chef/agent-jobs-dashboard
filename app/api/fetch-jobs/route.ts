@@ -57,33 +57,61 @@ function extractStructuredValue(task: OpenServTask): unknown {
 }
 
 function parseAiSuitability(text: string): 'low' | 'medium' | 'high' | undefined {
-  if (text.includes('High') || text.includes('\u{1F916}\u{1F64C}')) return 'high'
-  if (text.includes('Medium') || text.includes('\u{1F916}\u{1F44B}')) return 'medium'
-  if (text.includes('Low') || text.includes('\u{1F916}\u{1F44E}')) return 'low'
+  if (text.includes('High') || text.includes('🤖🙌')) return 'high'
+  if (text.includes('Medium') || text.includes('🤖👋')) return 'medium'
+  if (text.includes('Low') || text.includes('🤖👎')) return 'low'
   return undefined
 }
 
+// Restore markdown section parser for text-output fallback
+function parseMarkdownSection(markdown: string, heading: string): string[] {
+  const escapedHeading = heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const sectionRegex = new RegExp(
+    `${escapedHeading}\\s*([\\s\\S]*?)(?=\\n#{1,3}\\s|$)`,
+    'i'
+  )
+  const match = markdown.match(sectionRegex)
+  if (!match?.[1]) return []
+  return match[1]
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => /^\d+\.|^[-*]/.test(line))
+    .map(line => line.replace(/^\d+\.\s*|^[-*]\s*/, '').replace(/\*\*/g, '').trim())
+    .filter(Boolean)
+}
+
 function parseMarketAnalysis(rawContent: string, jobs: JobListing[]): MarketAnalysis {
-  const topPaid = jobs
-    .filter(j => j.match_score >= 75)
-    .sort((a, b) => (b.compensation_amount ?? 0) - (a.compensation_amount ?? 0))
-    .slice(0, 5)
-    .map(j => `${j.title} | ${j.compensation} | ${j.job_url}`)
+  // If we have structured jobs, derive sections from them
+  if (jobs.length > 0) {
+    const topPaid = jobs
+      .filter(j => j.match_score >= 75)
+      .sort((a, b) => (b.compensation_amount ?? 0) - (a.compensation_amount ?? 0))
+      .slice(0, 5)
+      .map(j => `${j.title} | ${j.compensation} | ${j.job_url}`)
 
-  const matchingSkills = jobs
-    .filter(j => j.match_score >= 60 && j.match_score < 75)
-    .slice(0, 5)
-    .map(j => `${j.title} | ${j.compensation} | ${j.job_url}`)
+    const matchingSkills = jobs
+      .filter(j => j.match_score >= 60 && j.match_score < 75)
+      .slice(0, 5)
+      .map(j => `${j.title} | ${j.compensation} | ${j.job_url}`)
 
-  const worthInvestigating = jobs
-    .filter(j => j.match_score < 60)
-    .slice(0, 5)
-    .map(j => `${j.title} | ${j.compensation} | ${j.job_url}`)
+    const worthInvestigating = jobs
+      .filter(j => j.match_score < 60)
+      .slice(0, 5)
+      .map(j => `${j.title} | ${j.compensation} | ${j.job_url}`)
 
+    return {
+      topPaid,
+      matchingSkills,
+      worthInvestigating,
+      aiAgentSuitability: parseAiSuitability(rawContent),
+    }
+  }
+
+  // Fallback: parse markdown text output (when structured output not firing)
   return {
-    topPaid,
-    matchingSkills,
-    worthInvestigating,
+    topPaid: parseMarkdownSection(rawContent, '⭐️ Top Paid'),
+    matchingSkills: parseMarkdownSection(rawContent, '🟩 Matching Skills'),
+    worthInvestigating: parseMarkdownSection(rawContent, '🟧 Worth Investigating'),
     aiAgentSuitability: parseAiSuitability(rawContent),
   }
 }

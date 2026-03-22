@@ -243,8 +243,8 @@ export function OpenServResults({
         )}
       </div>
 
-      {/* Market summary card */}
-      {jobs.length > 0 && (
+      {/* Market summary card — show if we have jobs OR market analysis sections */}
+      {(jobs.length > 0 || marketAnalysis.topPaid.length > 0 || marketAnalysis.matchingSkills.length > 0 || marketAnalysis.worthInvestigating.length > 0) && (
         <MarketSummaryCard analysis={marketAnalysis} jobCount={jobs.length} />
       )}
 
