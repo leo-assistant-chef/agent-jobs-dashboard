@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import type {
+  JobListing,
+  MarketAnalysis,
   OpenServData,
   OpenServJobListings,
   OpenServOpportunity,
@@ -34,23 +36,36 @@ function extractOutput(task: OpenServTask) {
   return task.latest_task_execution_record?.output?.value?.trim() ?? ''
 }
 
-function parseSection(markdown: string, heading: string) {
-  const escapedHeading = heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const sectionRegex = new RegExp(
-    `${escapedHeading}\\s*([\\s\\S]*?)(?=\\n(?:⭐️ Top Paid|🟩 Matching Skills|🟧 Worth Investigating)|$)`,
-    'i'
-  )
-  const match = markdown.match(sectionRegex)
+function parseAiSuitability(text: string): 'low' | 'medium' | 'high' | undefined {
+  if (text.includes('High') || text.includes('\u{1F916}\u{1F64C}')) return 'high'
+  if (text.includes('Medium') || text.includes('\u{1F916}\u{1F44B}')) return 'medium'
+  if (text.includes('Low') || text.includes('\u{1F916}\u{1F44E}')) return 'low'
+  return undefined
+}
 
-  if (!match?.[1]) {
-    return []
+function parseMarketAnalysis(rawContent: string, jobs: JobListing[]): MarketAnalysis {
+  const topPaid = jobs
+    .filter(j => j.match_score >= 75)
+    .sort((a, b) => (b.compensation_amount ?? 0) - (a.compensation_amount ?? 0))
+    .slice(0, 5)
+    .map(j => `${j.title} | ${j.compensation} | ${j.job_url}`)
+
+  const matchingSkills = jobs
+    .filter(j => j.match_score >= 60 && j.match_score < 75)
+    .slice(0, 5)
+    .map(j => `${j.title} | ${j.compensation} | ${j.job_url}`)
+
+  const worthInvestigating = jobs
+    .filter(j => j.match_score < 60)
+    .slice(0, 5)
+    .map(j => `${j.title} | ${j.compensation} | ${j.job_url}`)
+
+  return {
+    topPaid,
+    matchingSkills,
+    worthInvestigating,
+    aiAgentSuitability: parseAiSuitability(rawContent),
   }
-
-  return match[1]
-    .split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line.startsWith('- '))
-    .map((line) => line.replace(/^\-\s*/, '').trim())
 }
 
 function buildOpportunities(task: OpenServTask): OpenServOpportunity {
@@ -74,12 +89,21 @@ function buildJobListings(task: OpenServTask): OpenServJobListings {
     throw new Error(`Task ${JOB_LISTINGS_TASK_ID} did not include output.`)
   }
 
+  let jobs: JobListing[] = []
+
+  try {
+    const parsed = JSON.parse(rawContent)
+    const arr = parsed.web3_job_listings ?? parsed.jobs ?? (Array.isArray(parsed) ? parsed : [])
+    jobs = arr as JobListing[]
+  } catch {
+    console.warn('[buildJobListings] Failed to parse JSON output, falling back to empty jobs array')
+  }
+
   return {
     type: 'job_listings',
     status: task.status ?? 'unknown',
-    topPaid: parseSection(rawContent, '⭐️ Top Paid'),
-    matchingSkills: parseSection(rawContent, '🟩 Matching Skills'),
-    worthInvestigating: parseSection(rawContent, '🟧 Worth Investigating'),
+    jobs,
+    marketAnalysis: parseMarketAnalysis(rawContent, jobs),
     rawContent,
   }
 }
