@@ -21,9 +21,13 @@ type OpenServTask = {
   }
 }
 
-// Task IDs for fetching existing opportunities and job listings (fallback when trigger unavailable)
+// Task IDs (updated 2026-03-22 after workflow restructure)
+// 58494 = General Assistant → text output (opportunities/context)
+// 58495 = Research Agent   → job_listings_structured (structured JSON jobs)
+// 61236 = Research Agent   → market_analysis (text markdown sections)
 const OPPORTUNITIES_TASK_ID = 58494
 const JOB_LISTINGS_TASK_ID = 58495
+const MARKET_ANALYSIS_TASK_ID = 61236
 
 // REST API endpoints
 const OPEN_SERV_BASE_URL = 'https://api.openserv.ai'
@@ -144,8 +148,11 @@ function normalizeJob(raw: Record<string, unknown>): JobListing {
   } as unknown as JobListing
 }
 
-function buildJobListings(task: OpenServTask): OpenServJobListings {
+function buildJobListings(task: OpenServTask, marketAnalysisText?: string): OpenServJobListings {
   const rawContent = extractOutput(task)
+  // Use dedicated market analysis text for section parsing (task 61236),
+  // fall back to task's own raw content
+  const analysisText = marketAnalysisText || rawContent
   const structured = extractStructuredValue(task)
 
   let jobs: JobListing[] = []
@@ -173,8 +180,8 @@ function buildJobListings(task: OpenServTask): OpenServJobListings {
     type: 'job_listings',
     status: task.status ?? 'unknown',
     jobs,
-    marketAnalysis: parseMarketAnalysis(rawContent, jobs),
-    rawContent,
+    marketAnalysis: parseMarketAnalysis(analysisText, jobs),
+    rawContent: analysisText || rawContent,
   }
 }
 
@@ -276,16 +283,24 @@ async function buildResponse(agentResponse = ''): Promise<OpenServData> {
 
   const trigger = await triggerWorkflow(agentResponse)
   const tasks = await fetchOpenServTasks(apiKey)
+
   const opportunitiesTask = tasks.find((task) => task.id === OPPORTUNITIES_TASK_ID)
   const jobListingsTask = tasks.find((task) => task.id === JOB_LISTINGS_TASK_ID)
+  const marketAnalysisTask = tasks.find((task) => task.id === MARKET_ANALYSIS_TASK_ID)
 
   if (!opportunitiesTask || !jobListingsTask) {
     throw new Error('Required OpenServ tasks were not found.')
   }
 
+  // Market analysis text comes from task 61236 (dedicated market_analysis task)
+  // Fall back to job listings raw content if 61236 has no output yet
+  const marketAnalysisText = marketAnalysisTask
+    ? extractOutput(marketAnalysisTask)
+    : extractOutput(jobListingsTask)
+
   return {
     opportunities: buildOpportunities(opportunitiesTask),
-    jobListings: buildJobListings(jobListingsTask),
+    jobListings: buildJobListings(jobListingsTask, marketAnalysisText),
     trigger,
     agentResponse: agentResponse || undefined,
   }
