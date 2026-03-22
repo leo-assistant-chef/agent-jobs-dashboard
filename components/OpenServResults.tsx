@@ -1,68 +1,104 @@
-import type { OpenServData, OpenServTaskStatus } from "@/app/data/openserv";
-import { JobListingItem } from "./JobListingItem";
-import { JobCategoryCard } from "./JobCategoryCard";
+'use client'
+
+import { useState, useMemo } from 'react'
+import type { OpenServData, OpenServTaskStatus, JobListing } from '@/app/data/openserv'
+import { JobCard } from './JobCard'
+import { MarketSummaryCard } from './MarketSummaryCard'
 
 const statusMap: Record<string, { label: string; dotClass: string }> = {
   done: {
-    label: "Done",
-    dotClass: "bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.45)]",
+    label: 'Done',
+    dotClass: 'bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.45)]',
   },
   running: {
-    label: "Running",
-    dotClass: "bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.45)]",
+    label: 'Running',
+    dotClass: 'bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.45)]',
   },
   queued: {
-    label: "Queued",
-    dotClass: "bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.45)]",
+    label: 'Queued',
+    dotClass: 'bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.45)]',
   },
   failed: {
-    label: "Failed",
-    dotClass: "bg-rose-400 shadow-[0_0_12px_rgba(251,113,133,0.45)]",
+    label: 'Failed',
+    dotClass: 'bg-rose-400 shadow-[0_0_12px_rgba(251,113,133,0.45)]',
   },
-};
-
-function formatMarkdown(markdown: string) {
-  return markdown
-    .replace(/^###\s+/gm, "")
-    .replace(/^####\s+/gm, "")
-    .replace(/\*\*/g, "")
-    .trim()
-    .split("\n\n")
-    .map((block) => block.trim())
-    .filter(Boolean);
 }
 
 function getStatusConfig(status: OpenServTaskStatus) {
   return (
     statusMap[status] ?? {
       label: status,
-      dotClass: "bg-slate-400 shadow-[0_0_12px_rgba(148,163,184,0.35)]",
+      dotClass: 'bg-slate-400 shadow-[0_0_12px_rgba(148,163,184,0.35)]',
     }
-  );
+  )
 }
 
 function StatusBadge({ status }: { status: OpenServTaskStatus }) {
-  const config = getStatusConfig(status);
-
+  const config = getStatusConfig(status)
   return (
     <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-200">
       <span className={`h-2 w-2 rounded-full ${config.dotClass}`} />
       <span>{config.label}</span>
     </div>
-  );
+  )
 }
 
+function formatMarkdown(markdown: string) {
+  return markdown
+    .replace(/^###\s+/gm, '')
+    .replace(/^####\s+/gm, '')
+    .replace(/\*\*/g, '')
+    .trim()
+    .split('\n\n')
+    .map((block) => block.trim())
+    .filter(Boolean)
+}
+
+type SortKey = 'match_score' | 'compensation_amount' | 'posted_date'
+type FilterType = 'all' | string
+
+const FILTER_LABELS: { key: FilterType; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'bounty', label: 'Bounties' },
+  { key: 'freelance', label: 'Freelance' },
+  { key: 'contract', label: 'Contract' },
+  { key: 'full-time', label: 'Full-time' },
+  { key: 'grant', label: 'Grants' },
+]
+
 type OpenServResultsProps = {
-  data?: OpenServData | null;
-  loading?: boolean;
-  error?: string | null;
-};
+  data?: OpenServData | null
+  loading?: boolean
+  error?: string | null
+}
 
 export function OpenServResults({
   data,
   loading = false,
   error = null,
 }: OpenServResultsProps) {
+  const [sortKey, setSortKey] = useState<SortKey>('match_score')
+  const [filter, setFilter] = useState<FilterType>('all')
+  const [rawExpanded, setRawExpanded] = useState(false)
+
+  const jobs: JobListing[] = (data?.jobListings as any)?.jobs ?? []
+
+  const filteredJobs = useMemo(() => {
+    let result = [...jobs]
+    if (filter !== 'all') {
+      result = result.filter((j) => (j.employment_type ?? '') === filter)
+    }
+    result.sort((a, b) => {
+      if (sortKey === 'match_score') return (b.match_score ?? 0) - (a.match_score ?? 0)
+      if (sortKey === 'compensation_amount')
+        return (b.compensation_amount ?? 0) - (a.compensation_amount ?? 0)
+      if (sortKey === 'posted_date')
+        return (b.posted_date ?? '').localeCompare(a.posted_date ?? '')
+      return 0
+    })
+    return result
+  }, [jobs, sortKey, filter])
+
   if (loading) {
     return (
       <section className="grid gap-6">
@@ -75,13 +111,9 @@ export function OpenServResults({
             <div className="h-4 w-5/6 animate-pulse rounded-full bg-white/10" />
           </div>
         </div>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          {[0, 1, 2].map((card) => (
-            <div
-              key={card}
-              className="rounded-2xl border border-white/10 bg-white/5 p-6"
-            >
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-6">
               <div className="h-3 w-24 animate-pulse rounded-full bg-white/10" />
               <div className="mt-5 space-y-3">
                 <div className="h-4 animate-pulse rounded-full bg-white/10" />
@@ -91,7 +123,7 @@ export function OpenServResults({
           ))}
         </div>
       </section>
-    );
+    )
   }
 
   if (error) {
@@ -102,98 +134,33 @@ export function OpenServResults({
         </p>
         <p className="mt-3 text-sm leading-6 text-rose-100/90">{error}</p>
       </section>
-    );
+    )
   }
 
-  if (!data) {
-    return null;
-  }
+  if (!data) return null
 
-  const marketBlocks = formatMarkdown(data.opportunities.content);
+  const marketAnalysis = (data.jobListings as any)?.marketAnalysis ?? {
+    topPaid: [],
+    matchingSkills: [],
+    worthInvestigating: [],
+  }
+  const marketBlocks = formatMarkdown(data.opportunities.content)
 
   return (
-    <section className="grid gap-6">
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+    <section className="grid gap-8">
+      {/* Market intelligence summary */}
+      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
               Market intelligence
             </p>
             <h2 className="mt-3 text-3xl font-bold tracking-tighter text-slate-100">
-              Job Finder Analysis - Summary
+              Job Finder Analysis
             </h2>
           </div>
-          <div className="flex items-center gap-4">
-            <StatusBadge status={data.opportunities.status} />
-            <div className="hidden items-center gap-2 md:flex">
-              <span className="text-xs text-slate-400">by</span>
-              <div className="h-6 w-auto text-slate-300">
-                <svg
-                  viewBox="0 0 200 50"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-full w-auto"
-                  fill="none"
-                >
-                  <circle
-                    cx="15"
-                    cy="25"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  />
-                  <path
-                    d="M15 15 L18 18 M15 15 L12 18"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M25 25 L22 22 M25 25 L22 28"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M15 35 L12 32 M15 35 L18 32"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M5 25 L8 28 M5 25 L8 22"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <line
-                    x1="35"
-                    y1="15"
-                    x2="35"
-                    y2="35"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  />
-                  <text
-                    x="45"
-                    y="30"
-                    fontFamily="system-ui, -apple-system, sans-serif"
-                    fontSize="14"
-                    fontWeight="600"
-                    fill="currentColor"
-                    letterSpacing="-0.5"
-                  >
-                    OpenServ
-                  </text>
-                </svg>
-              </div>
-            </div>
-          </div>
+          <StatusBadge status={data.opportunities.status} />
         </div>
-
         <div className="mt-6 space-y-4">
           {marketBlocks.map((block) => (
             <p key={block} className="text-sm leading-7 text-slate-300">
@@ -203,42 +170,101 @@ export function OpenServResults({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-slate-950 p-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div>
-            <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400">
-              Job Market
-            </p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tighter text-slate-100">
-              Job Listings Found
+      {/* Job listings */}
+      <div>
+        {/* Header + controls */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-100">
+              {jobs.length > 0
+                ? `Found ${jobs.length} opportunit${jobs.length === 1 ? 'y' : 'ies'}`
+                : 'Job Listings'}
             </h2>
+            <StatusBadge status={data.jobListings.status} />
           </div>
-          <StatusBadge status={data.jobListings.status} />
+
+          {/* Sort */}
+          {jobs.length > 0 && (
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-slate-500">Sort by:</span>
+              {(['match_score', 'compensation_amount', 'posted_date'] as SortKey[]).map((key) => (
+                <button
+                  key={key}
+                  onClick={() => setSortKey(key)}
+                  className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-150 ${
+                    sortKey === key
+                      ? 'bg-white/10 text-white'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {key === 'match_score' ? 'Match' : key === 'compensation_amount' ? 'Compensation' : 'Date'}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
-          <JobCategoryCard
-            emoji="⭐️"
-            title="Top Paid"
-            items={data.jobListings.topPaid}
-            className="text-blue-400/70"
-          />
+        {/* Filter chips */}
+        {jobs.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {FILTER_LABELS.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => setFilter(key)}
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition-all duration-150 ${
+                  filter === key
+                    ? 'border-white/20 bg-white/10 text-white'
+                    : 'border-white/10 bg-transparent text-slate-400 hover:border-white/20 hover:text-slate-200'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
 
-          <JobCategoryCard
-            emoji="🟩"
-            title="Matching Skills"
-            items={data.jobListings.matchingSkills}
-            className="text-emerald-400/60"
-          />
-
-          <JobCategoryCard
-            emoji="🟧"
-            title="Worth Investigating"
-            items={data.jobListings.worthInvestigating}
-            className="text-slate-300"
-          />
-        </div>
+        {/* Grid */}
+        {filteredJobs.length > 0 ? (
+          <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {filteredJobs.map((job, i) => (
+              <JobCard key={`${job.title}-${job.source}-${i}`} job={job} />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-white/8 bg-white/[0.02] py-16 text-center">
+            <div className="text-4xl">🔍</div>
+            <p className="mt-4 text-base font-semibold text-slate-300">No results yet</p>
+            <p className="mt-2 text-sm text-slate-500">
+              {jobs.length > 0
+                ? 'No jobs match this filter — try a different category'
+                : 'Trigger a search above to find opportunities'}
+            </p>
+          </div>
+        )}
       </div>
+
+      {/* Market summary card — show if we have jobs OR market analysis sections */}
+      {(jobs.length > 0 || marketAnalysis.topPaid.length > 0 || marketAnalysis.matchingSkills.length > 0 || marketAnalysis.worthInvestigating.length > 0) && (
+        <MarketSummaryCard analysis={marketAnalysis} jobCount={jobs.length} />
+      )}
+
+      {/* Raw output collapsible */}
+      {data.jobListings.rawContent && (
+        <div className="rounded-2xl border border-white/8 bg-white/[0.02]">
+          <button
+            onClick={() => setRawExpanded((p) => !p)}
+            className="flex w-full items-center justify-between px-6 py-4 text-sm font-medium text-slate-400 hover:text-slate-200"
+          >
+            <span>Raw Output</span>
+            <span className="text-xs">{rawExpanded ? '▲ collapse' : '▼ expand'}</span>
+          </button>
+          {rawExpanded && (
+            <pre className="overflow-x-auto border-t border-white/8 px-6 py-4 text-xs leading-6 text-slate-400">
+              {data.jobListings.rawContent}
+            </pre>
+          )}
+        </div>
+      )}
     </section>
-  );
+  )
 }
