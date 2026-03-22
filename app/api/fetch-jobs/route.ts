@@ -13,8 +13,10 @@ type OpenServTask = {
   id: number
   status?: string
   latest_task_execution_record?: {
+    outputOptionId?: string
     output?: {
-      value?: string
+      type?: 'text' | 'structured' | string
+      value?: string | Record<string, unknown> | unknown[]
     }
   }
 }
@@ -32,8 +34,26 @@ const OPEN_SERV_WORKSPACE_ID = process.env.OPENSERV_WORKSPACE_ID ?? '12972'
 // Set in .env: OPENSERV_TRIGGER_URL
 const OPEN_SERV_TRIGGER_URL = process.env.OPENSERV_TRIGGER_URL
 
-function extractOutput(task: OpenServTask) {
-  return task.latest_task_execution_record?.output?.value?.trim() ?? ''
+function extractOutput(task: OpenServTask): string {
+  const value = task.latest_task_execution_record?.output?.value
+  if (!value) return ''
+  if (typeof value === 'string') return value.trim()
+  // Structured output: value is already a parsed object — serialize for rawContent
+  return JSON.stringify(value)
+}
+
+function extractStructuredValue(task: OpenServTask): unknown {
+  const rec = task.latest_task_execution_record
+  if (!rec) return null
+  const output = rec.output
+  if (!output) return null
+  // Structured output: value is a parsed object/array from OpenServ
+  if (output.type === 'structured') return output.value ?? null
+  // Text output: try to JSON.parse
+  if (typeof output.value === 'string') {
+    try { return JSON.parse(output.value) } catch { return null }
+  }
+  return output.value ?? null
 }
 
 function parseAiSuitability(text: string): 'low' | 'medium' | 'high' | undefined {
@@ -82,21 +102,43 @@ function buildOpportunities(task: OpenServTask): OpenServOpportunity {
   }
 }
 
+function normalizeJob(raw: Record<string, unknown>): JobListing {
+  // Normalize field name differences: ai_agent (singular) → ai_agents (plural)
+  return {
+    ...raw,
+    experience_level_ai_agents:
+      (raw.experience_level_ai_agents as string | undefined) ??
+      (raw.experience_level_ai_agent as string | undefined),
+    // Flatten array experience_level_human to first value if needed
+    experience_level_human: Array.isArray(raw.experience_level_human)
+      ? (raw.experience_level_human[0] as string)
+      : (raw.experience_level_human as string | undefined),
+  } as unknown as JobListing
+}
+
 function buildJobListings(task: OpenServTask): OpenServJobListings {
   const rawContent = extractOutput(task)
-
-  if (!rawContent) {
-    throw new Error(`Task ${JOB_LISTINGS_TASK_ID} did not include output.`)
-  }
+  const structured = extractStructuredValue(task)
 
   let jobs: JobListing[] = []
 
-  try {
-    const parsed = JSON.parse(rawContent)
-    const arr = parsed.web3_job_listings ?? parsed.jobs ?? (Array.isArray(parsed) ? parsed : [])
-    jobs = arr as JobListing[]
-  } catch {
-    console.warn('[buildJobListings] Failed to parse JSON output, falling back to empty jobs array')
+  if (structured !== null) {
+    // Single job object (OpenServ structured output returns one item)
+    if (Array.isArray(structured)) {
+      jobs = structured.map((j) => normalizeJob(j as Record<string, unknown>))
+    } else if (typeof structured === 'object' && structured !== null) {
+      const obj = structured as Record<string, unknown>
+      // Handle { jobs: [...] } or { web3_job_listings: [...] } wrappers
+      const arr = obj.web3_job_listings ?? obj.jobs
+      if (Array.isArray(arr)) {
+        jobs = arr.map((j) => normalizeJob(j as Record<string, unknown>))
+      } else if (obj.title) {
+        // Single job dict — wrap in array
+        jobs = [normalizeJob(obj)]
+      }
+    }
+  } else {
+    console.warn('[buildJobListings] No structured output found, jobs will be empty')
   }
 
   return {
