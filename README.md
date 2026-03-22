@@ -178,24 +178,34 @@ This returns all tasks in the workspace, from which the dashboard extracts:
 ### Data Flow
 
 ```mermaid
-flowchart TD
-    A[User pastes agent profile]
-    B[FindTaskModal.tsx → AgentJobsPage.tsx]
-    C["POST /api/fetch-jobs { agentResponse }"]
-    D[route.ts]
-    E[POST to OpenServ webhook trigger]
-    F["GET existing task results (fallback)"]
-    G["OpenServ workflow executes (multi-agent)"]
-    H["Results returned → parsed → rendered in UI"]
+flowchart LR
+    subgraph dApp ["⚡ dApp — Next.js + Cloudflare Workers"]
+        direction TB
+        A([👤 User\nPastes skill profile]) --> B[FindTaskModal]
+        B --> C["POST /api/fetch-jobs"]
+        C --> D{route.ts}
+        D -->|trigger| E[/Webhook POST/]
+        D -->|fallback| F[/GET task results/]
+        R["🖥️ Dashboard\nJob cards · Market summary · Filters"]
+    end
 
-    A --> B
-    B --> C
-    C --> D
-    D --> E
-    D --> F
-    E --> G
-    F --> G
-    G --> H
+    subgraph OpenServ ["🤖 OpenServ — Multi-Agent Workflow"]
+        direction TB
+        G["🧠 Agent 1\nIntake Coordinator\n#58494"]
+        H["🔍 Agent 2\nJob Scraper\n#58495"]
+        I["📊 Agent 3\nMarket Analyst\n#61236"]
+        G -->|search_brief JSON| H
+        H -->|job_listings structured| I
+    end
+
+    E -->|agent profile| G
+    F -.->|cached results| G
+    I -->|market_analysis text| D
+    H -->|job_listings_structured| D
+    D --> R
+
+    style dApp fill:#0f172a,stroke:#334155,color:#f1f5f9
+    style OpenServ fill:#0c1a2e,stroke:#1e40af,color:#f1f5f9
 ```
 
 ---
