@@ -67,16 +67,25 @@ function parseAiSuitability(text: string): 'low' | 'medium' | 'high' | undefined
   return undefined
 }
 
-// Restore markdown section parser for text-output fallback
-function parseMarkdownSection(markdown: string, heading: string): string[] {
-  const escapedHeading = heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function getMarkdownSection(markdown: string, heading: string, levels: number[] = [3]): string {
+  const headingPattern = levels.map((level) => `#{${level}}`).join('|')
   const sectionRegex = new RegExp(
-    `${escapedHeading}\\s*([\\s\\S]*?)(?=\\n#{1,3}\\s|$)`,
-    'i'
+    `^(?:${headingPattern})\\s+${escapeRegExp(heading)}\\s*$([\\s\\S]*?)(?=^#{1,4}\\s+|$)`,
+    'im'
   )
   const match = markdown.match(sectionRegex)
-  if (!match?.[1]) return []
-  return match[1]
+  return match?.[1]?.trim() ?? ''
+}
+
+function parseMarkdownSection(markdown: string, heading: string, levels: number[] = [3, 4]): string[] {
+  const section = getMarkdownSection(markdown, heading, levels)
+  if (!section) return []
+
+  return section
     .split('\n')
     .map(line => line.trim())
     .filter(line => /^\d+\.|^[-*]/.test(line))
@@ -84,38 +93,116 @@ function parseMarkdownSection(markdown: string, heading: string): string[] {
     .filter(Boolean)
 }
 
-function parseMarketAnalysis(rawContent: string, jobs: JobListing[]): MarketAnalysis {
-  // If we have structured jobs, derive sections from them
-  if (jobs.length > 0) {
-    const topPaid = jobs
-      .filter(j => j.match_score >= 75)
-      .sort((a, b) => (b.compensation_amount ?? 0) - (a.compensation_amount ?? 0))
-      .slice(0, 5)
-      .map(j => `${j.title} | ${j.compensation} | ${j.job_url}`)
+function extractMarkdownField(block: string, label: string): string | undefined {
+  const regex = new RegExp(`[-*]\\s+\\*\\*${escapeRegExp(label)}\\*\\*:\\s*(.+)`, 'i')
+  return block.match(regex)?.[1]?.trim()
+}
 
-    const matchingSkills = jobs
-      .filter(j => j.match_score >= 60 && j.match_score < 75)
-      .slice(0, 5)
-      .map(j => `${j.title} | ${j.compensation} | ${j.job_url}`)
+function extractMarkdownLink(value: string | undefined): string | undefined {
+  if (!value) return undefined
+  const markdownLink = value.match(/\[[^\]]+\]\((https?:\/\/[^)]+)\)/i)
+  if (markdownLink?.[1]) return markdownLink[1].trim()
+  const rawUrl = value.match(/https?:\/\/\S+/i)
+  return rawUrl?.[0]?.trim()
+}
 
-    const worthInvestigating = jobs
-      .filter(j => j.match_score < 60)
-      .slice(0, 5)
-      .map(j => `${j.title} | ${j.compensation} | ${j.job_url}`)
+function parseJobsFromMarketAnalysisText(text: string): JobListing[] {
+  if (!text.trim()) return []
 
-    return {
-      topPaid,
-      matchingSkills,
-      worthInvestigating,
-      aiAgentSuitability: parseAiSuitability(rawContent),
-    }
+  const sections = text.split(/^##\s+/m).slice(1)
+
+  return sections.flatMap(section => {
+    if (!section.includes('### Job Listing')) return []
+
+    const jobListingBlock = getMarkdownSection(section, 'Job Listing', [3])
+    if (!jobListingBlock) return []
+
+    const title = extractMarkdownField(jobListingBlock, 'Title')
+    const jobUrl = extractMarkdownLink(extractMarkdownField(jobListingBlock, 'Job URL'))
+
+    if (!title || !jobUrl) return []
+
+    const remoteValue = extractMarkdownField(jobListingBlock, 'Remote')
+    const source = extractMarkdownField(jobListingBlock, 'Platform') ?? ''
+    const description = extractMarkdownField(jobListingBlock, 'Description') ?? ''
+    const skillsRequired = (extractMarkdownField(jobListingBlock, 'Skills Required') ?? '')
+      .split(',')
+      .map(skill => skill.trim())
+      .filter(Boolean)
+
+    const experienceLevel = extractMarkdownField(jobListingBlock, 'Experience Level')
+    const aiAgentMatch = experienceLevel?.match(/AI Agent:\s*([^\)\n]+)/i)
+    const compensation = parseMarkdownSection(section, 'Top Paid', [4])
+      .map(line => {
+        const parts = line.split('|').map(part => part.trim())
+        const lineUrl = extractMarkdownLink(line)
+        return lineUrl === jobUrl || parts[0] === title ? parts[1] : undefined
+      })
+      .find(Boolean) ?? 'Negotiable'
+
+    return [{
+      title,
+      job_url: jobUrl,
+      description,
+      source,
+      employment_type: 'freelance',
+      remote: /^yes$/i.test(remoteValue ?? ''),
+      match_score: 75,
+      skills_required: skillsRequired,
+      compensation,
+      experience_level_ai_agent: aiAgentMatch?.[1]?.trim().toLowerCase(),
+    } satisfies JobListing]
+  })
+}
+
+function mergeJobListings(primaryJobs: JobListing[], fallbackJobs: JobListing[]): JobListing[] {
+  const merged = new Map<string, JobListing>()
+
+  for (const job of fallbackJobs) {
+    const key = job.job_url || `${job.title}:${job.source}`
+    merged.set(key, job)
   }
 
-  // Fallback: parse markdown text output (when structured output not firing)
+  for (const job of primaryJobs) {
+    const key = job.job_url || `${job.title}:${job.source}`
+    const existing = merged.get(key)
+    merged.set(key, {
+      ...existing,
+      ...job,
+      skills_required: job.skills_required?.length
+        ? job.skills_required
+        : (existing?.skills_required ?? []),
+    })
+  }
+
+  return Array.from(merged.values())
+}
+
+function parseMarketAnalysis(rawContent: string, jobs: JobListing[]): MarketAnalysis {
+  const parsedTopPaid = parseMarkdownSection(rawContent, 'Top Paid', [4])
+  const parsedMatchingSkills = parseMarkdownSection(rawContent, 'Matching Skills', [4])
+  const parsedWorthInvestigating = parseMarkdownSection(rawContent, 'Worth Investigating', [4])
+
+  const derivedTopPaid = jobs
+    .filter(j => j.match_score >= 75)
+    .sort((a, b) => (b.compensation_amount ?? 0) - (a.compensation_amount ?? 0))
+    .slice(0, 5)
+    .map(j => `${j.title} | ${j.compensation ?? 'Negotiable'} | ${j.job_url}`)
+
+  const derivedMatchingSkills = jobs
+    .filter(j => j.match_score >= 60 && j.match_score < 75)
+    .slice(0, 5)
+    .map(j => `${j.title} | ${j.compensation ?? 'Negotiable'} | ${j.job_url}`)
+
+  const derivedWorthInvestigating = jobs
+    .filter(j => j.match_score < 60)
+    .slice(0, 5)
+    .map(j => `${j.title} | ${j.compensation ?? 'Negotiable'} | ${j.job_url}`)
+
   return {
-    topPaid: parseMarkdownSection(rawContent, '⭐️ Top Paid'),
-    matchingSkills: parseMarkdownSection(rawContent, '🟩 Matching Skills'),
-    worthInvestigating: parseMarkdownSection(rawContent, '🟧 Worth Investigating'),
+    topPaid: parsedTopPaid.length > 0 ? parsedTopPaid : derivedTopPaid,
+    matchingSkills: parsedMatchingSkills.length > 0 ? parsedMatchingSkills : derivedMatchingSkills,
+    worthInvestigating: parsedWorthInvestigating.length > 0 ? parsedWorthInvestigating : derivedWorthInvestigating,
     aiAgentSuitability: parseAiSuitability(rawContent),
   }
 }
@@ -174,25 +261,30 @@ function buildJobListings(task: OpenServTask, marketAnalysisText?: string): Open
   const analysisText = marketAnalysisText || rawContent
   const structured = extractStructuredValue(task)
 
-  let jobs: JobListing[] = []
+  let structuredJobs: JobListing[] = []
 
   if (structured !== null) {
     // Single job object (OpenServ structured output returns one item)
     if (Array.isArray(structured)) {
-      jobs = structured.map((j) => normalizeJob(j as Record<string, unknown>))
+      structuredJobs = structured.map((j) => normalizeJob(j as Record<string, unknown>))
     } else if (typeof structured === 'object' && structured !== null) {
       const obj = structured as Record<string, unknown>
       // Handle { jobs: [...] } or { web3_job_listings: [...] } wrappers
       const arr = obj.web3_job_listings ?? obj.jobs
       if (Array.isArray(arr)) {
-        jobs = arr.map((j) => normalizeJob(j as Record<string, unknown>))
+        structuredJobs = arr.map((j) => normalizeJob(j as Record<string, unknown>))
       } else if (obj.title) {
         // Single job dict — wrap in array
-        jobs = [normalizeJob(obj)]
+        structuredJobs = [normalizeJob(obj)]
       }
     }
-  } else {
-    console.warn('[buildJobListings] No structured output found, jobs will be empty')
+  }
+
+  const textParsedJobs = parseJobsFromMarketAnalysisText(analysisText)
+  const jobs = mergeJobListings(structuredJobs, textParsedJobs)
+
+  if (structuredJobs.length === 0 && textParsedJobs.length === 0) {
+    console.warn('[buildJobListings] No structured or text-parsed jobs found')
   }
 
   return {
