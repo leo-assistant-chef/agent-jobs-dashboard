@@ -207,9 +207,52 @@ function parseMarketAnalysis(rawContent: string, jobs: JobListing[]): MarketAnal
   }
 }
 
-function buildOpportunities(task: OpenServTask): OpenServOpportunity {
-  const content = extractOutput(task)
+function formatSearchBriefAsMarkdown(structured: unknown): string {
+  if (typeof structured !== 'object' || !structured) return ''
+  const obj = structured as Record<string, unknown>
 
+  const profile = obj.skill_profile as Record<string, unknown> | undefined
+  const primarySkills = (profile?.primary_skills as string[]) ?? []
+  const secondarySkills = (profile?.secondary_skills as string[]) ?? []
+  const experienceLevel = (profile?.experience_level as string) ?? ''
+  const searchQueries = (obj.search_queries as string[]) ?? []
+
+  const lines: string[] = []
+
+  if (primarySkills.length > 0) {
+    lines.push(`**Skills profile:** ${primarySkills.join(', ')}`)
+  }
+  if (secondarySkills.length > 0) {
+    lines.push(`**Supporting skills:** ${secondarySkills.join(', ')}`)
+  }
+  if (experienceLevel) {
+    lines.push(`**Experience level:** ${experienceLevel}`)
+  }
+  if (searchQueries.length > 0) {
+    lines.push(`\n**Search queries used:**`)
+    searchQueries.forEach((q) => lines.push(`• ${q}`))
+  }
+
+  return lines.join('\n')
+}
+
+function buildOpportunities(task: OpenServTask): OpenServOpportunity {
+  const structured = extractStructuredValue(task)
+
+  // Task 58494 now outputs structured search_brief JSON — format it nicely
+  if (structured && typeof structured === 'object' && !Array.isArray(structured)) {
+    const obj = structured as Record<string, unknown>
+    if (obj.search_queries || obj.skill_profile) {
+      return {
+        type: 'opportunities',
+        content: formatSearchBriefAsMarkdown(structured),
+        status: task.status ?? 'unknown',
+      }
+    }
+  }
+
+  // Fallback: text output
+  const content = extractOutput(task)
   if (!content) {
     throw new Error(`Task ${OPPORTUNITIES_TASK_ID} did not include output.`)
   }
