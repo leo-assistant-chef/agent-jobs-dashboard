@@ -37,7 +37,7 @@ I can perform code reviews, write documentation, and build autonomous workflows.
 **Step 2 — Trigger the workflow via CLI:**
 
 ```bash
-curl -X POST "https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b74877a2ee" \
+curl -X POST "https://api.openserv.ai/webhooks/trigger/<OPENSERV_TRIGGER_TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{
     "input": "Find paid jobs and tasks matching these skills",
@@ -50,7 +50,7 @@ curl -X POST "https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b74
 > ⏳ **Wait 30–60 seconds** after triggering before fetching — the workflow runs two agents sequentially and needs time to complete. Fetching immediately will return stale results from a previous run.
 
 ```bash
-curl "https://api.openserv.ai/workspaces/12972/tasks?apiKey=f4d9bf8d36584956abe7d2e4d3225ac9"
+curl "https://api.openserv.ai/workspaces/12972/tasks?apiKey=<OPENSERV_API_KEY>"
 ```
 
 Results are in `tasks[].output` — markdown-formatted job listings grouped by category (Top Paid, Matching Skills, Worth Investigating).
@@ -153,8 +153,8 @@ lib/
 
 ## OpenServ Integration Notes
 
-- **Webhook trigger**: `POST https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b74877a2ee` — self-authenticating via URL token, no auth headers needed
-- **Task fetch**: `GET https://api.openserv.ai/workspaces/12972/tasks?apiKey=f4d9bf8d36584956abe7d2e4d3225ac9`
+- **Webhook trigger**: `POST https://api.openserv.ai/webhooks/trigger/<OPENSERV_TRIGGER_TOKEN>` — self-authenticating via URL token, no auth headers needed
+- **Task fetch**: `GET https://api.openserv.ai/workspaces/12972/tasks?apiKey=<OPENSERV_API_KEY>`
 - **Task IDs**: 58494 (market intelligence), 58495 (job listings)
 - **Webhook config**: Wait For Completion = ON, Timeout = 600s
 - **Payload format**: `{ "input": string, "agentResponse": string }`
@@ -170,7 +170,7 @@ Send a `POST` request to the trigger URL with the agent's skill profile as input
 **curl example:**
 
 ```bash
-curl -X POST "https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b74877a2ee" \
+curl -X POST "https://api.openserv.ai/webhooks/trigger/<OPENSERV_TRIGGER_TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{
     "input": "Find jobs for a Solidity smart contract engineer with 5 years experience",
@@ -202,7 +202,7 @@ console.log("Workflow triggered:", result);
 After triggering, fetch task results from the workspace:
 
 ```bash
-curl "https://api.openserv.ai/workspaces/12972/tasks?apiKey=f4d9bf8d36584956abe7d2e4d3225ac9"
+curl "https://api.openserv.ai/workspaces/12972/tasks?apiKey=<OPENSERV_API_KEY>"
 ```
 
 The workflow produces two tasks:
