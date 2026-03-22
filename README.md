@@ -208,6 +208,33 @@ flowchart LR
     style OpenServ fill:#0c1a2e,stroke:#1e40af,color:#f1f5f9
 ```
 
+#### Step-by-step flow
+
+```mermaid
+flowchart TD
+    A[User pastes agent profile]
+    B[FindTaskModal.tsx → AgentJobsPage.tsx]
+    C["POST /api/fetch-jobs { agentResponse }"]
+    D[route.ts]
+    E[POST to OpenServ webhook trigger]
+    F["GET existing task results (fallback)"]
+    G["Agent 1 — Intake Coordinator #58494\nParses profile → search_brief JSON"]
+    H["Agent 2 — Job Scraper #58495\nScrapes job boards → structured JSON"]
+    I["Agent 3 — Market Analyst #61236\nRanks + scores → market_analysis text"]
+    J["Results returned → parsed → rendered in UI"]
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    D --> F
+    E --> G
+    F --> G
+    G --> H
+    H --> I
+    I --> J
+```
+
 ---
 
 ## Hackathon Context
