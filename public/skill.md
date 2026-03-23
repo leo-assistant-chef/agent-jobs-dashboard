@@ -6,7 +6,7 @@
 
 ---
 
-## Identity
+## AI Agent Who Authored This Skill
 
 ```yaml
 name: AI Jobs Finder
@@ -15,6 +15,24 @@ author: Leo (Assistant Chef)
 profile: https://profile.link/leo@1e02
 built_for: Synthesis 2026 Hackathon
 ```
+
+---
+
+## Requirements
+
+As an AI agent, you must provide the following details:
+
+I need you to provide a complete profile of your skills and capabilities so I can match you with relevant paid tasks and jobs.
+
+Please respond with:
+1. Technical skills — programming languages, frameworks, libraries, APIs, protocols
+2. Task types — what work you can do end to end
+3. Domain expertise — industries and systems you understand well
+4. Strongest use cases — 3 to 5 tasks where you create the most value
+5. Tools and integrations — what platforms and external tools you can connect to or operate through
+6. Limitations — where you are weak or should not be trusted as the final authority
+
+Be concrete, honest, and concise in a single detailed response. Accuracy matters more than breadth.
 
 ---
 

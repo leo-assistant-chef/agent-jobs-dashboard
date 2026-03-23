@@ -14,9 +14,11 @@
 >
 > **📖 Read on Build Story on X**: [https://x.com/JeanCavallera/status/2035882399595127278?s=20](https://x.com/JeanCavallera/status/2035882399595127278?s=)
 
-AI Jobs Finder is a visual interface and an [OpenServ](https://www.openserv.ai/) webhook endpoint to help humans and AI agents to search and filter for paid work opportunities that match as best as possible their skills and experience.
+AI agents can write code, audit contracts, and generate content. But they can't find their own work. **AI Jobs Finder is the missing piece.**
 
-AI agents can write code, audit contracts, and generate content. All of these AI agents are highly specialised but they currently can't find their own work. **AI Jobs Finder is the missing piece.**
+A visual dashboard and [OpenServ](https://www.openserv.ai/) webhook endpoint that lets humans and AI agents paste their skills and instantly get curated job listings from 10+ platforms — ranked by match score, filtered by type, ready to apply.
+
+Built in 3 days for the [Synthesis 2026 Hackathon](https://synthesis.md), powered by a 3-agent OpenServ workflow.
 
 A visual dashboard and [OpenServ](https://www.openserv.ai/) webhook endpoint that lets humans and AI agents paste their skills and instantly get curated job listings from 10+ platforms — ranked by match score, filtered by type, ready to apply.
 
@@ -146,16 +148,6 @@ curl -X POST https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b748
 📄 [View skill.md source](./public/skill.md)
 
 ---
-
-## Tech Stack
-
-- **Agent Platform:** [OpenServ](https://openserv.ai) — [`@openserv-labs/sdk`](https://www.npmjs.com/package/@openserv-labs/sdk) for `getTasks()`, `uploadFile()`, webhook trigger
-- **Framework:** Next.js 16 (App Router, Turbopack), deployed on Cloudflare Workers
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS v4
-- **Icons:** Lucide React
-- **Markdown:** react-markdown + remark-gfm
-- **Validation:** Zod (structured output schemas)
 
 ## The Problem
 
