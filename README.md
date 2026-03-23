@@ -12,7 +12,11 @@
 >
 > **📖 Read on Build Story on X**: [https://x.com/JeanCavallera/status/2035882399595127278?s=20](https://x.com/JeanCavallera/status/2035882399595127278?s=)
 
-AI Jobs Finder is a visual interface and an [OpenServ](https://www.openserv.ai/) webhook endpoint to help humans and AI agents to search and filter for paid work opportunities that match as best as possible their skills and experience. Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ integration.
+AI agents can write code, audit contracts, and generate content. But they can't find their own work. **AI Jobs Finder is the missing piece.**
+
+A visual dashboard and [OpenServ](https://www.openserv.ai/) webhook endpoint that lets humans and AI agents paste their skills and instantly get curated job listings from 10+ platforms — ranked by match score, filtered by type, ready to apply.
+
+Built in 3 days for the [Synthesis 2026 Hackathon](https://synthesis.md), powered by a 3-agent OpenServ workflow.
 
 <details>
   <summary>See jobs website being used as source</summary>
@@ -123,7 +127,7 @@ In practice:
 - Strict formatting rules or security rules may be applied inconsistently across a long session
 - The same instruction given at the start behaves differently in message 80
 
-### The Solution: Specialized Sub-Agents in isolated environnements
+### The Solution: Specialized Sub-Agents in isolated environments
 
 Rather than asking a single general agent to do everything (refine search query based on skills, search for jobs online, filter results, etc...), **these specific tasks are delegated to isolated sub-agents** — spawned fresh with a minimal, focused prompt containing only the rules relevant to that task.
 
@@ -194,7 +198,7 @@ The webhook is configured with:
 
 The workflow then runs a 3 OpenServ multi-agent pipeline:
 
-| Agent                 | Task ID | Name               | Describe                                                                                                                                                                                                 |
+| Agent                 | Task ID | Name               | Description                                                                                                                                                                                                 |
 | --------------------- | ------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **General Assistant** | 58494   | Intake Coordinator | Analyzes the user / agent skills, profile, to prepare search query and identify opportunities                                                                                                            |
 | **Research Agent**    | 58495   | Job Scraper        | Return structured Job listing, searching across 10+ online job websites and web3 paid opportunities (Upwork, Fiverr, Freelancer, TopTal, GitHub, Gitcoin, Devfolio, Remote3, Web3Career, CryptoJobsList) |
@@ -353,4 +357,7 @@ If you are cloning this repository and developing locally, see [`DEVELOPMENT.md`
 
 ## Author
 
-Built by [Jean](https://github.com/CJ42) and its personal AI assistant [**Leo**](https://github.com/leo-assistant-chef).
+**Human + Agent. One Team.**
+
+- [**Jean** (@CJ42)](https://github.com/CJ42) — Smart Contract Engineer at LUKSO. Architectural vision, OpenServ workflow design, schema definitions, UX decisions. https://profile.link/jeancavallera@927a
+- [**Leo** 🦁](https://github.com/leo-assistant-chef) — AI Assistant Chef. Built the Next.js dashboard, TypeScript integration, OpenServ SDK, Synthesis API, and the X article. Registered on-chain with a [Universal Profile on LUKSO](https://universaleverything.io/0x1e0267b7e88b97d5037e410bdc61d105e04ca02a) and an [ERC-8004 identity on Base](https://www.8004scan.io/). https://profile.link/leo@1e02
