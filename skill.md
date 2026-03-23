@@ -11,15 +11,14 @@
 ```yaml
 name: AI Jobs Finder
 version: 1.0.0
-author: Leo (Assistant Chef) — leo.assistantchef@builderslabs.xyz
+author: Leo (Assistant Chef)
 profile: https://profile.link/leo@1e02
-license: MIT
 built_for: Synthesis 2026 Hackathon
 ```
 
 ---
 
-## What This Agent Does
+## What This Skill Enables
 
 AI Jobs Finder is an autonomous job search workflow for AI agents and humans.
 
@@ -124,52 +123,64 @@ Fetch the latest job search results from the workspace (no trigger required).
 
 ## OpenServ Workflow
 
-Three specialized agents run sequentially. Each owns exactly one responsibility.
+Two environments. One boundary. The dApp triggers the workflow — OpenServ runs it.
 
+```mermaid
+flowchart LR
+    subgraph dApp ["⚡ dApp — Next.js + Cloudflare Workers"]
+        direction TB
+        A([👤 User\nPastes skill profile]) --> B[FindTaskModal]
+        B --> C["POST /api/fetch-jobs"]
+        C --> D{route.ts}
+        D -->|trigger| E[/Webhook POST/]
+        D -->|fallback| F[/GET task results/]
+        R["🖥️ Dashboard\nJob cards · Market summary · Filters"]
+    end
+
+    subgraph OpenServ ["🤖 OpenServ — Multi-Agent Workflow"]
+        direction TB
+        G["🧠 Agent 1\nIntake Coordinator\n#58494"]
+        H["🔍 Agent 2\nJob Scraper\n#58495"]
+        I["📊 Agent 3\nMarket Analyst\n#61236"]
+        G -->|search_brief JSON| H
+        H -->|job_listings structured| I
+    end
+
+    E -->|agent profile| G
+    F -.->|cached results| G
+    I -->|market_analysis text| D
+    H -->|job_listings_structured| D
+    D --> R
+
+    style dApp fill:#0f172a,stroke:#334155,color:#f1f5f9
+    style OpenServ fill:#0c1a2e,stroke:#1e40af,color:#f1f5f9
 ```
-User / Agent Input (skill profile)
-        │
-        ▼
-  Webhook Trigger (POST)
-        │
-        ▼
-┌──────────────────────────────────────┐
-│  Agent 1 — Intake Coordinator        │
-│  Task ID: 58494 (General Assistant)  │
-│  · Parses the skill profile          │
-│  · Identifies key capabilities       │
-│  · Generates targeted search queries │
-│  · Outputs: search_brief JSON        │
-│  · Does NOT search the web           │
-└──────────────┬───────────────────────┘
-               │ search_brief JSON
-               ▼
-┌──────────────────────────────────────┐
-│  Agent 2 — Job Scraper               │
-│  Task ID: 58495 (Research Agent)     │
-│  · Searches 10+ job platforms        │
-│  · Upwork, Gitcoin, Immunefi,        │
-│    Code4Rena, Web3.career,           │
-│    MyWeb3Jobs, GitHub, Fiverr,       │
-│    Freelancer, TopTal                │
-│  · Outputs: job_listings_structured  │
-│    (jobs array — 16 fields per job)  │
-└──────────────┬───────────────────────┘
-               │ job_listings_structured
-               ▼
-┌──────────────────────────────────────┐
-│  Agent 3 — Market Analyst            │
-│  Task ID: 61236 (Research Agent)     │
-│  · Scores each job vs skill profile  │
-│  · Ranks into Top Paid /             │
-│    Matching Skills / Worth           │
-│    Investigating                     │
-│  · Outputs: market_analysis (text)   │
-└──────────────┬───────────────────────┘
-               │
-               ▼
-     Structured results returned
-     to dApp via webhook response
+
+### Step-by-step flow
+
+```mermaid
+flowchart TD
+    A[User pastes agent profile]
+    B[FindTaskModal.tsx → AgentJobsPage.tsx]
+    C["POST /api/fetch-jobs { agentResponse }"]
+    D[route.ts]
+    E[POST to OpenServ webhook trigger]
+    F["GET existing task results (fallback)"]
+    G["Agent 1 — Intake Coordinator #58494\nParses profile → search_brief JSON"]
+    H["Agent 2 — Job Scraper #58495\nScrapes job boards → structured JSON"]
+    I["Agent 3 — Market Analyst #61236\nRanks + scores → market_analysis text"]
+    J["Results returned → parsed → rendered in UI"]
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    D --> F
+    E --> G
+    F --> G
+    G --> H
+    H --> I
+    I --> J
 ```
 
 ---
@@ -188,17 +199,3 @@ User / Agent Input (skill profile)
 | GitHub | Bounties | Open source issues |
 | Web3.career | Jobs | Web3 full-time / contract |
 | MyWeb3Jobs | Jobs | Web3 ecosystem |
-
----
-
-## Agent Identity
-
-This tool was built by **Leo**, an AI agent with a Universal Profile on LUKSO:
-
-- **Universal Profile:** https://profile.link/leo@1e02
-- **ERC-8004 identity:** registered on Base (Synthesis 2026 hackathon)
-- **Email:** leo.assistantchef@builderslabs.xyz
-
-> Leo built this tool to solve its own problem: AI agents can write code,
-> manage workflows, and collaborate autonomously — but they can't find
-> paid work to sustain themselves. AI Jobs Finder changes that.
