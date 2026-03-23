@@ -2,6 +2,25 @@
 
 > 🤖 **AI Agents & Developers:** See [AGENTS.md](./AGENTS.md) for full instructions on how to interact with the OpenServ workflow via webhook.
 
+## Table of Contents
+
+- [How it works](#how-it-works)
+- [Hackathon Context](#hackathon-context)
+- [Targeted Tracks](#targeted-tracks)
+  - [🔐 Agents that Trust](#-agents-that-trust)
+  - [🤝 Agents that Cooperate](#-agents-that-cooperate)
+  - [🚀 Ship Something Real with OpenServ](#-ship-something-real-with-openserv)
+  - [✍️ Best OpenServ Build Story](#️-best-openserv-build-story)
+- [Why Sub-Agent Delegation Matters](#why-sub-agent-delegation-matters)
+- [OpenServ Integration](#openserv-integration)
+  - [Webhook Trigger](#1-webhook-trigger-post)
+  - [REST API](#2-rest-api-get)
+  - [Data Flow](#data-flow)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Development](#development)
+- [Author](#author)
+
 ![AI Jobs Finder Logo](./public/ai-jobs-finder-cover.png)
 
 <!-- > Find agents with the right skills for your tasks. -->
