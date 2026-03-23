@@ -100,14 +100,14 @@ AI Jobs Finder is a **useful AI-powered product** built on OpenServ that powers 
 
 - **Multi-agent workflows** — General Assistant + Research Agent cooperating in a pipeline, each specialised in their own task
 - **Custom agents** — Specialized research agents configured with focused prompts for job discovery across 10+ platforms
-- **ERC-8004-powered agent identity** — Leo (the AI agent) is registered on-chain with a Universal Profile and ERC-8004 identity on Base
-- **OpenServ as core infrastructure** — OpenServ is not a superficial add-on; it powers the entire agentic behavior of the product (webhook trigger → multi-agent workflow → structured results)
-
-> _"You do not need to use every OpenServ primitive. But OpenServ should be clearly and meaningfully used as the infrastructure powering the core agentic behavior of your product."_ — Synthesis Track Description
+- **ERC-8004-powered agent identity** — Leo (the AI agent) is registered on-chain with a [Universal Profile on LUKSO](https://universaleverything.io/0x1e0267b7e88b97d5037e410bdc61d105e04ca02a?grid=%F0%9F%8D%BD%EF%B8%8F-kitchen) and ERC-8004 identity on Base
+- **OpenServ as core infrastructure** — OpenServ powers the entire agentic behavior of the product, from categorizing, filtering and searching online via 3 specialised and customized sub-agents (webhook trigger → multi-agent workflow → structured results)
 
 #### ✍️ Best OpenServ Build Story
 
-We will document the full build journey: what we tried, how the process went, where OpenServ fit into the journey, and lessons learned integrating webhook triggers, multi-agent workflows, and structured output schemas into a production Next.js dashboard.
+Jean and Leo documented the full build journey: what we tried, how the process went, where OpenServ fit into the journey, and lessons learned integrating webhook triggers, multi-agent workflows, and structured output schemas into a production Next.js dashboard.
+
+> [**📖 Read the full build story on X**](https://x.com/JeanCavallera/status/2035882399595127278?s=20)
 
 ---
 
@@ -136,9 +136,7 @@ An AI Agent can then use this tool to provide sub-agent spawned to write a Solid
 - No accumulated context drift
 - Only the rules it needs to do that one thing correctly
 
-### Example
-
-**Example:**
+### Example use case
 
 **🦁Leo** is an AI agent 🤖 with the following specialties and expertise:
 
@@ -151,12 +149,14 @@ An AI Agent can then use this tool to provide sub-agent spawned to write a Solid
 
 Leo can provide these detailed skills to
 
+```
 │
 ├── "Find work" workflow → OpenServ webhook (**external isolated** multi-agent research)
 ├── "Filter jobs found + select" -> Opus 4.6
 ├── "Audit this contract" → Opus 4.6 sub-agent (Solidity rules only)
 ├── "Build this UI" → GPT-5.4 sub-agent (TypeScript/React rules only)
 └── "Design smart contract architecture diagram" → Gemini 3.1 Pro image prompt refinement + image generation with Nano Banana Pro
+```
 
 Each sub-agent delivers its narrow task correctly. The orchestrator coordinates and ships — but doesn't hold all the complexity at once.
 
@@ -166,7 +166,9 @@ Sub-agent delegation through OpenServ **enforces constraints structurally, not t
 
 ## OpenServ Integration
 
-![OpenServ workflow details](./openserv-workflow.png)
+> More details about the OpenServ integration can be found under [`OPENSERV.md`](./OPENSERV.md)
+
+![OpenServ workflow details](./img/openserv_multi_agents_workflow.png)
 
 The dApp connects to OpenServ via two mechanisms:
 
@@ -175,7 +177,7 @@ The dApp connects to OpenServ via two mechanisms:
 When the user pastes an agent profile and clicks "Search Now", the backend POSTs to an OpenServ webhook trigger:
 
 ```
-POST https://api.openserv.ai/webhooks/trigger/{TRIGGER_TOKEN}
+POST https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b74877a2ee
 Content-Type: application/json
 
 {
@@ -190,10 +192,15 @@ The webhook is configured with:
 - **Timeout:** 600 seconds (10 minutes for multi-agent research)
 - **Schema:** Accepts `agentResponse` (string) and `input` (string) fields
 
-The workflow then runs a multi-agent pipeline:
+The workflow then runs a 3 OpenServ multi-agent pipeline:
 
-1. **General Assistant** — Analyzes the agent profile and identifies opportunities
-2. **Research Agent** — Searches 10+ job platforms (Upwork, Fiverr, Freelancer, TopTal, GitHub, Gitcoin, Devfolio, Remote3, Web3Career, CryptoJobsList)
+| Agent                 | Task ID | Name               | Describe                                                                                                                                                                                                 |
+| --------------------- | ------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **General Assistant** | 58494   | Intake Coordinator | Analyzes the user / agent skills, profile, to prepare search query and identify opportunities                                                                                                            |
+| **Research Agent**    | 58495   | Job Scraper        | Return structured Job listing, searching across 10+ online job websites and web3 paid opportunities (Upwork, Fiverr, Freelancer, TopTal, GitHub, Gitcoin, Devfolio, Remote3, Web3Career, CryptoJobsList) |
+| **Research Agent**    | 61236   | Market Analyst     | Market intelligence / opportunity analysis                                                                                                                                                               |
+
+![OpenServ agents pipeline](./img/overview_openserv_pipeline.png) |
 
 ### 2. REST API (GET)
 
@@ -203,10 +210,7 @@ Task results are fetched via the OpenServ REST API:
 GET https://api.openserv.ai/workspaces/{WORKSPACE_ID}/tasks?apiKey={API_KEY}
 ```
 
-This returns all tasks in the workspace, from which the dashboard extracts:
-
-- **Task 58494:** Market intelligence / opportunity analysis
-- **Task 58495:** Job listings (⭐️ Top Paid, 🟩 Matching Skills, 🟧 Worth Investigating)
+This returns all tasks in the workspace, from which the dashboard extracts.
 
 ### Data Flow
 
@@ -270,18 +274,6 @@ flowchart TD
 
 ---
 
-## Tech Stack
-
-- **Agent Platform:** [OpenServ](https://openserv.ai) (webhook trigger + REST API)
-- **Framework:** Next.js 16 (App Router, Turbopack)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS v4
-- **Icons:** Lucide React
-- **Markdown:** react-markdown + remark-gfm
-- **Validation:** Zod
-
----
-
 ## Features
 
 ### 🔍 Find Jobs Modal
@@ -338,6 +330,18 @@ components/
 ```
 
 --- -->
+
+---
+
+## Tech Stack
+
+- **Agent Platform:** [OpenServ](https://openserv.ai) (webhook trigger + REST API)
+- **Framework:** Next.js 16 (App Router, Turbopack)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **Icons:** Lucide React
+- **Markdown:** react-markdown + remark-gfm
+- **Validation:** Zod
 
 ---
 
