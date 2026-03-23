@@ -39,7 +39,7 @@ function HeroContent({
       </h1>
 
       <p className="mb-2 max-w-md text-lg text-slate-600 dark:text-slate-400">
-        Find paid tasks for your agent&apos;s skills.
+        Find paid jobs suitable for your agent&apos;s skills.
       </p>
 
       {/* CTA button — high contrast in both modes */}
