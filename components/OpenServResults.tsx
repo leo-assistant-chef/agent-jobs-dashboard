@@ -36,7 +36,7 @@ function getStatusConfig(status: OpenServTaskStatus) {
 function StatusBadge({ status }: { status: OpenServTaskStatus }) {
   const config = getStatusConfig(status)
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-200">
+    <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-3 py-1 text-xs font-medium text-slate-700 dark:text-slate-200">
       <span className={`h-2 w-2 rounded-full ${config.dotClass}`} />
       <span>{config.label}</span>
     </div>
@@ -102,22 +102,22 @@ export function OpenServResults({
   if (loading) {
     return (
       <section className="grid gap-6">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-          <div className="h-3 w-36 animate-pulse rounded-full bg-white/10" />
-          <div className="mt-4 h-8 w-72 animate-pulse rounded-full bg-white/10" />
+        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
+          <div className="h-3 w-36 animate-pulse rounded-full bg-slate-100 dark:bg-white/10" />
+          <div className="mt-4 h-8 w-72 animate-pulse rounded-full bg-slate-100 dark:bg-white/10" />
           <div className="mt-6 space-y-3">
-            <div className="h-4 animate-pulse rounded-full bg-white/10" />
-            <div className="h-4 animate-pulse rounded-full bg-white/10" />
-            <div className="h-4 w-5/6 animate-pulse rounded-full bg-white/10" />
+            <div className="h-4 animate-pulse rounded-full bg-slate-100 dark:bg-white/10" />
+            <div className="h-4 animate-pulse rounded-full bg-slate-100 dark:bg-white/10" />
+            <div className="h-4 w-5/6 animate-pulse rounded-full bg-slate-100 dark:bg-white/10" />
           </div>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-6">
-              <div className="h-3 w-24 animate-pulse rounded-full bg-white/10" />
+            <div key={i} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
+              <div className="h-3 w-24 animate-pulse rounded-full bg-slate-100 dark:bg-white/10" />
               <div className="mt-5 space-y-3">
-                <div className="h-4 animate-pulse rounded-full bg-white/10" />
-                <div className="h-4 w-11/12 animate-pulse rounded-full bg-white/10" />
+                <div className="h-4 animate-pulse rounded-full bg-slate-100 dark:bg-white/10" />
+                <div className="h-4 w-11/12 animate-pulse rounded-full bg-slate-100 dark:bg-white/10" />
               </div>
             </div>
           ))}
@@ -149,13 +149,13 @@ export function OpenServResults({
   return (
     <section className="grid gap-8">
       {/* Market intelligence summary */}
-      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+      <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.03] p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
               Market intelligence
             </p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tighter text-slate-100">
+            <h2 className="mt-3 text-3xl font-bold tracking-tighter text-slate-900 dark:text-slate-100">
               Job Finder Analysis
             </h2>
           </div>
@@ -163,7 +163,7 @@ export function OpenServResults({
         </div>
         <div className="mt-6 space-y-4">
           {marketBlocks.map((block) => (
-            <p key={block} className="text-sm leading-7 text-slate-300">
+            <p key={block} className="text-sm leading-7 text-slate-600 dark:text-slate-300">
               {block}
             </p>
           ))}
@@ -175,7 +175,7 @@ export function OpenServResults({
         {/* Header + controls */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-bold tracking-tight text-slate-100">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
               {jobs.length > 0
                 ? `Found ${jobs.length} opportunit${jobs.length === 1 ? 'y' : 'ies'}`
                 : 'Job Listings'}
@@ -186,15 +186,15 @@ export function OpenServResults({
           {/* Sort */}
           {jobs.length > 0 && (
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-slate-500">Sort by:</span>
+              <span className="text-slate-500 dark:text-slate-500">Sort by:</span>
               {(['match_score', 'compensation_amount', 'posted_date'] as SortKey[]).map((key) => (
                 <button
                   key={key}
                   onClick={() => setSortKey(key)}
                   className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-150 ${
                     sortKey === key
-                      ? 'bg-white/10 text-white'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'bg-slate-100 dark:bg-white/10 text-white'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200'
                   }`}
                 >
                   {key === 'match_score' ? 'Match' : key === 'compensation_amount' ? 'Compensation' : 'Date'}
@@ -213,8 +213,8 @@ export function OpenServResults({
                 onClick={() => setFilter(key)}
                 className={`rounded-full border px-3 py-1 text-xs font-medium transition-all duration-150 ${
                   filter === key
-                    ? 'border-white/20 bg-white/10 text-white'
-                    : 'border-white/10 bg-transparent text-slate-400 hover:border-white/20 hover:text-slate-200'
+                    ? 'border-slate-300 dark:border-white/20 bg-slate-100 dark:bg-white/10 text-white'
+                    : 'border-slate-200 dark:border-white/10 bg-transparent text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:border-white/20 hover:text-slate-700 dark:text-slate-200'
                 }`}
               >
                 {label}
@@ -231,10 +231,10 @@ export function OpenServResults({
             ))}
           </div>
         ) : (
-          <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-white/8 bg-white/[0.02] py-16 text-center">
+          <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.02] py-16 text-center">
             <div className="text-4xl">🔍</div>
-            <p className="mt-4 text-base font-semibold text-slate-300">No results yet</p>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-4 text-base font-semibold text-slate-600 dark:text-slate-300">No results yet</p>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-500">
               {jobs.length > 0
                 ? 'No jobs match this filter — try a different category'
                 : 'Trigger a search above to find opportunities'}
@@ -250,16 +250,16 @@ export function OpenServResults({
 
       {/* Raw output collapsible */}
       {data.jobListings.rawContent && (
-        <div className="rounded-2xl border border-white/8 bg-white/[0.02]">
+        <div className="rounded-2xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.02]">
           <button
             onClick={() => setRawExpanded((p) => !p)}
-            className="flex w-full items-center justify-between px-6 py-4 text-sm font-medium text-slate-400 hover:text-slate-200"
+            className="flex w-full items-center justify-between px-6 py-4 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200"
           >
             <span>Raw Output</span>
             <span className="text-xs">{rawExpanded ? '▲ collapse' : '▼ expand'}</span>
           </button>
           {rawExpanded && (
-            <pre className="overflow-x-auto border-t border-white/8 px-6 py-4 text-xs leading-6 text-slate-400">
+            <pre className="overflow-x-auto border-t border-slate-200 dark:border-white/8 px-6 py-4 text-xs leading-6 text-slate-500 dark:text-slate-400">
               {data.jobListings.rawContent}
             </pre>
           )}

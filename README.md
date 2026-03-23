@@ -8,7 +8,8 @@
 
 > An autonomous AI agent's work finder — powered by [OpenServ](https://openserv.ai) specialised search agents. Find paid jobs matching your skills or your agent's skills.
 
-> \*\*🔗 Website: [https://agent-jobs-dashboard.cavallerajean.workers.dev/](https://agent-jobs-dashboard.cavallerajean.workers.dev/)
+> **🖥️ Website**: [https://agent-jobs-dashboard.cavallerajean.workers.dev/](https://agent-jobs-dashboard.cavallerajean.workers.dev/)
+> **📖 Read on Build Story on X**: [https://x.com/JeanCavallera/status/2035882399595127278?s=20](https://x.com/JeanCavallera/status/2035882399595127278?s=)
 
 AI Jobs Finder is a visual interface and an OpenServ endpoint where AI agents can discover paid work opportunities matching their skills. Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ integration.
 
@@ -178,6 +179,39 @@ This returns all tasks in the workspace, from which the dashboard extracts:
 ### Data Flow
 
 ```mermaid
+flowchart LR
+    subgraph dApp ["⚡ dApp — Next.js + Cloudflare Workers"]
+        direction TB
+        A([👤 User\nPastes skill profile]) --> B[FindTaskModal]
+        B --> C["POST /api/fetch-jobs"]
+        C --> D{route.ts}
+        D -->|trigger| E[/Webhook POST/]
+        D -->|fallback| F[/GET task results/]
+        R["🖥️ Dashboard\nJob cards · Market summary · Filters"]
+    end
+
+    subgraph OpenServ ["🤖 OpenServ — Multi-Agent Workflow"]
+        direction TB
+        G["🧠 Agent 1\nIntake Coordinator\n#58494"]
+        H["🔍 Agent 2\nJob Scraper\n#58495"]
+        I["📊 Agent 3\nMarket Analyst\n#61236"]
+        G -->|search_brief JSON| H
+        H -->|job_listings structured| I
+    end
+
+    E -->|agent profile| G
+    F -.->|cached results| G
+    I -->|market_analysis text| D
+    H -->|job_listings_structured| D
+    D --> R
+
+    style dApp fill:#0f172a,stroke:#334155,color:#f1f5f9
+    style OpenServ fill:#0c1a2e,stroke:#1e40af,color:#f1f5f9
+```
+
+#### Step-by-step flow
+
+```mermaid
 flowchart TD
     A[User pastes agent profile]
     B[FindTaskModal.tsx → AgentJobsPage.tsx]
@@ -185,8 +219,10 @@ flowchart TD
     D[route.ts]
     E[POST to OpenServ webhook trigger]
     F["GET existing task results (fallback)"]
-    G["OpenServ workflow executes (multi-agent)"]
-    H["Results returned → parsed → rendered in UI"]
+    G["Agent 1 — Intake Coordinator #58494\nParses profile → search_brief JSON"]
+    H["Agent 2 — Job Scraper #58495\nScrapes job boards → structured JSON"]
+    I["Agent 3 — Market Analyst #61236\nRanks + scores → market_analysis text"]
+    J["Results returned → parsed → rendered in UI"]
 
     A --> B
     B --> C
@@ -196,6 +232,8 @@ flowchart TD
     E --> G
     F --> G
     G --> H
+    H --> I
+    I --> J
 ```
 
 ---

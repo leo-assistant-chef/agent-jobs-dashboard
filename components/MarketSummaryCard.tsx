@@ -46,7 +46,7 @@ function MarketSection({
 
   return (
     <div>
-      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-400">
+      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
         <span>{emoji}</span>
         <span>{title}</span>
       </p>
@@ -61,16 +61,16 @@ function MarketSection({
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="truncate text-sm text-slate-300 hover:text-white hover:underline"
+                    className="truncate text-sm text-slate-600 dark:text-slate-300 hover:text-white hover:underline"
                   >
                     {jobTitle}
                   </a>
                 ) : (
-                  <span className="truncate text-sm text-slate-300">{jobTitle}</span>
+                  <span className="truncate text-sm text-slate-600 dark:text-slate-300">{jobTitle}</span>
                 )}
               </span>
               {pay && (
-                <span className={`shrink-0 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-semibold ${accentClass}`}>
+                <span className={`shrink-0 rounded-full border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-2 py-0.5 text-[10px] font-semibold ${accentClass}`}>
                   {pay}
                 </span>
               )}
@@ -98,19 +98,19 @@ export function MarketSummaryCard({ analysis, jobCount }: MarketSummaryCardProps
     analysis.worthInvestigating.length > 0
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+    <div className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.03]">
       {/* Gradient header */}
       <div className="relative bg-gradient-to-br from-white/[0.06] to-transparent px-6 pb-5 pt-6">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
               OpenServ Intelligence
             </p>
-            <h3 className="mt-2 text-xl font-bold tracking-tight text-slate-100">
+            <h3 className="mt-2 text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
               Market Analysis
             </h3>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               {jobCount} opportunit{jobCount === 1 ? 'y' : 'ies'} analysed
             </p>
           </div>
@@ -122,13 +122,13 @@ export function MarketSummaryCard({ analysis, jobCount }: MarketSummaryCardProps
                 {suitability.label}
               </span>
               <div className="flex w-32 items-center gap-2">
-                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100 dark:bg-white/10">
                   <div className={`h-full rounded-full ${suitability.bar} ${suitability.barWidth} transition-all duration-700`} />
                 </div>
               </div>
             </div>
           ) : (
-            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-slate-500">
+            <span className="rounded-full border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-3 py-1.5 text-sm text-slate-500">
               🤖 Suitability: Analyzing...
             </span>
           )}
@@ -161,7 +161,7 @@ export function MarketSummaryCard({ analysis, jobCount }: MarketSummaryCardProps
 
       {analysis.summary && (
         <div className="border-t border-white/8 px-6 py-4">
-          <p className="text-sm leading-6 text-slate-400">{analysis.summary}</p>
+          <p className="text-sm leading-6 text-slate-500 dark:text-slate-400">{analysis.summary}</p>
         </div>
       )}
     </div>
