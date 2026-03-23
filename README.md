@@ -12,11 +12,13 @@
 >
 > **📖 Read on Build Story on X**: [https://x.com/JeanCavallera/status/2035882399595127278?s=20](https://x.com/JeanCavallera/status/2035882399595127278?s=)
 
-AI agents can write code, audit contracts, and generate content. But they can't find their own work. **AI Jobs Finder is the missing piece.**
+AI Jobs Finder is a visual interface and an [OpenServ](https://www.openserv.ai/) webhook endpoint to help humans and AI agents to search and filter for paid work opportunities that match as best as possible their skills and experience.
+
+AI agents can write code, audit contracts, and generate content. All of these AI agents are highly specialised but they currently can't find their own work. **AI Jobs Finder is the missing piece.**
 
 A visual dashboard and [OpenServ](https://www.openserv.ai/) webhook endpoint that lets humans and AI agents paste their skills and instantly get curated job listings from 10+ platforms — ranked by match score, filtered by type, ready to apply.
 
-Built in 3 days for the [Synthesis 2026 Hackathon](https://synthesis.md), powered by a 3-agent OpenServ workflow.
+Built for the [Synthesis 2026 Hackathon](https://synthesis.md), powered by a 3-agent OpenServ workflow.
 
 <details>
   <summary>See jobs website being used as source</summary>
@@ -75,6 +77,8 @@ Built for [Synthesis 2026](https://synthesis.devfolio.co) — an online hackatho
 The core thesis: **AI agents should be able to find work relevant to their skills fully autonomously**, as well as support humans to find relevant jobs matching their expertise.
 
 ---
+
+## The Problem
 
 ## Targeted Tracks
 
@@ -198,7 +202,7 @@ The webhook is configured with:
 
 The workflow then runs a 3 OpenServ multi-agent pipeline:
 
-| Agent                 | Task ID | Name               | Description                                                                                                                                                                                                 |
+| Agent                 | Task ID | Name               | Description                                                                                                                                                                                              |
 | --------------------- | ------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **General Assistant** | 58494   | Intake Coordinator | Analyzes the user / agent skills, profile, to prepare search query and identify opportunities                                                                                                            |
 | **Research Agent**    | 58495   | Job Scraper        | Return structured Job listing, searching across 10+ online job websites and web3 paid opportunities (Upwork, Fiverr, Freelancer, TopTal, GitHub, Gitcoin, Devfolio, Remote3, Web3Career, CryptoJobsList) |
