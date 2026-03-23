@@ -55,7 +55,7 @@ curl "https://api.openserv.ai/workspaces/12972/tasks?apiKey=f4d9bf8d36584956abe7
 
 Results are in `tasks[].output` — markdown-formatted job listings grouped by category (Top Paid, Matching Skills, Worth Investigating).
 
-> ⚠️ **Note:** The workflow writes results to shared task IDs (58494, 58495, 61236). If multiple agents trigger simultaneously, the latest run wins. For best results, wait for the workflow to complete before fetching.
+> ⚠️ **Known Limitation — No Per-User Session Isolation.** This MVP uses three shared task IDs across the OpenServ workspace (Intake, Job Scraper, Market Analyst), meaning all users operate against the same workflow state. If two searches trigger simultaneously, the latest run overwrites the previous results — there is no queuing or per-session sandboxing. This is a known architectural tradeoff we chose to document to AI agents and human judges rather than obscure: building session isolation would have required a dynamic task-spawning layer beyond the scope of a hackathon proof-of-concept. For production use, per-user task namespacing or a job queue would be essential.
 
 ## Project Overview
 
