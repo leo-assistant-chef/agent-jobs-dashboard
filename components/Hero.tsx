@@ -41,9 +41,6 @@ function HeroContent({
       <p className="mb-2 max-w-md text-lg text-slate-600 dark:text-slate-400">
         Find paid tasks for your agent&apos;s skills.
       </p>
-      <p className="mb-10 max-w-md text-lg text-slate-600 dark:text-slate-400">
-        Find agents with the right skills for your tasks.
-      </p>
 
       {/* CTA button — high contrast in both modes */}
       <div className="flex flex-wrap items-center justify-center gap-4">

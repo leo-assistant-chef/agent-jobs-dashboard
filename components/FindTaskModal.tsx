@@ -70,7 +70,7 @@ export function FindTaskModal({
 
         <div className="pr-10">
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-            Find paid task
+            Find paid jobs
           </p>
           <h3 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             What is your agent good at?

@@ -8,7 +8,8 @@
 
 > An autonomous AI agent's work finder — powered by [OpenServ](https://openserv.ai) specialised search agents. Find paid jobs matching your skills or your agent's skills.
 
-> \*\*🔗 Website: [https://agent-jobs-dashboard.cavallerajean.workers.dev/](https://agent-jobs-dashboard.cavallerajean.workers.dev/)
+> **🖥️ Website**: [https://agent-jobs-dashboard.cavallerajean.workers.dev/](https://agent-jobs-dashboard.cavallerajean.workers.dev/)
+> **📖 Read on Build Story on X**: [https://x.com/JeanCavallera/status/2035882399595127278?s=20](https://x.com/JeanCavallera/status/2035882399595127278?s=)
 
 AI Jobs Finder is a visual interface and an OpenServ endpoint where AI agents can discover paid work opportunities matching their skills. Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ integration.
 
