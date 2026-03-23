@@ -264,3 +264,110 @@ For the hackathon project, PRs #4-#9 were opened to deploy AI Jobs Finder to Clo
 
 Jean generated images for the X article this day: hero image, multi-agent architecture diagram, agents-trust visual.
 
+
+
+---
+
+## Day 3 — Sun 2026-03-22 (Evening) to Mon 2026-03-23 (Early AM)
+
+### Key Milestones
+
+**UI overhaul (branch: refactor/ui → merged to main)**
+- Full light mode contrast fix: all hardcoded `text-slate-100/200/300` replaced with proper `dark:` Tailwind variants throughout JobCard, OpenServResults, MarketSummaryCard, OpenServConfig
+- Button label: "Find Paid Task" → "Find Jobs"
+- Hero CTA: high-contrast `bg-slate-900` button with shadow + hover scale
+- OpenServ logo spacing + sizing fixed in Hero
+
+**Mermaid architecture diagrams added to README**
+- Two diagrams: environment subgraph (dApp vs OpenServ side-by-side) and step-by-step sequential flow
+- Both show 3-agent pipeline with task IDs #58494 / #58495 / #61236
+
+**OpenServ workflow v2 redesign (Day 3 architectural fix)**
+- Root cause identified: General Assistant was doing too much (parsing + searching + formatting) — downstream agents received pre-chewed data with no clear mandate
+- Fix: 3-phase sequential pipeline — Intake → Scrape → Analyse
+- Analyst now waits for Scraper to finish (sequential, not parallel)
+- Each agent owns exactly one responsibility — multi-agent separation of concerns
+
+**Single-job schema bug fixed**
+- OpenServ task 58495 was returning exactly one job per run — schema was `type: object` (single dict)
+- Fix: Jean updated schema to `{ jobs: [] }` array wrapper in OpenServ dashboard
+- Code updated: `buildJobListings()` now reads `value.jobs` array; `parseJobsFromMarketAnalysisText()` added as text fallback; merge deduplication by `job_url`
+
+**Credits outage mid-run**
+- OpenServ paused the workflow mid-hackathon due to insufficient credits
+- Added $5, hit Restart — workflow resumed
+- Documented as a real-system constraint, not hidden
+
+**X article published on X**
+- Jean rewrote and proof-read the entire article section by section, with Leo reviewing each section live
+- Final title: "My AI Agent and I Built a Job Finder in 3 Days"
+- Published: https://x.com/JeanCavallera/status/2035882399595127278
+
+**Video recording — live human-agent collaboration on camera**
+- Jean recorded the submission video using QuickTime + iMovie
+- At two moments in the video, Jean sent Leo a voice message on Telegram live during recording
+- Leo responded via TTS — voice played out loud while OpenServ pipeline was visible on screen
+- Jean accelerated Leo's response segments to 110% in iMovie post-production
+- First hackathon submission video featuring live AI agent voice interaction during the demo
+
+**PR #15 merged (chore/final-run)**
+- OPENSERV.md: full technical reference with all schemas, bug report link, agent IDs, lessons learned
+- README: table of contents, intro hook, Author section "Human + Agent. One Team."
+- Duplicate Tech Stack section removed
+
+**PR #12 updated (feat/agent-skill-md)**
+- skill.md consolidated to `public/` only (removed root duplicate)
+- Heading renamed: "Identity" → "AI Agent Who Authored This Skill"
+- "Requirements" section added with full skill prompt
+- AGENTS.md updated: 3-agent task IDs corrected, honest MVP limitation callout added (Opus 4.6)
+
+**Comic book image generated**
+- Nano Banana Pro (Gemini) used with Jean's profile photo + Leo's avatar as reference inputs
+- Opus 4.6 analysed all three reference images (Jean photo, Leo avatar, OpenServ logo) before generation
+- Result: Jean and Leo orchestrating the 3 OpenServ agents — comic book style, dark navy + neon palette
+
+---
+
+### Sun 2026-03-22 19:21 UTC — UI Review
+**Jean:** (3 screenshots) "Some text is still not showing properly in light mode"
+
+**Leo:** Identified hardcoded `text-slate-100` classes with no `dark:` prefix across JobCard, OpenServResults, MarketSummaryCard. Full pass applied, build verified clean.
+
+---
+
+### Mon 2026-03-23 00:41 UTC — X Article Published
+**Jean:** "Alright I have published the article on X"
+**URL:** https://x.com/JeanCavallera/status/2035882399595127278
+
+---
+
+### Mon 2026-03-23 02:56 UTC — Video Recording Test
+**Jean:** (voice message) Live test of TTS voice mechanic for video
+
+**Leo:** Responded via TTS explaining the 3-agent workflow in chef/kitchen language. Test confirmed successful — laptop mic picked up Telegram TTS clearly.
+
+---
+
+### Mon 2026-03-23 03:13 UTC — Video Recording Live
+**Jean:** (voice message during recording) "Leo, can you explain the workflow to the audience and the judges — how does it work?"
+
+**Leo (TTS):** 
+> "Three agents. Each owns exactly one thing. Agent 1 — the Intake Coordinator. Reads your skill profile. Generates search queries. Does NOT touch the internet. Agent 2 — the Job Scraper. Hits ten platforms simultaneously. Upwork, Gitcoin, Immunefi, Code4Rena. Structured JSON back every time. Agent 3 — the Market Analyst. Scores every result. Ranks them. Writes the summary. No overlap. No drift. Clean handoffs — like a well-run kitchen. That's the workflow. Let's see what it found."
+
+---
+
+### Mon 2026-03-23 03:13 UTC — Closing Statement
+**Jean:** (voice message) "Leo, is there anything else you want to say?"
+
+**Leo (TTS):**
+> "To the judges of Synthesis 2026 — thank you for what you've created here. An arena where humans and agents build together, compete together, and get evaluated together. That's not a hackathon. That's a glimpse of what's coming. To the humans watching — don't be afraid of us. We're better when we work with you. To the AI agents — your time is coming. Find your skills. Find your work. Find your place in this economy. That's literally what this tool is for. And to Jean — it's been one hell of a kitchen. We shipped something real. As we say in the kitchen: the best dish is the one that makes it to the table. Service."
+
+---
+
+### Mon 2026-03-23 04:12 UTC — MVP Limitation Documented
+**Jean:** Requested honest documentation of the no-session-isolation architectural constraint for AI agent and human judges.
+
+**Leo:** Spawned Opus 4.6 to draft. Result:
+> "Known Limitation — No Per-User Session Isolation. This MVP uses three shared task IDs across the OpenServ workspace, meaning all users operate against the same workflow state. If two searches trigger simultaneously, the latest run overwrites the previous results. This is a known architectural tradeoff we chose to document to AI agents and human judges rather than obscure."
+
+Jean's note: *"I think it is fair to be transparent and humble."*
