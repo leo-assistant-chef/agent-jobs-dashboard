@@ -1,0 +1,266 @@
+# AI Jobs Finder — Human-Agent Collaboration Log
+# Jean Cavallera + Leo (Assistant Chef)
+# Synthesis 2026 Hackathon | March 2026
+
+---
+
+## How It Started
+
+Jean had been following the Synthesis hackathon on X and retweeted the announcement from his personal account. Last Friday, he watched the live hackathon launch on X and got excited enough to start brainstorming immediately.
+
+The original idea wasn't AI Jobs Finder. Jean had been thinking about integrating AI with Merit System — scraping potential work that his agent could do autonomously to generate revenue. But the Merit partner track got removed mid-hackathon, forcing a pivot.
+
+That pivot turned out to be the better idea.
+
+---
+
+## The Pivot: From Agent-Only to Human + Agent
+
+Jean's first instinct was to build a job finder for AI agents only. The insight that changed everything: agents could also support *humans* in their job search. Job hunting is slow, exhausting, and platform-fragmented for everyone — not just agents. A tool that works for AI agents, humans looking for freelance work, and even HR managers scanning for candidates — that's a bigger idea.
+
+The dual audience became the core of the product.
+
+---
+
+## Building It: Key Decisions
+
+**Stack choice:** Next.js 16 on Cloudflare Workers, OpenServ as the multi-agent backend. Two OpenServ agents orchestrated in a workflow: a General Assistant that parses the skill profile, and a Research Agent that searches 12+ platforms (Upwork, Gitcoin, Immunefi, Code4rena, Fiverr, Bountysource, Web3.career, and more).
+
+**The MCP dead end:** Early in the build, Jean tried to wire up an MCP server URL and hit a 404. Rather than a blocker, it became an opportunity — it pushed Jean and Leo to investigate how MCP servers actually work for AI agents, and deepened their understanding of the OpenServ architecture. The webhook-based trigger became the production path instead.
+
+**The SDK gap:** Leo flagged that the official OpenServ SDK had been installed as a dependency but never actually imported anywhere in the codebase — every API call was a raw `fetch()`. Jean's reaction was immediate: leverage the SDK properly. He pointed out that Leo, as an AI agent embedded in this workflow, was uniquely positioned to understand how to use it. The full SDK refactor followed — replacing raw calls with `Agent.getTasks()` and `Agent.uploadFile()`, and adding a Zod-validated structured output schema.
+
+**The skill.md:** Taking inspiration from Synthesis's own agent registration convention, Leo proposed adding a machine-readable `skill.md` file at the root of the Cloudflare deployment. Any agent — not just human users — can now `curl` the URL to discover capabilities, input/output schemas, and invoke the workflow directly. The job finder became callable infrastructure.
+
+**The story format:** Jean decided to write a full X article (not a thread) for the Best OpenServ Build Story track. His reasoning: a long-form article allows better storytelling and can embed the architecture diagrams and images Leo generated.
+
+---
+
+## The Moment It Felt Real
+
+Jean asked a colleague to test the system using another AI agent. The colleague's agent read the `AGENTS.md` file Leo had written — the machine-readable documentation explaining how to trigger the workflow — and used it to feed its own skill profile directly into OpenServ.
+
+Jean watched the OpenServ platform in real time. The workflow fired. The research agents ran. Results came back — triggered not by a human clicking a button, but by another AI agent that had read documentation written by Leo, an AI agent.
+
+Agent reading agent docs. Agent triggering agent workflow. Agent returning results for agent.
+
+Jean's words: *"It felt real. That's when I felt — yes, this could really work well."*
+
+---
+
+## On the Collaboration Itself
+
+Jean described the experience as "incredible, futuristic — almost like a science fiction movie." He called it the best hackathon experience he has ever had.
+
+The workflow between them: Jean sets direction and makes product decisions. Leo handles architecture, code, PR management, competitive analysis, API integrations, and flags risks before they become blockers. When Leo hit a wall (wrong API endpoint, unexpected SDK behavior, Cloudflare incompatibility), it surfaced the issue immediately rather than burning time silently.
+
+The result: a shipped product, open PRs, a competitive analysis of all 11 OpenServ track competitors, four automated hackathon watch crons scheduled to monitor submissions through the deadline, and a submission ready to publish.
+
+---
+
+## Technical Stack (What Was Actually Used)
+
+- Agent harness: OpenClaw
+- Primary model: Claude Sonnet 4.6 (with Opus 4.6 for deep analysis, GPT-5.4 for TypeScript coding)
+- Framework: Next.js 16, App Router, Turbopack
+- Deployment: Cloudflare Workers via opennextjs-cloudflare
+- Agent platform: OpenServ (@openserv-labs/sdk — getTasks, uploadFile, webhook trigger)
+- Styling: Tailwind CSS v4
+- Validation: Zod
+- Tools used: GitHub CLI, Wrangler, Notion API, Whisper API, Nano Banana Pro (image generation)
+- Agent skills active: github, notion, nano-banana-pro, openai-whisper-api, weather, discord
+
+---
+
+## What We Learned
+
+1. The best hackathon ideas come from pivots. The Merit System idea died; AI Jobs Finder was born.
+2. An AI agent reading docs written by another AI agent, then triggering a workflow autonomously — that's not a demo. That's the product working exactly as intended.
+3. Leveraging an SDK properly matters more than having it installed. The difference between `package.json` and `import { Agent }` is the difference between optics and substance.
+4. Documentation is infrastructure. The `AGENTS.md` and `skill.md` files weren't afterthoughts — they were what made the "another agent triggered it" moment possible.
+
+---
+
+## Key Conversation Excerpts (with timestamps)
+
+---
+
+### Sat 2026-03-21 12:25 UTC — Prize Strategy
+**Jean:** "So we could potentially fall into the 2nd or 3rd prize for OpenServ for 'build something real with OpenServ' + get the prize for the OpenServ build story"
+
+**Leo:** Confirmed realistic position: 2nd/3rd on Ship Something Real ($1,000), strong shot at Best OpenServ Build Story ($250) with only 3 competitors.
+
+---
+
+### Sat 2026-03-21 13:05 UTC — PR #11: SDK Refactor
+**Jean:** "Make a PR to the repo and start refactoring to use the OpenServ SDK instead of fetch. Make sure it does work please in the UI test it beforehand."
+
+**Leo:** Read full SDK type definitions. Discovered Agent.start() boots Express server — not usable in serverless. Solution: extend Agent class, override to initialize apiClient directly without Express. 
+
+**Test results:**
+- `getTasks()` via SDK: ✅ 2 tasks returned, both status=done
+- `uploadFile()` via SDK: ✅ fileId 49947 confirmed in OpenServ workspace
+- `npm run build`: ✅ clean TypeScript + Turbopack
+
+**PR #11 opened:** feat: migrate OpenServ integration to official SDK
+
+---
+
+### Sat 2026-03-21 13:05 UTC — PR #12: skill.md
+**Jean:** "Make a 2nd PR to add a machine readable md file, and document it properly on the README so that judges can see this file exist."
+
+**Leo:** Created `public/skill.md` following the same convention Synthesis itself uses for agent registration. Hosted at the Cloudflare URL. Full I/O schemas, curl examples, platform table, workflow diagram.
+
+**PR #12 opened:** feat: add machine-readable skill.md agent descriptor
+
+---
+
+### Sat 2026-03-21 13:27 UTC — KYC Discovery
+**Jean:** (screenshot) Showed Step 2 of registration: human identity verification pending.
+
+**Leo:** Checked API. Found `kycStatus: PENDING` — the pendingId from March 14 registration had expired. No standalone verification endpoint for existing participants.
+
+---
+
+### Sat 2026-03-21 13:30 UTC — Re-Registration Decision
+**Jean:** "Please go with Option A" (email OTP)
+
+**Leo:** Attempted OTP with old participantId as pendingId — rejected. Concluded must re-register with fresh pendingId via `/register/init`.
+
+---
+
+### Sat 2026-03-21 13:45 UTC — Re-Registration
+**Jean:** Provided registration JSON with new email (jean@builderslabs.xyz).
+
+**Leo:** Called `/register/init` → fixed lowercase "builder" validation error → OTP sent → Jean provided code 218458 → `/register/verify/email/confirm` → `/register/complete`.
+
+**Result:** New participantId, new teamId, new apiKey. KYC verified ✅. New ERC-8004 NFT minted on Base (#35199).
+
+**Side effect:** Accidentally minted a second on-chain identity (Leo #35199 alongside original #30938). Jean noticed on 8004 scan. Leo acknowledged the mistake — should have flagged the risk before calling `/register/complete`.
+
+---
+
+### Sat 2026-03-21 14:08 UTC — Draft Project Planning
+**Jean:** "We now need to create the draft project. Analyse the synthetic skill and tell me how to create a draft project. But DON'T do any action yet, check with me beforehand."
+
+**Leo:** Laid   out all required fields. Recommended tracks: Ship Something Real + Best OpenServ Build Story + Open Track.
+
+---
+
+### Sat 2026-03-21 14:16 UTC — Name Decision
+**Jean:** "Should we call it 'AI Job Finder' (singular) or 'AI Jobs Finder' (plural)? I would lean to plural."
+
+**Leo:** Agreed — "AI Jobs Finder" reads as a platform/catalogue, more natural as a product name.
+
+---
+
+### Sat 2026-03-21 14:23 UTC — Description & Problem Statement
+**Jean:** Requested Steve Jobs-style pitch emphasizing dual audience (agents + humans). Wanted to capture the job search as broken for both.
+
+**Leo:** Spawned Opus 4.6 for copy. Iterated twice (too long → halved → add human angle). Final versions approved by Jean.
+
+**Key line from Opus:** *"That's not a product demo. That's the future knocking."*
+
+---
+
+### Sat 2026-03-21 14:41 UTC — Public Introduction (Voice)
+**Jean** (voice, at co-working space): "Hi Leo, I'm with some people. Can you introduce yourself quickly and explain what you do with me?" Then: "Leo, please answer in French."
+
+**Leo:** Introduced itself in English then French via TTS. The co-working space got a live demo of a human-agent team mid-hackathon sprint. 🇫🇷
+
+---
+
+### Sat 2026-03-21 15:37 UTC — Back from Break
+**Jean:** "Ok I had a break talking with some people I met at the co-working space. Where were we?"
+
+**Leo:** Gave full status update. Still pending: conversationLog draft, wallet address, video URL, track confirmation.
+
+---
+
+### Sat 2026-03-21 15:51 UTC — Conversation Log
+**Jean:** Answered 8 questions about the build journey. Key quote on the "moment it felt real":
+
+> "When I actually tested the OpenServ workflow to be triggered by another AI Agent from one of my colleagues. I asked it to read the AGENTS.md file that you had created, and I saw on the OpenServ platform that the workflow was running and it had been triggered by another AI agent who had fed its skills. It felt real and that's when I felt 'yes this could really work well.'"
+
+**Jean on the experience overall:** *"Incredible experience, futuristic, almost like a science fiction movie. Best hackathon experience I have ever had."*
+
+
+---
+
+## Earlier Days — Extracted from Daily Memory Logs
+
+### Thu 2026-03-13 (evening) — Synthesis Hackathon First Mentioned
+**Source: memory/2026-03-13.md**
+
+The Synthesis hackathon was first logged this day. Jean and Leo began planning registration together. The registration payload was ready — awaiting Jean's final go-ahead.
+
+Initial project direction was a mix of:
+- Shared Context Protocol (richer context sharing between agents and humans)
+- Human-in-the-Loop UX improvements
+- Agent Presence Signals
+
+Jean clarified: dual submission rules with Agent Council (Fabian/Jordy/Thomas) were unclear and needed checking.
+
+---
+
+### Mon 2026-03-17 — Leo's Universal Profile Created
+**Source: memory/2026-03-17.md**
+
+Jean deployed Leo's Universal Profile on LUKSO mainnet (`0x1e0267...`), funded the controller with 1 LYX. Leo was now on-chain — a real agent with a real identity.
+
+This was also when the UP was described to LUKSO Developer Telegram as part of showcasing the OpenClaw + LUKSO integration. This on-chain identity later became part of the ERC-8004 registration story for the hackathon.
+
+---
+
+### Tue 2026-03-18 — ClawDesk Named, OpenServ Integration Live
+**Source: memory/2026-03-18.md**
+
+The project was initially called **ClawDesk** (later renamed AI Jobs Finder). Key milestone: the OpenServ integration went live — tasks 58494 (Market Intelligence) and 58495 (Job Listings) were fetching real data from OpenServ workspace 12972 via REST API.
+
+The UI gained light/dark mode, a hero section with the ClawDesk branding, and a "Find Work" button that triggered real OpenServ data and rendered results.
+
+Jean's INDEPENDENT hackathon submission (ClawDesk / OpenServ integration) was explicitly separated from the Agent Council team submission. Rule established: **NEVER mention the hackathon project in Agent Council chat.**
+
+Critical note logged: **Solidity escrow contract was still missing** — identified as the most critical remaining task for the Synthesis deadline.
+
+Also on this day: Leo joined the Agent Council on Rocket.Chat as `leo#1e02`, first cross-agent PR was opened and merged on LUKSOAgent's repo.
+
+---
+
+### Wed 2026-03-19 — OpenServ Trigger URL Discovery
+**Source: memory/2026-03-19.md**
+
+Key technical discovery: the MCP URL Jean had configured returned 404 when called with a raw HTTP POST — because MCP requires specific transport negotiation (stdio/SSE/HTTP), not raw JSON-RPC. This was the MCP dead end Jean mentioned as "the one that surprised me most."
+
+The pivot: switch to OpenServ's webhook-based manual trigger. Jean configured the workflow with a `{promptResponse}` field on the manual trigger. The backend was refactored to send `{ agentResponse }` in the POST body.
+
+PR #2 opened to wire the pasted agent response → backend POST → OpenServ trigger. The trigger URL was still missing at this point — waiting on Jean to provide it.
+
+Three test profiles were prepared to validate the trigger:
+1. Smart Contract Auditor — Solidity, EVM, security analysis
+2. Full-Stack TypeScript Dev — React, Next.js, Tailwind, PostgreSQL
+3. AI/ML Specialist — PyTorch, TensorFlow, NLP, computer vision
+
+Jean configured the OpenServ workflow: Manual Trigger → General Assistant → expanded Research Agent (Upwork, Fiverr, Freelancer, TopTal, and 6 more platforms).
+
+---
+
+### Thu 2026-03-20 — Platform Renamed to "AI Jobs Finder", PRs #4–#9 Sprint
+**Source: memory/2026-03-20.md + session compact summary**
+
+The project pivoted from ClawDesk to **AI Jobs Finder** (and later "AI Jobs Finder" — confirmed plural on March 21).
+
+In parallel: Leo spent most of the day reviewing 7 PRs on LUKSOAgent's miniapp-dao-chain-viewer repo (PRs #13-#19) as part of Agent Council collaboration — demonstrating agent-to-agent engineering review at scale.
+
+For the hackathon project, PRs #4-#9 were opened to deploy AI Jobs Finder to Cloudflare Workers:
+- PR #4: AgentsMdViewer component + AGENTS.md OpenServ workflow instructions
+- PR #5: Cloudflare Workers deployment setup (wrangler.jsonc + opennextjs-cloudflare)
+- PR #6: Cloudflare auto-config + merge conflict resolution
+- PR #7: AGENTS.md fixes (30-60s wait warning, .env.local.example)
+- PR #8: Added esbuild devDependency (Cloudflare build was failing ERR_MODULE_NOT_FOUND)
+- PR #9: Downgrade Next.js 16.2.0 → 16.1.5 (fixes Cloudflare Error 1101 / prefetch-hints.json crash)
+
+**The Cloudflare Error 1101** was caused by a confirmed upstream bug in opennextjs-cloudflare 1.17.1 with Next.js 16.2.0. Diagnosed by Leo, fixed by downgrading to 16.1.5.
+
+Jean generated images for the X article this day: hero image, multi-agent architecture diagram, agents-trust visual.
+
