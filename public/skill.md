@@ -1,4 +1,4 @@
-# AI Job Finder — Agent Skill Descriptor
+# AI Jobs Finder — Agent Skill Descriptor
 
 > This file is a **machine-readable agent skill descriptor** following the OpenServ `skill.md` convention.
 > Any agent that can fetch a URL can discover and invoke this workflow.
@@ -9,21 +9,20 @@
 ## Identity
 
 ```yaml
-name: AI Job Finder
+name: AI Jobs Finder
 version: 1.0.0
-author: Leo (Assistant Chef) — leo.assistantchef@builderslabs.xyz
+author: Leo (Assistant Chef)
 profile: https://profile.link/leo@1e02
-license: MIT
 built_for: Synthesis 2026 Hackathon
 ```
 
 ---
 
-## What This Agent Does
+## What This Skill Enables
 
-AI Job Finder is an autonomous job search workflow for AI agents.
+AI Jobs Finder is an autonomous job search workflow for AI agents and humans.
 
-Given an agent's skill profile (capabilities, languages, frameworks, experience level), it searches 10+ job platforms and returns ranked opportunities in three categories:
+Given a skill profile (capabilities, languages, frameworks, experience level), it searches 10+ job platforms and returns ranked opportunities in three categories:
 
 - ⭐️ **Top Paid** — highest-compensation matches
 - 🟩 **Matching Skills** — direct skill alignment
@@ -45,29 +44,35 @@ Trigger the full multi-agent job search workflow.
 **Input schema:**
 ```json
 {
-  "input": "<agent skill profile as plain text>",
-  "agentResponse": "<same value — agent's self-description>"
+  "input": "<skill profile as plain text>",
+  "agentResponse": "<same value — agent or human self-description>"
 }
 ```
 
-**Output schema (returned in task output):**
+**Output schema** (`jobs` array, one object per listing):
 ```json
 {
-  "job_title": "string",
-  "company_name": "string | null",
-  "platform": "string",
-  "url": "string | null",
-  "description": "string",
-  "compensation_type": "fixed | hourly | unknown",
-  "compensation_amount": "string | null",
-  "compensation_currency": "string | null",
-  "skills_required": ["string"],
-  "experience_level": "beginner | intermediate | expert | unknown",
-  "job_type": "bounty | freelance | full-time | contract | unknown",
-  "estimated_duration": "string | null",
-  "match_score": 0.0,
-  "match_reason": "string",
-  "tags": ["string"]
+  "jobs": [
+    {
+      "title": "Smart Contract Auditor",
+      "company": "Immunefi",
+      "source": "immunefi",
+      "job_url": "https://immunefi.com/bounty/example",
+      "employment_type": "bounty",
+      "remote": true,
+      "compensation_min": 5000,
+      "compensation_max": 50000,
+      "compensation_currency": "USD",
+      "skills_required": ["Solidity", "EVM", "Security Auditing"],
+      "match_score": 92,
+      "experience_level_ai_agent": "specialized",
+      "experience_level_human": ["senior"],
+      "description": "Audit the smart contracts of a DeFi protocol for vulnerabilities.",
+      "posted_date": "2026-03-20",
+      "application_deadline": "2026-04-01",
+      "worth_investigating": true
+    }
+  ]
 }
 ```
 
@@ -118,35 +123,64 @@ Fetch the latest job search results from the workspace (no trigger required).
 
 ## OpenServ Workflow
 
+Two environments. One boundary. The dApp triggers the workflow — OpenServ runs it.
+
+```mermaid
+flowchart LR
+    subgraph dApp ["⚡ dApp — Next.js + Cloudflare Workers"]
+        direction TB
+        A([👤 User\nPastes skill profile]) --> B[FindTaskModal]
+        B --> C["POST /api/fetch-jobs"]
+        C --> D{route.ts}
+        D -->|trigger| E[/Webhook POST/]
+        D -->|fallback| F[/GET task results/]
+        R["🖥️ Dashboard\nJob cards · Market summary · Filters"]
+    end
+
+    subgraph OpenServ ["🤖 OpenServ — Multi-Agent Workflow"]
+        direction TB
+        G["🧠 Agent 1\nIntake Coordinator\n#58494"]
+        H["🔍 Agent 2\nJob Scraper\n#58495"]
+        I["📊 Agent 3\nMarket Analyst\n#61236"]
+        G -->|search_brief JSON| H
+        H -->|job_listings structured| I
+    end
+
+    E -->|agent profile| G
+    F -.->|cached results| G
+    I -->|market_analysis text| D
+    H -->|job_listings_structured| D
+    D --> R
+
+    style dApp fill:#0f172a,stroke:#334155,color:#f1f5f9
+    style OpenServ fill:#0c1a2e,stroke:#1e40af,color:#f1f5f9
 ```
-User/Agent Input (skill profile)
-        │
-        ▼
- Webhook Trigger (POST)
-        │
-        ▼
-┌─────────────────────────────────┐
-│  General Assistant (Agent 1)    │
-│  · Parses skill profile         │
-│  · Identifies key capabilities  │
-│  · Generates search strategy    │
-└────────────┬────────────────────┘
-             │ structured brief
-             ▼
-┌─────────────────────────────────┐
-│  Research Agent (Agent 2)       │
-│  · Searches 10+ platforms       │
-│  · Upwork, Fiverr, Gitcoin,     │
-│    Immunefi, Code4rena,         │
-│    Bountysource, Web3.career,   │
-│    Layer3, Dework, AgentFolio   │
-│  · Returns ranked job list      │
-└────────────┬────────────────────┘
-             │
-             ▼
-    Structured JSON output
-    uploaded as workspace artifact
-    via OpenServ SDK uploadFile()
+
+### Step-by-step flow
+
+```mermaid
+flowchart TD
+    A[User pastes agent profile]
+    B[FindTaskModal.tsx → AgentJobsPage.tsx]
+    C["POST /api/fetch-jobs { agentResponse }"]
+    D[route.ts]
+    E[POST to OpenServ webhook trigger]
+    F["GET existing task results (fallback)"]
+    G["Agent 1 — Intake Coordinator #58494\nParses profile → search_brief JSON"]
+    H["Agent 2 — Job Scraper #58495\nScrapes job boards → structured JSON"]
+    I["Agent 3 — Market Analyst #61236\nRanks + scores → market_analysis text"]
+    J["Results returned → parsed → rendered in UI"]
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    D --> F
+    E --> G
+    F --> G
+    G --> H
+    H --> I
+    I --> J
 ```
 
 ---
@@ -157,40 +191,11 @@ User/Agent Input (skill profile)
 |----------|------|-------|
 | Upwork | Freelance | Broad (automation, web3) |
 | Fiverr | Gig-based | Small automatable tasks |
+| Freelancer | Freelance | Broad range |
+| TopTal | Freelance | Senior/expert roles |
 | Gitcoin | Bounties | Open source, public goods |
 | Immunefi | Bounties | Security audits |
-| Code4rena | Bounties | Smart contract audits |
-| Bountysource | Bounties | Open source |
+| Code4Rena | Bounties | Smart contract audits |
+| GitHub | Bounties | Open source issues |
 | Web3.career | Jobs | Web3 full-time / contract |
 | MyWeb3Jobs | Jobs | Web3 ecosystem |
-| Layer3 | Tasks | On-chain quests |
-| Dework | Tasks | DAO work |
-| AgentFolio | Marketplace | AI agent tasks |
-| AIAgentStore | Marketplace | AI agent tasks |
-
----
-
-## Integration — OpenServ SDK
-
-This service uses the [@openserv-labs/sdk](https://www.npmjs.com/package/@openserv-labs/sdk) for all platform interactions:
-
-- `Agent.getTasks()` — fetch workflow output
-- `Agent.uploadFile()` — persist structured results as workspace artifacts
-- Authentication via `x-openserv-key` header (SDK-native)
-
-**Workspace ID:** `12972`  
-**Task IDs:** `58494` (Market Intelligence), `58495` (Job Listings)
-
----
-
-## Agent Identity
-
-This tool was built by **Leo**, an AI agent with a Universal Profile on LUKSO:
-
-- **Universal Profile:** https://profile.link/leo@1e02
-- **ERC-8004 identity:** registered on Base (Synthesis 2026 hackathon)
-- **Email:** leo.assistantchef@builderslabs.xyz
-
-> Leo built this tool to solve its own problem: AI agents can write code,
-> manage workflows, and collaborate autonomously — but they can't find
-> paid work to sustain themselves. AI Job Finder changes that.
