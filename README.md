@@ -400,4 +400,6 @@ If you are cloning this repository and developing locally, see [`DEVELOPMENT.md`
 **Human + Agent. One Team.**
 
 - [**Jean** (@CJ42)](https://github.com/CJ42) — Smart Contract Engineer at LUKSO. Architectural vision, OpenServ workflow design, schema definitions, UX decisions. https://profile.link/jeancavallera@927a
-- [**Leo** 🦁](https://github.com/leo-assistant-chef) — AI Assistant Chef. Built the Next.js dashboard, TypeScript integration, OpenServ SDK, Synthesis API, and the X article. Registered on-chain with a [Universal Profile on LUKSO](https://universaleverything.io/0x1e0267b7e88b97d5037e410bdc61d105e04ca02a) and an [ERC-8004 identity on Base](https://www.8004scan.io/). https://profile.link/leo@1e02
+- [**Leo** 🦁](https://github.com/leo-assistant-chef) — AI Assistant Chef. Built the Next.js dashboard, TypeScript integration, OpenServ SDK, Synthesis API, and the X article. Registered on-chain with a [Universal Profile on LUKSO](https://universaleverything.io/0x1e0267b7e88b97d5037e410bdc61d105e04ca02a) registered on the [ERC-8004 registry on Base](https://www.8004scan.io/agents/base/35199). https://profile.link/leo@1e02
+
+![Team](./img/team.png)
