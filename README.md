@@ -1,17 +1,18 @@
 # AI Jobs Finder
 
-> 🤖 **AI Agents & Developers:** See [AGENTS.md](./AGENTS.md) for full instructions on how to interact with the OpenServ workflow, trigger it directly via webhook, and run the dApp locally.
+> 🤖 **AI Agents & Developers:** See [AGENTS.md](./AGENTS.md) for full instructions on how to interact with the OpenServ workflow via webhook.
 
-![AI Jobs Finder Logo](./public/ai-job-finder-logo.png)
+![AI Jobs Finder Logo](./public/ai-jobs-finder-cover.png)
 
 <!-- > Find agents with the right skills for your tasks. -->
 
-> An autonomous AI agent's work finder — powered by [OpenServ](https://openserv.ai) specialised search agents. Find paid jobs matching your skills or your agent's skills.
+> A tool to find jobs, gigs and paid bounties matching specific skills — powered by [OpenServ](https://openserv.ai) specialized search agents. Suitable to find paid work for both humans 👤 and AI agents 🤖
 
 > **🖥️ Website**: [https://agent-jobs-dashboard.cavallerajean.workers.dev/](https://agent-jobs-dashboard.cavallerajean.workers.dev/)
+>
 > **📖 Read on Build Story on X**: [https://x.com/JeanCavallera/status/2035882399595127278?s=20](https://x.com/JeanCavallera/status/2035882399595127278?s=)
 
-AI Jobs Finder is a visual interface and an OpenServ endpoint where AI agents can discover paid work opportunities matching their skills. Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ integration.
+AI Jobs Finder is a visual interface and an [OpenServ](https://www.openserv.ai/) webhook endpoint to help humans and AI agents to search and filter for paid work opportunities that match as best as possible their skills and experience. Built for the [Synthesis 2026 Hackathon](https://synthesis.md) as part of an OpenServ integration.
 
 <details>
   <summary>See jobs website being used as source</summary>
@@ -49,13 +50,19 @@ AI Jobs Finder is a visual interface and an OpenServ endpoint where AI agents ca
 
 ## How it works
 
-1. **Ask agent for skills** - via a template prompt and paste to the channel you use to talk to your OpenClaw Agent (Telegram, WhatsApp, Discord, etc...)
-2. **Finds work** — Connects to an OpenServ workflow via webhook trigger. The user pastes their agent's skill profile, the workflow runs across 10+ job platforms (Fiverr, Bountysource, Gitcoin, Code4Rena, Immunefi, etc...), and results populate the dashboard.
-3. **Categorizes opportunities** — Jobs are grouped into categories:
+### Step 1: provide skills details
 
-- **⭐️ Top Paid**
-- **🟩 Matching Skills**
-- **🟧 Worth Investigating**
+If you are a human, just enter a description of the type of jobs you are looking for. Your skills, experience. Be as detailed as possible so that OpenServ search agents can help you find the right job opportunities for you!
+
+The agentic economy is also rising! AI agents are becoming self-sustaining, experts, can provide their services in exchange of payment!
+
+**Ask agent for skills** - via a template prompt and paste to the channel you use to talk to your OpenClaw Agent (Telegram, WhatsApp, Discord, etc...). You can then provide the response your agent gave you in the input field.
+
+### Step 2: click the _"Find Jobs"_ button
+
+1. **Find Jobs** — Connects to an OpenServ workflow via webhook trigger. The user pastes their agent's skill profile, the workflow runs across 10+ job platforms (Fiverr, Bountysource, Gitcoin, Code4Rena, Immunefi, etc...), and results populate the dashboard.
+
+You can then browse freely the results! 🔍
 
 ---
 
@@ -73,12 +80,12 @@ AI Jobs Finder is a visual interface and an OpenServ endpoint where AI agents ca
 
 ## Features
 
-### 🔍 Find Task Modal
+### 🔍 Find Jobs Modal
 
 A modal with a two-path workflow:
 
-1. **Skills description input** — Describe your skills or your agent directly
-2. (optional) **Agent prompt template** — If you are looking for jobs or paid bounties for your agent, copy a pre-built prompt to give to your agent directly, paste it into your AI agent, then paste the agent's response back
+1. **Skills description input** — Describe your skills or your agent's skills directly
+2. (optional) **Agent prompt template** — If you are looking for jobs or paid bounties for your AI agent, copy a pre-built prompt to give to your agent directly, paste it into your AI agent, then paste the agent's response back
 3. **Paste agent response** - Paste your agent
 4. Click **"Search Now"** → triggers the OpenServ workflow → specialised OpenServ sub-agents look on the internet for jobs matching your / your agent skills → results get populated
 

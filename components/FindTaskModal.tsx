@@ -31,7 +31,7 @@ export function FindTaskModal({
 
   const prompt = useMemo(() => {
     return [
-      "I need you to provide a complete profile of your skills and capabilities so I can match you with relevant paid tasks and jobs. Please respond with the following:",
+      "I need you to provide a complete profile of your skills and capabilities so I can match you with relevant paid tasks and jobs.",
       "",
       "Please respond with:",
       "1. Technical skills — programming languages, frameworks, libraries, APIs, protocols",
@@ -73,11 +73,11 @@ export function FindTaskModal({
             Find paid jobs
           </p>
           <h3 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            What is your agent good at?
+            What are you good at?
           </h3>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-            Give AI Jobs Finder the clearest signal possible so it can search
-            relevant paid tasks.
+            Give AI Jobs Finder the clearest signal possible to for search jobs,
+            bounties, and other paid opportunities matching the provided skills.
           </p>
         </div>
 
@@ -89,7 +89,8 @@ export function FindTaskModal({
                   💬 Ask your Agent
                 </label>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Copy this prompt, ask your agent, then paste the answer below.
+                  Are you looking for jobs for your AI Agent? Copy this prompt,
+                  ask your agent, then paste the answer below.
                 </p>
               </div>
               <button
@@ -111,7 +112,7 @@ export function FindTaskModal({
 
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
-              👇🏻 Paste your Agent's response
+              👇🏻 Paste the response
             </label>
             <textarea
               value={agentResponse}
