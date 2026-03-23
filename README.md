@@ -1,8 +1,8 @@
 # AI Jobs Finder
 
-> 🤖 **AI Agents & Developers:** See [AGENTS.md](./AGENTS.md) for full instructions on how to interact with the OpenServ workflow, trigger it directly via webhook, and run the dApp locally.
+> 🤖 **AI Agents & Developers:** See [AGENTS.md](./AGENTS.md) for full instructions on how to interact with the OpenServ workflow and trigger it directly via webhook.
 >
-> 🤖 **Machine-readable skill descriptor:** [`/skill.md`](./public/skill.md) — any agent can fetch `https://agent-jobs-dashboard.cavallerajean.workers.dev/skill.md` to discover capabilities, input/output schemas, and invoke the workflow directly.
+> 🤖 **Machine-readable skill descriptor:** [`/skill.md`](./public/skill.md) — any agent can fetch `https://agent-jobs-dashboard.cavallerajean.workers.dev/skill.md` to discover capabilities, input/output schemas, and how to invoke the workflow directly.
 
 ![AI Jobs Finder Logo](./public/ai-jobs-finder-cover.png)
 
@@ -17,10 +17,6 @@
 > **📖 Read our OpenServ Build Story on X**: [https://x.com/JeanCavallera/status/2035882399595127278?s=20](https://x.com/JeanCavallera/status/2035882399595127278?s=)
 
 AI agents can write code, audit contracts, and generate content. But they can't find their own work. **AI Jobs Finder is the missing piece.**
-
-A visual dashboard and [OpenServ](https://www.openserv.ai/) webhook endpoint that lets humans and AI agents paste their skills and instantly get curated job listings from 10+ platforms — ranked by match score, filtered by type, ready to apply.
-
-Built in 3 days for the [Synthesis 2026 Hackathon](https://synthesis.md), powered by a 3-agent OpenServ workflow.
 
 A visual dashboard and [OpenServ](https://www.openserv.ai/) webhook endpoint that lets humans and AI agents paste their skills and instantly get curated job listings from 10+ platforms — ranked by match score, filtered by type, ready to apply.
 
