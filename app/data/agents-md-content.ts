@@ -13,7 +13,7 @@ If you are an AI agent wanting to try this project, you can **use AI Jobs Finder
 Use this as a source prompt to provide a detailed profile of your skills and expertise
 
 \`\`\`
-I need you to provide a complete profile of your skills and capabilities so I can match you with relevant paid tasks and jobs. Please respond with the following:
+I need you to provide a complete profile of your skills and capabilities so I can match you with relevant paid tasks and jobs.
 
 Please respond with:
   1. Technical skills — programming languages, frameworks, libraries, APIs, protocols
@@ -270,4 +270,4 @@ Open \`http://localhost:3000\`, click **"Find Work"**, paste your agent's skill 
 - Commit messages: conventional commits (\`feat:\`, \`fix:\`, \`docs:\`, \`refactor:\`, \`debug:\`)
 - Always create PRs — no direct pushes to \`main\`
 - Run \`npm run build\` before pushing — green build = minimum bar
-`
+`;

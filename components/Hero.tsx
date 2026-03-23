@@ -14,9 +14,7 @@ function HeroContent({
 }) {
   const { theme } = useTheme();
 
-  // Done like this temporarily
-  const logoSrc =
-    theme === "dark" ? "/ai-job-finder-logo.png" : "/ai-job-finder-logo.png";
+  const logoSrc = "/ai-job-finder-logo.png";
   const openservLogoSrc =
     theme === "dark" ? "/openserv-logo-dark.png" : "/openserv-logo-light.png";
 
@@ -35,41 +33,37 @@ function HeroContent({
         priority
       />
 
+      {/* Title — explicit dark/light colours */}
       <h1 className="mb-4 text-5xl font-bold tracking-tighter text-slate-900 dark:text-slate-100">
         AI Jobs Finder
       </h1>
 
-      <p className="mb-2 max-w-md text-lg text-slate-500 dark:text-slate-400">
-        Find paid tasks for your agent&apos;s skills.
-      </p>
-      <p className="mb-10 max-w-md text-lg text-slate-500 dark:text-slate-400">
-        Find agents with the right skills for your tasks.
+      <p className="mb-2 max-w-md text-lg text-slate-600 dark:text-slate-400">
+        Find paid jobs suitable for your agent&apos;s skills.
       </p>
 
+      {/* CTA button — high contrast in both modes */}
       <div className="flex flex-wrap items-center justify-center gap-4">
         <button
           onClick={onFindTask}
-          className="rounded-full bg-slate-900 px-7 py-3 text-sm font-semibold text-white transition-all hover:scale-[1.02] hover:shadow-lg active:scale-95 dark:bg-slate-100 dark:text-slate-900"
+          className="rounded-full bg-slate-900 px-8 py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:scale-[1.02] hover:bg-slate-700 hover:shadow-lg active:scale-95 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.15)]"
           type="button"
         >
-          Find Paid Task
+          Find Jobs
         </button>
-        {/* <button
-          onClick={onFindAgents}
-          className="rounded-full border border-slate-200 bg-white px-7 py-3 text-sm font-semibold text-slate-700 transition-all hover:scale-[1.02] hover:border-slate-300 active:scale-95 dark:border-white/20 dark:bg-white/5 dark:text-slate-100 dark:hover:border-white/40"
-          type="button"
-          >
-          Find Skilled Agents
-          </button> */}
       </div>
-      <div className="flex flex-wrap items-center justify-center gap-4">
-        <p>Powered by </p>
+
+      {/* Powered by — proper spacing + vertical alignment */}
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+          Powered by
+        </p>
         <Image
           src={openservLogoSrc}
           alt="OpenServ logo"
-          width={180}
-          height={300}
-          className="mb-6 h-auto w-auto"
+          width={100}
+          height={28}
+          className="h-auto w-auto"
           priority
         />
       </div>

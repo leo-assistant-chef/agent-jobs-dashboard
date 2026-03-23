@@ -4,13 +4,8 @@ import { useMemo, useRef, useState } from "react";
 
 import type { Job, JobStatus } from "@/app/data/mock-jobs";
 import type { OpenServData } from "@/app/data/openserv";
-import { EarningsWidget } from "@/components/EarningsWidget";
 import { FindTaskModal } from "@/components/FindTaskModal";
-import { FindWorkButton } from "@/components/FindWorkButton";
 import { Hero } from "@/components/Hero";
-import { JobCard } from "@/components/JobCard";
-import { JobPipeline } from "@/components/JobPipeline";
-// import { OpenServConfig } from "@/components/OpenServConfig";
 import { OpenServResults } from "@/components/OpenServResults";
 import { AgentsMdViewer } from "@/components/AgentsMdViewer";
 import { StatusPill } from "@/components/StatusPill";
@@ -27,10 +22,29 @@ function extractTitleAndDescription(item: string) {
 }
 
 function mapOpenServJobs(data: OpenServData): Job[] {
+  // Support both new structured jobs array and legacy market analysis string arrays
+  const listings = (data.jobListings as any).jobs as
+    | import("@/app/data/openserv").JobListing[]
+    | undefined;
+  if (listings && listings.length > 0) {
+    return listings.map((j) => ({
+      id: j.job_url,
+      title: j.title,
+      description: j.description,
+      source: (j.source as Job["source"]) ?? "Other",
+      reward: j.compensation_amount ?? 0,
+      skillMatch: j.match_score,
+      status: "found" as const,
+      postedAt: j.posted_date ?? "",
+    }));
+  }
+
+  // Legacy fallback: use marketAnalysis string arrays
+  const analysis = (data.jobListings as any).marketAnalysis ?? {};
   const categoryMap = [
-    { items: data.jobListings.topPaid, skillMatch: 80 },
-    { items: data.jobListings.matchingSkills, skillMatch: 95 },
-    { items: data.jobListings.worthInvestigating, skillMatch: 70 },
+    { items: (analysis.topPaid ?? []) as string[], skillMatch: 80 },
+    { items: (analysis.matchingSkills ?? []) as string[], skillMatch: 95 },
+    { items: (analysis.worthInvestigating ?? []) as string[], skillMatch: 70 },
   ];
 
   return categoryMap.flatMap(({ items, skillMatch }, categoryIndex) =>
@@ -213,7 +227,31 @@ export function AgentJobsPage({ agentsMdContent }: AgentJobsPageProps) {
 
             <div className="space-y-4">
               {jobs.map((job) => (
-                <JobCard key={job.id} job={job} />
+                <div
+                  key={job.id}
+                  className="rounded-xl border border-white/8 bg-white/[0.03] p-4"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-semibold text-slate-900 dark:text-slate-100">
+                        {job.title}
+                      </p>
+                      <p className="mt-1 text-sm text-slate-400 line-clamp-2">
+                        {job.description}
+                      </p>
+                    </div>
+                    <span className="shrink-0 text-sm font-semibold text-emerald-400">
+                      {job.reward > 0
+                        ? `$${job.reward.toLocaleString()}`
+                        : "TBD"}
+                    </span>
+                  </div>
+                  <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
+                    <span>{job.source}</span>
+                    <span>·</span>
+                    <span>{job.skillMatch}% match</span>
+                  </div>
+                </div>
               ))}
             </div>
           </div>

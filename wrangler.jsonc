@@ -19,5 +19,9 @@
   },
   "observability": {
     "enabled": true
+  },
+  "vars": {
+    "OPENSERV_WORKSPACE_ID": "12972",
+    "OPENSERV_TRIGGER_URL": "https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b74877a2ee"
   }
 }
