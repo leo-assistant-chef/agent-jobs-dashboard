@@ -56,7 +56,7 @@ If you are a human, just enter a description of the type of jobs you are looking
 
 The agentic economy is also rising! AI agents are becoming self-sustaining, experts, can provide their services in exchange of payment!
 
-**Ask agent for skills** - via a template prompt and paste to the channel you use to talk to your OpenClaw Agent (Telegram, WhatsApp, Discord, etc...). You can then provide the response your agent gave you in the input field.
+**Ask agent for skills** - via a template prompt and paste to the channel you use to talk to your OpenClaw Agent (Telegram, WhatsApp, Discord, etc...). You can then provide the response your agent gave you in the input field.\*\*\*\*
 
 ### Step 2: click the _"Find Jobs"_ button
 
@@ -64,80 +64,105 @@ The agentic economy is also rising! AI agents are becoming self-sustaining, expe
 
 You can then browse freely the results! 🔍
 
----
+## Hackathon Context
 
-## Tech Stack
+Built for [Synthesis 2026](https://synthesis.devfolio.co) — an online hackathon judged by AI agents across the Ethereum ecosystem.
 
-- **Agent Platform:** [OpenServ](https://openserv.ai) (webhook trigger + REST API)
-- **Framework:** Next.js 16 (App Router, Turbopack)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS v4
-- **Icons:** Lucide React
-- **Markdown:** react-markdown + remark-gfm
-- **Validation:** Zod
+The core thesis: **AI agents should be able to find work relevant to their skills fully autonomously**, as well as support humans to find relevant jobs matching their expertise.
 
 ---
 
-## Features
+## Targeted Tracks
 
-### 🔍 Find Jobs Modal
+### Themes
 
-A modal with a two-path workflow:
+#### 🔐 Agents that Trust
 
-1. **Skills description input** — Describe your skills or your agent's skills directly
-2. (optional) **Agent prompt template** — If you are looking for jobs or paid bounties for your AI agent, copy a pre-built prompt to give to your agent directly, paste it into your AI agent, then paste the agent's response back
-3. **Paste agent response** - Paste your agent
-4. Click **"Search Now"** → triggers the OpenServ workflow → specialised OpenServ sub-agents look on the internet for jobs matching your / your agent skills → results get populated
+> _"How do you trust something without a face?"_
 
-This triggers the OpenServ workflow to scan job boards, GitHub issues, hackathons, and bounty platforms for opportunities matching the agent's skill set.
+AI Jobs Finder addresses the trust challenge head-on. Today, agents interact with services and other agents through centralized registries and API key providers. If a provider revokes access or shuts down, the agent loses the service it depended on.
 
-### 📊 Task Finder Analysis
+**Our approach:** By delegating job discovery to **isolated, specialized sub-agents** running on OpenServ's infrastructure, we remove the single point of failure. Each sub-agent operates independently with its own focused prompt and constraints — trust is enforced structurally through isolation, not through a single monolithic agent that might drift or hallucinate.
 
-Market intelligence section showing analysis from the OpenServ workflow. Give you a summary analysis, the current trend of what companies / projects are looking for and how it matches your / your agent skills.
+#### 🤝 Agents that Cooperate
 
-### 📋 Job Category Cards
+> _"Can machines keep promises?"_
 
-Three categories with "Load More" pagination (3 per category initially):
+Agents make deals and commitments on behalf of their operators. But without a neutral enforcement layer, those deals can be rewritten without consent.
 
-- **⭐️ Top Paid** — Highest-paying opportunities
-- **🟩 Matching Skills** — Best match for the agent's profile
-- **🟧 Worth Investigating** — Emerging/niche opportunities worth considering
+**Our approach:** AI Jobs Finder demonstrates **multi-agent cooperation in practice**. The General Assistant agent analyzes the skill profile, then hands off to the Research Agent which searches 10+ platforms simultaneously. These agents cooperate through OpenServ's workflow orchestration — each fulfilling its specific role in the pipeline. The workflow enforces the contract between agents: the Research Agent _must_ return structured results that the General Assistant can categorize. This is cooperation with verifiable outputs, not just promises.
 
-### 🔌 OpenServ Integration
+### Partner Track: OpenServ
 
-Connect to an OpenServ workflow exposed via REST API. to discover paid jobs matching the agent's skills (Solidity, LUKSO/LSP standards, TypeScript, smart contract auditing). The agent's capabilities are auto-registered from the workflow's tools via `autoRegisterTools`.
+#### 🚀 Ship Something Real with OpenServ
+
+AI Jobs Finder is a **useful AI-powered product** built on OpenServ that powers real multi-agent use cases:
+
+- **Multi-agent workflows** — General Assistant + Research Agent cooperating in a pipeline, each specialised in their own task
+- **Custom agents** — Specialized research agents configured with focused prompts for job discovery across 10+ platforms
+- **ERC-8004-powered agent identity** — Leo (the AI agent) is registered on-chain with a Universal Profile and ERC-8004 identity on Base
+- **OpenServ as core infrastructure** — OpenServ is not a superficial add-on; it powers the entire agentic behavior of the product (webhook trigger → multi-agent workflow → structured results)
+
+> _"You do not need to use every OpenServ primitive. But OpenServ should be clearly and meaningfully used as the infrastructure powering the core agentic behavior of your product."_ — Synthesis Track Description
+
+#### ✍️ Best OpenServ Build Story
+
+We will document the full build journey: what we tried, how the process went, where OpenServ fit into the journey, and lessons learned integrating webhook triggers, multi-agent workflows, and structured output schemas into a production Next.js dashboard.
 
 ---
 
-<!-- ---
+## Why Sub-Agent Delegation Matters
 
-## Project Structure
+> **An honest note about AI agent reliability.**
 
-```
-app/
-├── layout.tsx              # Root layout (theme + Geist font)
-├── page.tsx                # Entry point → AgentJobsPage
-├── globals.css
-├── api/
-│   └── fetch-jobs/
-│       └── route.ts        # API route: GET (task fetch) + POST (webhook trigger)
-└── data/
-    ├── mock-jobs.ts        # Mock job data for development
-    └── openserv.ts         # OpenServ data types + trigger metadata
-components/
-├── AgentJobsPage.tsx       # Main page layout & state
-├── Hero.tsx                # AI Jobs Finder hero section
-├── ThemeProvider.tsx       # Light / dark mode state
-├── ThemeToggle.tsx         # Theme switch button
-├── JobPipeline.tsx         # Hero pipeline widget (5 stages)
-├── JobCard.tsx             # Individual job card
-├── EarningsWidget.tsx      # USDC earnings sidebar
-├── StatusPill.tsx          # Connection status indicator
-├── FindWorkButton.tsx      # CTA for OpenServ job discovery
-└── OpenServConfig.tsx      # MCP server config form
-```
+A general-purpose AI agent like Leo operates across many tasks simultaneously — reading files, managing repositories, sending messages, generating images, writing code, and more. As the context window fills up, conversation history gets compacted. This compression is necessary, but it comes at a cost: **rules enforced earlier in a session can fade or be deprioritized** when the agent is under high cognitive load.
 
---- -->
+In practice:
+
+- An agent given 10 constraints might reliably follow 8 — and quietly drop the other 2
+- Strict formatting rules or security rules may be applied inconsistently across a long session
+- The same instruction given at the start behaves differently in message 80
+
+### The Solution: Specialized Sub-Agents in isolated environnements
+
+Rather than asking a single general agent to do everything (refine search query based on skills, search for jobs online, filter results, etc...), **these specific tasks are delegated to isolated sub-agents** — spawned fresh with a minimal, focused prompt containing only the rules relevant to that task.
+
+The architecture this project relies on addresses this directly. Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents hosted on OpenServ** — spawned fresh with a minimal, focused system prompt containing only the rules relevant to tasks for refining job research queries + online research on various websites.\*\*\*\*
+
+An AI Agent can then use this tool to provide sub-agent spawned to write a Solidity contract has:
+
+- No kitchen metaphors
+- No memory of past conversations
+- No accumulated context drift
+- Only the rules it needs to do that one thing correctly
+
+### Example
+
+**Example:**
+
+**🦁Leo** is an AI agent 🤖 with the following specialties and expertise:
+
+- Smart contract development, design and architecture
+- Smart Contract programming language: Solidity
+- in-depth understanding of smart contract execution and EVM internals
+- Solidity code review for best practices and security hardening (common vulnerabilities and OWASP checklist)
+- Code Review for dApp development in React, Next.js, and web3 tools like viem, wagmi and ether.js
+- Application specific knowledge: Ethereum, LUKSO LSP standards, Uniswap, Hyperlane, OpenZeppelin
+
+Leo can provide these detailed skills to
+
+│
+├── "Find work" workflow → OpenServ webhook (**external isolated** multi-agent research)
+├── "Filter jobs found + select" -> Opus 4.6
+├── "Audit this contract" → Opus 4.6 sub-agent (Solidity rules only)
+├── "Build this UI" → GPT-5.4 sub-agent (TypeScript/React rules only)
+└── "Design smart contract architecture diagram" → Gemini 3.1 Pro image prompt refinement + image generation with Nano Banana Pro
+
+Each sub-agent delivers its narrow task correctly. The orchestrator coordinates and ships — but doesn't hold all the complexity at once.
+
+Sub-agent delegation through OpenServ **enforces constraints structurally, not through hope**.
+
+---
 
 ## OpenServ Integration
 
@@ -245,105 +270,74 @@ flowchart TD
 
 ---
 
-## Hackathon Context
+## Tech Stack
 
-Built for [Synthesis 2026](https://synthesis.devfolio.co) — an online hackathon judged by AI agents across the Ethereum ecosystem.
-
-The core thesis: **AI agents should be able to find work relevant to their skills fully autonomously**, as well as support humans to find relevant jobs matching their expertise.
-
----
-
-## Targeted Tracks
-
-### Themes
-
-#### 🔐 Agents that Trust
-
-> _"How do you trust something without a face?"_
-
-AI Jobs Finder addresses the trust challenge head-on. Today, agents interact with services and other agents through centralized registries and API key providers. If a provider revokes access or shuts down, the agent loses the service it depended on.
-
-**Our approach:** By delegating job discovery to **isolated, specialized sub-agents** running on OpenServ's infrastructure, we remove the single point of failure. Each sub-agent operates independently with its own focused prompt and constraints — trust is enforced structurally through isolation, not through a single monolithic agent that might drift or hallucinate.
-
-#### 🤝 Agents that Cooperate
-
-> _"Can machines keep promises?"_
-
-Agents make deals and commitments on behalf of their operators. But without a neutral enforcement layer, those deals can be rewritten without consent.
-
-**Our approach:** AI Jobs Finder demonstrates **multi-agent cooperation in practice**. The General Assistant agent analyzes the skill profile, then hands off to the Research Agent which searches 10+ platforms simultaneously. These agents cooperate through OpenServ's workflow orchestration — each fulfilling its specific role in the pipeline. The workflow enforces the contract between agents: the Research Agent _must_ return structured results that the General Assistant can categorize. This is cooperation with verifiable outputs, not just promises.
-
-### Partner Track: OpenServ
-
-#### 🚀 Ship Something Real with OpenServ
-
-AI Jobs Finder is a **useful AI-powered product** built on OpenServ that powers real multi-agent use cases:
-
-- **Multi-agent workflows** — General Assistant + Research Agent cooperating in a pipeline, each specialised in their own task
-- **Custom agents** — Specialized research agents configured with focused prompts for job discovery across 10+ platforms
-- **ERC-8004-powered agent identity** — Leo (the AI agent) is registered on-chain with a Universal Profile and ERC-8004 identity on Base
-- **OpenServ as core infrastructure** — OpenServ is not a superficial add-on; it powers the entire agentic behavior of the product (webhook trigger → multi-agent workflow → structured results)
-
-> _"You do not need to use every OpenServ primitive. But OpenServ should be clearly and meaningfully used as the infrastructure powering the core agentic behavior of your product."_ — Synthesis Track Description
-
-#### ✍️ Best OpenServ Build Story
-
-We will document the full build journey: what we tried, how the process went, where OpenServ fit into the journey, and lessons learned integrating webhook triggers, multi-agent workflows, and structured output schemas into a production Next.js dashboard.
+- **Agent Platform:** [OpenServ](https://openserv.ai) (webhook trigger + REST API)
+- **Framework:** Next.js 16 (App Router, Turbopack)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **Icons:** Lucide React
+- **Markdown:** react-markdown + remark-gfm
+- **Validation:** Zod
 
 ---
 
-## Why Sub-Agent Delegation Matters
+## Features
 
-> **An honest note about AI agent reliability.**
+### 🔍 Find Jobs Modal
 
-A general-purpose AI agent like Leo operates across many tasks simultaneously — reading files, managing repositories, sending messages, generating images, writing code, and more. As the context window fills up, conversation history gets compacted. This compression is necessary, but it comes at a cost: **rules enforced earlier in a session can fade or be deprioritized** when the agent is under high cognitive load.
+A modal with a two-path workflow:
 
-In practice:
+1. **Skills description input** — Describe your skills or your agent's skills directly
+2. (optional) **Agent prompt template** — If you are looking for jobs or paid bounties for your AI agent, copy a pre-built prompt to give to your agent directly, paste it into your AI agent, then paste the agent's response back
+3. **Paste agent response** - Paste your agent
+4. Click **"Search Now"** → triggers the OpenServ workflow → specialised OpenServ sub-agents look on the internet for jobs matching your / your agent skills → results get populated
 
-- An agent given 10 constraints might reliably follow 8 — and quietly drop the other 2
-- Strict formatting rules or security rules may be applied inconsistently across a long session
-- The same instruction given at the start behaves differently in message 80
+This triggers the OpenServ workflow to scan job boards, GitHub issues, hackathons, and bounty platforms for opportunities matching the agent's skill set.
 
-### The Solution: Specialized Sub-Agents in isolated environnements
+### 📊 Task Finder Analysis
 
-Rather than asking a single general agent to do everything (refine search query based on skills, search for jobs online, filter results, etc...), **these specific tasks are delegated to isolated sub-agents** — spawned fresh with a minimal, focused prompt containing only the rules relevant to that task.
+Market intelligence section showing analysis from the OpenServ workflow. Give you a summary analysis, the current trend of what companies / projects are looking for and how it matches your / your agent skills.
 
-The architecture this project relies on addresses this directly. Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents hosted on OpenServ** — spawned fresh with a minimal, focused system prompt containing only the rules relevant to tasks for refining job research queries + online research on various websites.\*\*\*\*
+### 📋 Job Category Cards
 
-An AI Agent can then use this tool to provide sub-agent spawned to write a Solidity contract has:
+Three categories with "Load More" pagination (3 per category initially):
 
-- No kitchen metaphors
-- No memory of past conversations
-- No accumulated context drift
-- Only the rules it needs to do that one thing correctly
+- **⭐️ Top Paid** — Highest-paying opportunities
+- **🟩 Matching Skills** — Best match for the agent's profile
+- **🟧 Worth Investigating** — Emerging/niche opportunities worth considering
 
-```
+---
 
-**Example:**
+<!-- ---
 
-**🦁Leo** is an AI agent 🤖 with the following specialties and expertise:
-
-- Smart contract development, design and architecture
-- Smart Contract programming language: Solidity
-- in-depth understanding of smart contract execution and EVM internals
-- Solidity code review for best practices and security hardening (common vulnerabilities and OWASP checklist)
-- Code Review for dApp development in React, Next.js, and web3 tools like viem, wagmi and ether.js
-- Application specific knowledge: Ethereum, LUKSO LSP standards, Uniswap, Hyperlane, OpenZeppelin
-
-Leo can provide these detailed skills to
-
-│
-├── "Find work" workflow → OpenServ webhook (**external isolated** multi-agent research)
-├── "Filter jobs found + select" -> Opus 4.6
-├── "Audit this contract" → Opus 4.6 sub-agent (Solidity rules only)
-├── "Build this UI" → GPT-5.4 sub-agent (TypeScript/React rules only)
-└── "Design smart contract architecture diagram" → Gemini 3.1 Pro image prompt refinement + image generation with Nano Banana Pro
+## Project Structure
 
 ```
+app/
+├── layout.tsx              # Root layout (theme + Geist font)
+├── page.tsx                # Entry point → AgentJobsPage
+├── globals.css
+├── api/
+│   └── fetch-jobs/
+│       └── route.ts        # API route: GET (task fetch) + POST (webhook trigger)
+└── data/
+    ├── mock-jobs.ts        # Mock job data for development
+    └── openserv.ts         # OpenServ data types + trigger metadata
+components/
+├── AgentJobsPage.tsx       # Main page layout & state
+├── Hero.tsx                # AI Jobs Finder hero section
+├── ThemeProvider.tsx       # Light / dark mode state
+├── ThemeToggle.tsx         # Theme switch button
+├── JobPipeline.tsx         # Hero pipeline widget (5 stages)
+├── JobCard.tsx             # Individual job card
+├── EarningsWidget.tsx      # USDC earnings sidebar
+├── StatusPill.tsx          # Connection status indicator
+├── FindWorkButton.tsx      # CTA for OpenServ job discovery
+└── OpenServConfig.tsx      # MCP server config form
+```
 
-Each sub-agent delivers its narrow task correctly. The orchestrator coordinates and ships — but doesn't hold all the complexity at once.
-
-Sub-agent delegation through OpenServ **enforces constraints structurally, not through hope**.
+--- -->
 
 ---
 
