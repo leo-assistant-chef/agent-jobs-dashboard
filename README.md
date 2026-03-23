@@ -12,7 +12,9 @@
 
 > **🖥️ Website**: [https://agent-jobs-dashboard.cavallerajean.workers.dev/](https://agent-jobs-dashboard.cavallerajean.workers.dev/)
 >
-> **📖 Read on Build Story on X**: [https://x.com/JeanCavallera/status/2035882399595127278?s=20](https://x.com/JeanCavallera/status/2035882399595127278?s=)
+> **📹 Video Presentation**: [https://youtu.be/NTCsGyfHqT8](https://youtu.be/NTCsGyfHqT8)
+>
+> **📖 Read our OpenServ Build Story on X**: [https://x.com/JeanCavallera/status/2035882399595127278?s=20](https://x.com/JeanCavallera/status/2035882399595127278?s=)
 
 AI agents can write code, audit contracts, and generate content. But they can't find their own work. **AI Jobs Finder is the missing piece.**
 
@@ -65,7 +67,6 @@ Built for the [Synthesis 2026 Hackathon](https://synthesis.md), powered by a 3-a
     - [Step 2: click the _"Find Jobs"_ button](#step-2-click-the-find-jobs-button)
   - [Hackathon Context](#hackathon-context)
   - [🤖 Machine-Readable Skill Descriptor (`skill.md`)](#-machine-readable-skill-descriptor-skillmd)
-  - [Tech Stack](#tech-stack)
   - [The Problem](#the-problem)
   - [Targeted Tracks](#targeted-tracks)
     - [Themes](#themes)
@@ -86,7 +87,7 @@ Built for the [Synthesis 2026 Hackathon](https://synthesis.md), powered by a 3-a
     - [🔍 Find Jobs Modal](#-find-jobs-modal)
     - [📊 Task Finder Analysis](#-task-finder-analysis)
     - [📋 Job Category Cards](#-job-category-cards)
-  - [Tech Stack](#tech-stack-1)
+  - [Tech Stack](#tech-stack)
   - [Development](#development)
   - [Author](#author)
 
@@ -377,38 +378,6 @@ Three categories with "Load More" pagination (3 per category initially):
 - **⭐️ Top Paid** — Highest-paying opportunities
 - **🟩 Matching Skills** — Best match for the agent's profile
 - **🟧 Worth Investigating** — Emerging/niche opportunities worth considering
-
----
-
-<!-- ---
-
-## Project Structure
-
-```
-app/
-├── layout.tsx              # Root layout (theme + Geist font)
-├── page.tsx                # Entry point → AgentJobsPage
-├── globals.css
-├── api/
-│   └── fetch-jobs/
-│       └── route.ts        # API route: GET (task fetch) + POST (webhook trigger)
-└── data/
-    ├── mock-jobs.ts        # Mock job data for development
-    └── openserv.ts         # OpenServ data types + trigger metadata
-components/
-├── AgentJobsPage.tsx       # Main page layout & state
-├── Hero.tsx                # AI Jobs Finder hero section
-├── ThemeProvider.tsx       # Light / dark mode state
-├── ThemeToggle.tsx         # Theme switch button
-├── JobPipeline.tsx         # Hero pipeline widget (5 stages)
-├── JobCard.tsx             # Individual job card
-├── EarningsWidget.tsx      # USDC earnings sidebar
-├── StatusPill.tsx          # Connection status indicator
-├── FindWorkButton.tsx      # CTA for OpenServ job discovery
-└── OpenServConfig.tsx      # MCP server config form
-```
-
---- -->
 
 ---
 
