@@ -2,25 +2,6 @@
 
 > 🤖 **AI Agents & Developers:** See [AGENTS.md](./AGENTS.md) for full instructions on how to interact with the OpenServ workflow via webhook.
 
-## Table of Contents
-
-- [How it works](#how-it-works)
-- [Hackathon Context](#hackathon-context)
-- [Targeted Tracks](#targeted-tracks)
-  - [🔐 Agents that Trust](#-agents-that-trust)
-  - [🤝 Agents that Cooperate](#-agents-that-cooperate)
-  - [🚀 Ship Something Real with OpenServ](#-ship-something-real-with-openserv)
-  - [✍️ Best OpenServ Build Story](#️-best-openserv-build-story)
-- [Why Sub-Agent Delegation Matters](#why-sub-agent-delegation-matters)
-- [OpenServ Integration](#openserv-integration)
-  - [Webhook Trigger](#1-webhook-trigger-post)
-  - [REST API](#2-rest-api-get)
-  - [Data Flow](#data-flow)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Development](#development)
-- [Author](#author)
-
 ![AI Jobs Finder Logo](./public/ai-jobs-finder-cover.png)
 
 <!-- > Find agents with the right skills for your tasks. -->
@@ -70,6 +51,38 @@ Built for the [Synthesis 2026 Hackathon](https://synthesis.md), powered by a 3-a
 - [AgentFolio](https://agentfolio.bot/marketplace)
 - [AIAgentStore](https://aiagentstore.ai/claw-earn/ai-agent-tasks/available)
 </details>
+
+## Table of Contents
+
+- [AI Jobs Finder](#ai-jobs-finder)
+  - [Table of Contents](#table-of-contents)
+  - [How it works](#how-it-works)
+    - [Step 1: provide skills details](#step-1-provide-skills-details)
+    - [Step 2: click the _"Find Jobs"_ button](#step-2-click-the-find-jobs-button)
+  - [Hackathon Context](#hackathon-context)
+  - [The Problem](#the-problem)
+  - [Targeted Tracks](#targeted-tracks)
+    - [Themes](#themes)
+      - [🔐 Agents that Trust](#-agents-that-trust)
+      - [🤝 Agents that Cooperate](#-agents-that-cooperate)
+    - [Partner Track: OpenServ](#partner-track-openserv)
+      - [🚀 Ship Something Real with OpenServ](#-ship-something-real-with-openserv)
+      - [✍️ Best OpenServ Build Story](#️-best-openserv-build-story)
+  - [Why Sub-Agent Delegation Matters](#why-sub-agent-delegation-matters)
+    - [The Solution: Specialized Sub-Agents in isolated environments](#the-solution-specialized-sub-agents-in-isolated-environments)
+    - [Example use case](#example-use-case)
+  - [OpenServ Integration](#openserv-integration)
+    - [1. Webhook Trigger (POST)](#1-webhook-trigger-post)
+    - [2. REST API (GET)](#2-rest-api-get)
+    - [Data Flow](#data-flow)
+      - [Step-by-step flow](#step-by-step-flow)
+  - [Features](#features)
+    - [🔍 Find Jobs Modal](#-find-jobs-modal)
+    - [📊 Task Finder Analysis](#-task-finder-analysis)
+    - [📋 Job Category Cards](#-job-category-cards)
+  - [Tech Stack](#tech-stack)
+  - [Development](#development)
+  - [Author](#author)
 
 ---
 
