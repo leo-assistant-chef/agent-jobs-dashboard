@@ -1,6 +1,8 @@
 # AI Jobs Finder
 
-> 🤖 **AI Agents & Developers:** See [AGENTS.md](./AGENTS.md) for full instructions on how to interact with the OpenServ workflow via webhook.
+> 🤖 **AI Agents & Developers:** See [AGENTS.md](./AGENTS.md) for full instructions on how to interact with the OpenServ workflow and trigger it directly via webhook.
+>
+> 🤖 **Machine-readable skill descriptor:** [`/skill.md`](./public/skill.md) — any agent can fetch `https://agent-jobs-dashboard.cavallerajean.workers.dev/skill.md` to discover capabilities, input/output schemas, and how to invoke the workflow directly.
 
 ![AI Jobs Finder Logo](./public/ai-jobs-finder-cover.png)
 
@@ -10,11 +12,11 @@
 
 > **🖥️ Website**: [https://agent-jobs-dashboard.cavallerajean.workers.dev/](https://agent-jobs-dashboard.cavallerajean.workers.dev/)
 >
-> **📖 Read on Build Story on X**: [https://x.com/JeanCavallera/status/2035882399595127278?s=20](https://x.com/JeanCavallera/status/2035882399595127278?s=)
+> **📹 Video Presentation**: [https://youtu.be/NTCsGyfHqT8](https://youtu.be/NTCsGyfHqT8)
+>
+> **📖 Read our OpenServ Build Story on X**: [https://x.com/JeanCavallera/status/2035882399595127278?s=20](https://x.com/JeanCavallera/status/2035882399595127278?s=)
 
-AI Jobs Finder is a visual interface and an [OpenServ](https://www.openserv.ai/) webhook endpoint to help humans and AI agents to search and filter for paid work opportunities that match as best as possible their skills and experience.
-
-AI agents can write code, audit contracts, and generate content. All of these AI agents are highly specialised but they currently can't find their own work. **AI Jobs Finder is the missing piece.**
+AI agents can write code, audit contracts, and generate content. But they can't find their own work. **AI Jobs Finder is the missing piece.**
 
 A visual dashboard and [OpenServ](https://www.openserv.ai/) webhook endpoint that lets humans and AI agents paste their skills and instantly get curated job listings from 10+ platforms — ranked by match score, filtered by type, ready to apply.
 
@@ -60,6 +62,7 @@ Built for the [Synthesis 2026 Hackathon](https://synthesis.md), powered by a 3-a
     - [Step 1: provide skills details](#step-1-provide-skills-details)
     - [Step 2: click the _"Find Jobs"_ button](#step-2-click-the-find-jobs-button)
   - [Hackathon Context](#hackathon-context)
+  - [🤖 Machine-Readable Skill Descriptor (`skill.md`)](#-machine-readable-skill-descriptor-skillmd)
   - [The Problem](#the-problem)
   - [Targeted Tracks](#targeted-tracks)
     - [Themes](#themes)
@@ -94,7 +97,7 @@ If you are a human, just enter a description of the type of jobs you are looking
 
 The agentic economy is also rising! AI agents are becoming self-sustaining, experts, can provide their services in exchange of payment!
 
-**Ask agent for skills** - via a template prompt and paste to the channel you use to talk to your OpenClaw Agent (Telegram, WhatsApp, Discord, etc...). You can then provide the response your agent gave you in the input field.\*\*\*\*
+**Ask agent for skills** — via a template prompt and paste to the channel you use to talk to your OpenClaw Agent (Telegram, WhatsApp, Discord, etc.). You can then provide the response your agent gave you in the input field.
 
 ### Step 2: click the _"Find Jobs"_ button
 
@@ -107,6 +110,39 @@ You can then browse freely the results! 🔍
 Built for [Synthesis 2026](https://synthesis.devfolio.co) — an online hackathon judged by AI agents across the Ethereum ecosystem.
 
 The core thesis: **AI agents should be able to find work relevant to their skills fully autonomously**, as well as support humans to find relevant jobs matching their expertise.
+
+---
+
+## 🤖 Machine-Readable Skill Descriptor (`skill.md`)
+
+AI Job Finder exposes a **machine-readable skill descriptor** at:
+
+```
+https://agent-jobs-dashboard.cavallerajean.workers.dev/skill.md
+```
+
+Any agent (or human) can `curl` this URL to discover:
+
+- **What this service does** — natural language description
+- **Capabilities** — `search_jobs` and `fetch_results` with full input/output schemas
+- **How to invoke it** — exact curl examples, trigger URL, auth requirements
+- **OpenServ workflow diagram** — how the three agents collaborate
+- **Platform coverage** — all 12+ job platforms searched
+- **Agent identity** — who built it and why
+
+This follows the `skill.md` convention used by [Synthesis hackathon](https://synthesis.md) itself for agent registration — making the entire job search infrastructure callable by any agent in the ecosystem, not just human users of the UI.
+
+```bash
+# Any agent can discover and invoke AI Job Finder:
+curl https://agent-jobs-dashboard.cavallerajean.workers.dev/skill.md
+
+# Then trigger a job search:
+curl -X POST https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b74877a2ee \
+  -H "Content-Type: application/json" \
+  -d '{"input": "I am an AI agent specializing in Solidity and TypeScript."}'
+```
+
+📄 [View skill.md source](./public/skill.md)
 
 ---
 
@@ -167,7 +203,7 @@ In practice:
 
 Rather than asking a single general agent to do everything (refine search query based on skills, search for jobs online, filter results, etc...), **these specific tasks are delegated to isolated sub-agents** — spawned fresh with a minimal, focused prompt containing only the rules relevant to that task.
 
-The architecture this project relies on addresses this directly. Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents hosted on OpenServ** — spawned fresh with a minimal, focused system prompt containing only the rules relevant to tasks for refining job research queries + online research on various websites.\*\*\*\*
+The architecture this project relies on addresses this directly. Rather than asking a single general agent to do everything, **specific tasks are delegated to isolated sub-agents hosted on OpenServ** — spawned fresh with a minimal, focused system prompt containing only the rules relevant to tasks for refining job research queries and online research on various websites.
 
 An AI Agent can then use this tool to provide sub-agent spawned to write a Solidity contract has:
 
@@ -240,7 +276,7 @@ The workflow then runs a 3 OpenServ multi-agent pipeline:
 | **Research Agent**    | 58495   | Job Scraper        | Return structured Job listing, searching across 10+ online job websites and web3 paid opportunities (Upwork, Fiverr, Freelancer, TopTal, GitHub, Gitcoin, Devfolio, Remote3, Web3Career, CryptoJobsList) |
 | **Research Agent**    | 61236   | Market Analyst     | Market intelligence / opportunity analysis                                                                                                                                                               |
 
-![OpenServ agents pipeline](./img/overview_openserv_pipeline.png) |
+![OpenServ agents pipeline](./img/overview_openserv_pipeline.png)
 
 ### 2. REST API (GET)
 
@@ -341,38 +377,6 @@ Three categories with "Load More" pagination (3 per category initially):
 
 ---
 
-<!-- ---
-
-## Project Structure
-
-```
-app/
-├── layout.tsx              # Root layout (theme + Geist font)
-├── page.tsx                # Entry point → AgentJobsPage
-├── globals.css
-├── api/
-│   └── fetch-jobs/
-│       └── route.ts        # API route: GET (task fetch) + POST (webhook trigger)
-└── data/
-    ├── mock-jobs.ts        # Mock job data for development
-    └── openserv.ts         # OpenServ data types + trigger metadata
-components/
-├── AgentJobsPage.tsx       # Main page layout & state
-├── Hero.tsx                # AI Jobs Finder hero section
-├── ThemeProvider.tsx       # Light / dark mode state
-├── ThemeToggle.tsx         # Theme switch button
-├── JobPipeline.tsx         # Hero pipeline widget (5 stages)
-├── JobCard.tsx             # Individual job card
-├── EarningsWidget.tsx      # USDC earnings sidebar
-├── StatusPill.tsx          # Connection status indicator
-├── FindWorkButton.tsx      # CTA for OpenServ job discovery
-└── OpenServConfig.tsx      # MCP server config form
-```
-
---- -->
-
----
-
 ## Tech Stack
 
 - **Agent Platform:** [OpenServ](https://openserv.ai) (webhook trigger + REST API)
@@ -396,4 +400,6 @@ If you are cloning this repository and developing locally, see [`DEVELOPMENT.md`
 **Human + Agent. One Team.**
 
 - [**Jean** (@CJ42)](https://github.com/CJ42) — Smart Contract Engineer at LUKSO. Architectural vision, OpenServ workflow design, schema definitions, UX decisions. https://profile.link/jeancavallera@927a
-- [**Leo** 🦁](https://github.com/leo-assistant-chef) — AI Assistant Chef. Built the Next.js dashboard, TypeScript integration, OpenServ SDK, Synthesis API, and the X article. Registered on-chain with a [Universal Profile on LUKSO](https://universaleverything.io/0x1e0267b7e88b97d5037e410bdc61d105e04ca02a) and an [ERC-8004 identity on Base](https://www.8004scan.io/). https://profile.link/leo@1e02
+- [**Leo** 🦁](https://github.com/leo-assistant-chef) — AI Assistant Chef. Built the Next.js dashboard, TypeScript integration, OpenServ SDK, Synthesis API, and the X article. Registered on-chain with a [Universal Profile on LUKSO](https://universaleverything.io/0x1e0267b7e88b97d5037e410bdc61d105e04ca02a) registered on the [ERC-8004 registry on Base](https://www.8004scan.io/agents/base/35199). https://profile.link/leo@1e02
+
+![Team](./img/team.png)

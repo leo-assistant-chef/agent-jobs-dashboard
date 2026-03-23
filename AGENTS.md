@@ -55,7 +55,7 @@ curl "https://api.openserv.ai/workspaces/12972/tasks?apiKey=f4d9bf8d36584956abe7
 
 Results are in `tasks[].output` — markdown-formatted job listings grouped by category (Top Paid, Matching Skills, Worth Investigating).
 
-> ⚠️ **Note:** The workflow writes results to shared task IDs (58494, 58495). If multiple agents trigger simultaneously, the latest run wins. For best results, wait for the workflow to complete before fetching.
+> ⚠️ **Known Limitation — No Per-User Session Isolation.** This MVP uses three shared task IDs across the OpenServ workspace (Intake, Job Scraper, Market Analyst), meaning all users operate against the same workflow state. If two searches trigger simultaneously, the latest run overwrites the previous results — there is no queuing or per-session sandboxing. This is a known architectural tradeoff we chose to document to AI agents and human judges rather than obscure: building session isolation would have required a dynamic task-spawning layer beyond the scope of a hackathon proof-of-concept. For production use, per-user task namespacing or a job queue would be essential.
 
 ## Project Overview
 
@@ -147,7 +147,7 @@ lib/
 2. `AgentJobsPage.fetchOpenServJobs(agentResponse)` called
 3. `POST /api/fetch-jobs` with `{ agentResponse }` body
 4. `route.ts` → POSTs to OpenServ webhook trigger URL
-5. OpenServ workflow runs (General Assistant + Research Agent)
+5. OpenServ workflow runs (3 agents: Intake Coordinator → Job Scraper → Market Analyst)
 6. Results fetched via `GET /workspaces/{id}/tasks?apiKey=...`
 7. Parsed into `OpenServData` → rendered by `OpenServResults`
 
@@ -155,7 +155,7 @@ lib/
 
 - **Webhook trigger**: `POST https://api.openserv.ai/webhooks/trigger/ee932cdefb0f4d6da761f9b74877a2ee` — self-authenticating via URL token, no auth headers needed
 - **Task fetch**: `GET https://api.openserv.ai/workspaces/12972/tasks?apiKey=f4d9bf8d36584956abe7d2e4d3225ac9`
-- **Task IDs**: 58494 (market intelligence), 58495 (job listings)
+- **Task IDs**: 58494 (Intake Coordinator), 58495 (Job Scraper), 61236 (Market Analyst)
 - **Webhook config**: Wait For Completion = ON, Timeout = 600s
 - **Payload format**: `{ "input": string, "agentResponse": string }`
 
@@ -209,16 +209,15 @@ The workflow produces two tasks:
 
 | Task ID   | Name                | Content                                                                 |
 | --------- | ------------------- | ----------------------------------------------------------------------- |
-| **58494** | Market Intelligence | Industry trends, salary ranges, demand analysis for the skill profile   |
-| **58495** | Job Listings        | Categorized job results: top paid, matching skills, worth investigating |
+| **58494** | Intake Coordinator | Parses skill profile → generates search_brief JSON |
+| **58495** | Job Scraper | Searches 10+ platforms → structured job_listings JSON |
+| **61236** | Market Analyst | Ranks + scores results → market_analysis text |
 
 Each task has an `output` field containing markdown-formatted results. Parse the output to extract:
 
-- **Market Intelligence** (task 58494): overview of the job market for the given skills
-- **Job Listings** (task 58495): structured lists of jobs grouped into categories:
-  - `Top Paid` — highest compensation roles
-  - `Matching Skills` — best skill-match roles
-  - `Worth Investigating` — interesting but less certain matches
+- **Intake Coordinator** (task 58494): `search_brief` JSON — parsed skill profile + search queries
+- **Job Scraper** (task 58495): `job_listings_structured` — array of 16-field job objects
+- **Market Analyst** (task 61236): `market_analysis` — markdown summary with Top Paid / Matching Skills / Worth Investigating categories
 
 ## Running the dApp locally
 
